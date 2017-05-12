@@ -9,7 +9,9 @@ public final class ConstDefinition {
 		"LOAD",
 		"STOR"
 	};
-	
+	public final static int[] OP_TIME = {
+			2,2,10,40,2,2
+	};
 	public final static String[] REGS = {
 		"F0",
 		"F1",
