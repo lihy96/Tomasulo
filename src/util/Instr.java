@@ -36,5 +36,12 @@ public class Instr {
 	public REG des;	// 目的地址寄存器
 	public int imm;	// Load,Store指令中的立即数
 	
+	@Override
+	public String toString() {
+		return 	"OP : " + ((op == null) ? "null" : op.name()) + "\n" +
+				"des : " + des.name() + "\n" +
+				"src : " + src1.name() + ", " + ((src2 == null) ? "null" : src2.name()) + "\n" +
+				"imm : " + imm;
+	}
 	
 }
