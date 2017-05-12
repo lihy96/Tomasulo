@@ -6,7 +6,7 @@ package kernel;
 public class ReserveStackEntry {
 	private static int id = 0;
 	
-	private int __id;
+	private int __id;	// 本保留站独有的id
 	public String OP;	// 要对源操作数进行的操作
 	public ReserveStackEntry Qj, QK;	// 将产生源操作数的保留站号.
 	public int Vj, Vk;	// 源操作数的值，V和Q只有一个有效。对于load来说，Vk字段用于保存偏移量
@@ -15,6 +15,12 @@ public class ReserveStackEntry {
 	
 	public ReserveStackEntry() {
 		__id = id ++;
+	}
+	
+	public ReserveStackEntry(boolean flag) {
+		if (flag) {
+			__id = id ++;
+		}
 	}
 	
 	public int getID() {
