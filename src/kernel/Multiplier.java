@@ -8,10 +8,7 @@ import util.Instr.OP;
 public class Multiplier {
 	private int time;
 	private Instr instr;
-	private MainDriver main;
-	public Multiplier(MainDriver main){
-		this.main = main;
-	}
+	public Multiplier(){}
 	void run(Instr instr) {
 		this.instr = instr;
 		if (instr.op == OP.MUL) {
@@ -29,12 +26,12 @@ public class Multiplier {
 		if (time == 0) {
 			double ans;
 			if (instr.op == OP.MUL) {
-				ans = main.fp.get(instr.src1.ordinal()) * main.fp.get(instr.src2.ordinal());
+				ans = MainDriver.fp.get(instr.src1.ordinal()) * MainDriver.fp.get(instr.src2.ordinal());
 			}
 			else {
-				ans = main.fp.get(instr.src1.ordinal()) / main.fp.get(instr.src2.ordinal());
+				ans = MainDriver.fp.get(instr.src1.ordinal()) / MainDriver.fp.get(instr.src2.ordinal());
 			}
-			main.fp.set(instr.des.ordinal(), ans);
+			MainDriver.fp.set(instr.des.ordinal(), ans);
 		}
 	}
 	

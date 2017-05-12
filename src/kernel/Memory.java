@@ -1,14 +1,10 @@
 package kernel;
 
-import main.MainDriver;
 import util.ConstDefinition;
 
 public class Memory {
 	private double m[] = new double[ConstDefinition.MEM_NUM];
-	private MainDriver main;
-	public Memory(MainDriver main) {
-		this.main = main;
-	}
+	public Memory() {}
 	public double get(int k) {
 		return m[k];
 	}
