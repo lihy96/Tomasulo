@@ -6,13 +6,13 @@ import util.Instr.OP;
 
 public class Adder {
 	private int time;
-	private int op1, op2, d;//两个源寄存器，目的寄存器
 	private Instr.OP op;
-	void run(Instr.OP op, int d, int op1, int op2) {
+	private FloatPointRegister fp;
+	Adder(FloatPointRegister fp){
+		this.fp = fp;
+	}
+	void run(Instr.OP op) {
 		this.op = op;
-		this.d = d;
-		this.op1 = op1;
-		this.op2 = op2;
 		if (op == OP.ADD) {
 			time = ConstDefinition.OP_TIME[0];
 		}
@@ -21,6 +21,18 @@ public class Adder {
 		}
 		else {
 			System.out.println("操作符有错误！");
+		}
+	}
+	void activate() {
+		time--;
+		if (time == 0) {
+			if (op == OP.ADD) {
+				ans = ;
+			}
+			else {
+				ans = ;
+			}
+			fp.set(op., ans);
 		}
 	}
 	
