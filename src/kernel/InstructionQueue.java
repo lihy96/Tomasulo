@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import util.ConstDefinition;
 import util.FileReaderUtil;
 import util.Instr;
 
@@ -12,7 +11,7 @@ import util.Instr;
  * 指令队列
  */
 public class InstructionQueue {
-	Queue<ReserveStackEntry> itrsQue = new LinkedList<ReserveStackEntry>();
+	Queue<Instr> itrsQue = new LinkedList<Instr>();
 	
 	public InstructionQueue(String fileName) {
 	}
@@ -31,27 +30,43 @@ public class InstructionQueue {
 		return true;
 	}
 	
-	public ReserveStackEntry decodeInstr(String instr) {
+	public Instr decodeInstr(String instr) {
 		String[] infos = instr.split("[ ,()]");
 		System.out.println(infos);
 		
-		if (infos.length != 4) {
-			System.out.println(">>> Error at decode instruction with wrong format.");
-		}
+//		if (infos.length != 4) {
+//			System.out.println(">>> Error at decode instruction with wrong format.");
+//		}
 		
+		Instr istr = new Instr();
 		// 检查操作码
-		Instr.OP op = Instr.OP.valueOf(infos[0]);
-		switch (op) {
-		case ADD : break;
-		case SUB : break;
-		case MUL : break;
-		case DIV : break;
-		case LOAD : break;
-		case STOR : break;
+		try {
+			Instr.OP op = Instr.OP.valueOf(infos[0]);
+			switch (op) {
+			case ADD : 
+				
+				break;
+			case SUB : break;
+			case MUL : break;
+			case DIV : break;
+			case LOAD : break;
+			case STOR : break;
+			default:
+				// should not goto here.
+				assert(true);
+			}
+		}
+		catch (IllegalArgumentException e) {
+			System.out.println(">>> Error at decode operator : " + infos[0]);
+		}
+		catch (NullPointerException e) {
+			System.out.println(">>> Error at decode instruction : " + instr);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		ReserveStackEntry rse = new ReserveStackEntry(false);
-		return rse;
+		return istr;
 	}
 	
 	public void mount(AbstractHandler ah) {
