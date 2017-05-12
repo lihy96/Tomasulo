@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import util.ConstDefinition;
 import util.FileReaderUtil;
+import util.Instr;
 
 /*
  * 指令队列
@@ -30,7 +32,23 @@ public class InstructionQueue {
 	}
 	
 	public ReserveStackEntry decodeInstr(String instr) {
-		// String 
+		String[] infos = instr.split("[ ,()]");
+		System.out.println(infos);
+		
+		if (infos.length != 4) {
+			System.out.println(">>> Error at decode instruction with wrong format.");
+		}
+		
+		// 检查操作码
+		Instr.OP op = Instr.OP.valueOf(infos[0]);
+		switch (op) {
+		case ADD : break;
+		case SUB : break;
+		case MUL : break;
+		case DIV : break;
+		case LOAD : break;
+		case STOR : break;
+		}
 		
 		ReserveStackEntry rse = new ReserveStackEntry(false);
 		return rse;
