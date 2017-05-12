@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import util.FileReaderUtil;
 
+/*
+ * 指令队列
+ */
 public class InstructionQueue {
 	public FileReaderUtil fru = null;
 	private String fileName;
