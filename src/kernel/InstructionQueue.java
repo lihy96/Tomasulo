@@ -15,13 +15,11 @@ public class InstructionQueue {
 	private MainDriver main;
 	Queue<Instr> itrsQue = new LinkedList<Instr>();
 	
+	public InstructionQueue() {}	// 便于调试
+	
 	public InstructionQueue(MainDriver main) {
 		this.main = main;
 	}
-	
-//	public void close() {
-//		if (fru != null) fru.close();
-//	}
 	
 	public boolean load(String fileName) {
 		ArrayList<String> instrs = new ArrayList<String>();
@@ -113,6 +111,14 @@ public class InstructionQueue {
 		return istr;
 	}
 	
+	public void transfer(AbstractHandler ah) {
+		
+	}
+	
+	/*
+	 * 调试主函数，
+	 * 运行本函数，能够测试指令队列能否正确对各种指令解码。
+	 */
 	public static void main(String[] args) {
 		InstructionQueue iq = new InstructionQueue();
 		Instr is;
@@ -136,9 +142,5 @@ public class InstructionQueue {
 		is = iq.decodeInstr("LOAD F6, 34(F4)  ");
 		if (is != null)
 			System.out.println(is.toString());
-	}
-	
-	public void mount(AbstractHandler ah) {
-		
 	}
 }
