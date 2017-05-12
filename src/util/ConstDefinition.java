@@ -1,7 +1,7 @@
 package util;
 
 public final class ConstDefinition {
-	public final String[] OP = {
+	public final static String[] OP = {
 		"ADD",
 		"SUB",
 		"MUL",
@@ -10,7 +10,7 @@ public final class ConstDefinition {
 		"STOR"
 	};
 	
-	public final String[] REGS = {
+	public final static String[] REGS = {
 		"F0",
 		"F1",
 		"F2",
