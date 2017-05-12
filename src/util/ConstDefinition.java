@@ -22,4 +22,5 @@ public final class ConstDefinition {
 		"F8",
 		"F9",
 	};
+	public final static int FP_NUM = 10;
 }
