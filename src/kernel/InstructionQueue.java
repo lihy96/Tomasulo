@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import main.MainDriver;
 import util.FileReaderUtil;
 import util.Instr;
 
@@ -11,9 +12,11 @@ import util.Instr;
  * 指令队列
  */
 public class InstructionQueue {
+	private MainDriver main;
 	Queue<Instr> itrsQue = new LinkedList<Instr>();
 	
-	public InstructionQueue(String fileName) {
+	public InstructionQueue(MainDriver main, String fileName) {
+		this.main = main;
 	}
 	
 //	public void close() {

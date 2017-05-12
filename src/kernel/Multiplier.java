@@ -1,16 +1,16 @@
 package kernel;
 
+import main.MainDriver;
 import util.ConstDefinition;
 import util.Instr;
 import util.Instr.OP;
-import util.Instr.REG;
 
 public class Multiplier {
 	private int time;
 	private Instr instr;
-	private FloatPointRegister fp;
-	Multiplier(FloatPointRegister fp){
-		this.fp = fp;
+	private MainDriver main;
+	public Multiplier(MainDriver main){
+		this.main = main;
 	}
 	void run(Instr instr) {
 		this.instr = instr;
@@ -29,12 +29,12 @@ public class Multiplier {
 		if (time == 0) {
 			double ans;
 			if (instr.op == OP.MUL) {
-				ans = fp.get(instr.src1.ordinal()) * fp.get(instr.src2.ordinal());
+				ans = main.fp.get(instr.src1.ordinal()) * main.fp.get(instr.src2.ordinal());
 			}
 			else {
-				ans = fp.get(instr.src1.ordinal()) / fp.get(instr.src2.ordinal());
+				ans = main.fp.get(instr.src1.ordinal()) / main.fp.get(instr.src2.ordinal());
 			}
-			fp.set(instr.des.ordinal(), ans);
+			main.fp.set(instr.des.ordinal(), ans);
 		}
 	}
 	
