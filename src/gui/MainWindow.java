@@ -1,175 +1,277 @@
 package gui;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.*;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import java.awt.GridLayout;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import java.awt.Window.Type;
+import javax.swing.JLabel;
+import java.awt.Scrollbar;
+import java.awt.FlowLayout;
+import java.awt.TextArea;
+import java.awt.BorderLayout;
+import javax.swing.SwingConstants;
+import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
+import javax.swing.UIManager;
+import java.awt.Color;
+import java.awt.Button;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JButton;
+import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
-public class MainWindow extends JFrame implements ActionListener {
-	private static final int WIDTH = 600;
-	private static final int HEIGHT = 400;
-	private static MainWindow mainWindow;
+public class MainWindow {
 
-	JPanel tablePanel;
-//	JTable table_instr_queue, table_run, table_load, table_store, table_mem, table_resver, table_fu, table_ru;
-//	String[][] data_instr_queue, data_run, data_load, data_store, data_mem, data_resver, data_fu, data_ru;
+	private JFrame frmSimulator;
+	private JTable table_instrqueue;
+	private JTable table_state;
+	private JTable table_loadqueue;
+	private JTable table_storequeue;
+	private JTable table_mem;
+	private JTable table_station;
+	private JTable table_fu;
+	private JTable table_ru;
 
-	public static MainWindow getMainWindow() {
-		if (mainWindow == null) {
-			mainWindow = new MainWindow();
-		}
-		return mainWindow;
-	}
-
-	public MainWindow() {
-		super("Simulator");
-		init();
-	}
-
-	public void init() {
-		setSize(WIDTH, HEIGHT);
-		setLayout(new FlowLayout());
-		setLocationRelativeTo(null); // locate at center of window
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		tablePanel = new JPanel();
-
-		add(tablePanel);
-		
-		init_menu();
-		init_table();
-		setResizable(false);
-		setVisible(true);
-	}
-
-	public void init_menu() {
-		/** menu bar */
-		JMenuBar menu_bar = new JMenuBar();
-
-		JMenu file = new JMenu("文件");
-		JMenuItem file_open = new JMenuItem("打开文件");
-		file_open.addActionListener(this);
-		file_open.setActionCommand(Config.FILE);
-		file.add(file_open);
-		menu_bar.add(file);
-
-		JMenu input_instr = new JMenu("输入指令");
-		JMenuItem input_instr_item = new JMenuItem("输入指令");
-		input_instr_item.addActionListener(this);
-		input_instr_item.setActionCommand(Config.INPUT);
-		input_instr.add(input_instr_item);
-		menu_bar.add(input_instr);
-
-		JMenu assign = new JMenu("赋值");
-		JMenuItem assign_item = new JMenuItem("赋值");
-		assign_item.addActionListener(this);
-		assign_item.setActionCommand(Config.ASSIGN);
-		assign.add(assign_item);
-		menu_bar.add(assign);
-
-		JMenu run = new JMenu("运行");
-		JMenuItem run_item = new JMenuItem("运行");
-		run_item.addActionListener(this);
-		run_item.setActionCommand(Config.RUN);
-		run.add(run_item);
-		menu_bar.add(run);
-
-		JMenu mode = new JMenu("模式");
-		JMenuItem mode_item = new JMenuItem("模式");
-		mode_item.addActionListener(this);
-		mode_item.setActionCommand(Config.MODE);
-		mode.add(mode_item);
-		menu_bar.add(mode);
-
-		JMenu help = new JMenu("帮助");
-		JMenuItem help_item = new JMenuItem("帮助");
-		help_item.addActionListener(this);
-		help_item.setActionCommand(Config.HELP);
-		help.add(help_item);
-		menu_bar.add(help);
-
-		getContentPane().add(menu_bar);
-		setJMenuBar(menu_bar);
-	}
-
-	public void init_table() {
-		init_instr_queue_table();
-	}
-	
-	public static JTable create_table(String[][] data, int row, String[] cols) {
-		int maxn = Math.max(data.length, row);
-		String[][] tmp = new String[maxn][cols.length];
-		for (int i = 0; i < maxn; i++){
-			if (i < data.length)
-				tmp[i] = data[i];
-			else
-				tmp[i] = new String[cols.length];
-		}
-		JTable table = new JTable(tmp, cols); 
-		return table;
-	}
-	
-	public static JPanel create_panel_by_table(JTable t, String title) {
-		JPanel panel = new JPanel();
-		panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), title,
-				TitledBorder.CENTER, TitledBorder.TOP));
-		panel.add(new JScrollPane(t));
-		return panel;
-	}
-
-	public void init_instr_queue_table() {
-		String[][] data = new String[][] {{ "", "", "", "" }};
-		String cols[] = {"Name","Dsti","Srcj","Srck"};		
-		tablePanel.add(create_panel_by_table(create_table(data, 5, cols), "指令队列"));
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		System.out.println("actionPerformed");
-		String cmd = e.getActionCommand();
-		if (cmd.equals(Config.FILE)) {
-			System.out.println("click file");
-		} else if (cmd.equals(Config.INPUT)) {
-			System.out.println("click INPUT");
-		} else if (cmd.equals(Config.ASSIGN)) {
-			System.out.println("click assign");
-		} else if (cmd.equals(Config.RUN)) {
-			System.out.println("click run");
-		} else if (cmd.equals(Config.MODE)) {
-			System.out.println("click mode");
-		} else if (cmd.equals(Config.HELP)) {
-			System.out.println("click help");
-		} else {
-			System.out.println("!!!!");
-		}
-	}
-
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
-		MainWindow.getMainWindow();
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					MainWindow window = new MainWindow();
+					window.frmSimulator.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
-}
+	/**
+	 * Create the application.
+	 */
+	public MainWindow() {
+		initialize();
+	}
 
-// class SampleMenuListener implements MenuListener {
-// @Override
-// public void menuCanceled(MenuEvent arg0) {
-// // TODO Auto-generated method stub
-// System.out.println("menuCanceled");
-// }
-//
-// @Override
-// public void menuSelected(MenuEvent arg0) {
-// // TODO Auto-generated method stub
-// System.out.println("menuSelected");
-// }
-//
-// @Override
-// public void menuDeselected(MenuEvent e) {
-// // TODO Auto-generated method stub
-// System.out.println("menuDeselected");
-//
-// }
-// }
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frmSimulator = new JFrame();
+		frmSimulator.setAlwaysOnTop(true);
+		frmSimulator.setTitle("Simulator");
+		frmSimulator.setBounds(0, 0, 900, 700);
+		frmSimulator.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmSimulator.getContentPane().setLayout(null);
+		
+		JScrollPane scrollPane_instrqueue = new JScrollPane();
+		scrollPane_instrqueue.setBounds(42, 140, 234, 121);
+		frmSimulator.getContentPane().add(scrollPane_instrqueue);
+		
+		table_instrqueue = new JTable();
+		scrollPane_instrqueue.setViewportView(table_instrqueue);
+		table_instrqueue.setCellSelectionEnabled(true);
+		table_instrqueue.getTableHeader().setReorderingAllowed(false);
+		
+		
+		JScrollPane scrollPane_state = new JScrollPane();
+		scrollPane_state.setBounds(327, 140, 234, 121);
+		frmSimulator.getContentPane().add(scrollPane_state);
+		
+		table_state = new JTable();
+		table_state.setCellSelectionEnabled(true);
+		scrollPane_state.setViewportView(table_state);
+		
+		JScrollPane scrollPane_loadqueue = new JScrollPane();
+		scrollPane_loadqueue.setBounds(619, 56, 216, 67);
+		frmSimulator.getContentPane().add(scrollPane_loadqueue);
+		
+		table_loadqueue = new JTable();
+		table_loadqueue.setCellSelectionEnabled(true);
+		scrollPane_loadqueue.setViewportView(table_loadqueue);
+		
+		JScrollPane scrollPane_storequeue = new JScrollPane();
+		scrollPane_storequeue.setBounds(619, 166, 216, 67);
+		frmSimulator.getContentPane().add(scrollPane_storequeue);
+		
+		table_storequeue = new JTable();
+		table_storequeue.setCellSelectionEnabled(true);
+		scrollPane_storequeue.setViewportView(table_storequeue);
+		
+		JScrollPane scrollPane_mem = new JScrollPane();
+		scrollPane_mem.setBounds(42, 305, 234, 49);
+		frmSimulator.getContentPane().add(scrollPane_mem);
+		
+		table_mem = new JTable();
+		table_mem.setCellSelectionEnabled(true);
+		scrollPane_mem.setViewportView(table_mem);
+		
+		JScrollPane scrollPane_station = new JScrollPane();
+		scrollPane_station.setBounds(327, 305, 508, 141);
+		frmSimulator.getContentPane().add(scrollPane_station);
+		
+		table_station = new JTable();
+		table_station.setCellSelectionEnabled(true);
+		scrollPane_station.setViewportView(table_station);
+		
+		JScrollPane scrollPane_fu = new JScrollPane();
+		scrollPane_fu.setBounds(114, 490, 721, 60);
+		frmSimulator.getContentPane().add(scrollPane_fu);
+		
+		table_fu = new JTable();
+		table_fu.setCellSelectionEnabled(true);
+		scrollPane_fu.setViewportView(table_fu);
+		
+		JScrollPane scrollPane_ru = new JScrollPane();
+		scrollPane_ru.setBounds(114, 591, 727, 41);
+		frmSimulator.getContentPane().add(scrollPane_ru);
+		
+		table_ru = new JTable();
+		table_ru.setCellSelectionEnabled(true);
+		scrollPane_ru.setViewportView(table_ru);
+		
+		JLabel lblRunningState = new JLabel("Running State");
+		lblRunningState.setBounds(398, 115, 122, 15);
+		frmSimulator.getContentPane().add(lblRunningState);
+		
+		JLabel lblLoadQueue = new JLabel("Load Queue");
+		lblLoadQueue.setBounds(681, 31, 122, 15);
+		frmSimulator.getContentPane().add(lblLoadQueue);
+		
+		JLabel lblStoreQueue = new JLabel("Store Queue");
+		lblStoreQueue.setBounds(681, 141, 122, 15);
+		frmSimulator.getContentPane().add(lblStoreQueue);
+		
+		JLabel lblMemory = new JLabel("Memory");
+		lblMemory.setBounds(135, 280, 122, 15);
+		frmSimulator.getContentPane().add(lblMemory);
+		
+		JLabel lblInstructionQueue = new JLabel("Instruction Queue");
+		lblInstructionQueue.setBounds(103, 115, 122, 15);
+		frmSimulator.getContentPane().add(lblInstructionQueue);
+		
+		JLabel lblReservation = new JLabel("Reservation Stations");
+		lblReservation.setBounds(518, 280, 122, 15);
+		frmSimulator.getContentPane().add(lblReservation);
+		
+		JLabel lblFloatRegistersfu = new JLabel("Float Registers(FU)");
+		lblFloatRegistersfu.setBounds(374, 467, 122, 15);
+		frmSimulator.getContentPane().add(lblFloatRegistersfu);
+		
+		JLabel lblIntergerRegisteriu = new JLabel("Interger Register(RU)");
+		lblIntergerRegisteriu.setBounds(363, 566, 148, 15);
+		frmSimulator.getContentPane().add(lblIntergerRegisteriu);
+		
+		JLabel lblRegisterNumber = new JLabel("Reg Number");
+		lblRegisterNumber.setBounds(16, 491, 65, 15);
+		frmSimulator.getContentPane().add(lblRegisterNumber);
+		
+		JLabel lblExpression = new JLabel("Expression");
+		lblExpression.setBounds(16, 516, 65, 15);
+		frmSimulator.getContentPane().add(lblExpression);
+		
+		JLabel lblData = new JLabel("data");
+		lblData.setBounds(16, 535, 65, 15);
+		frmSimulator.getContentPane().add(lblData);
+		
+		JLabel label = new JLabel("Reg Number");
+		label.setBounds(16, 592, 65, 15);
+		frmSimulator.getContentPane().add(label);
+		
+		JLabel label_1 = new JLabel("data");
+		label_1.setBounds(16, 617, 65, 15);
+		frmSimulator.getContentPane().add(label_1);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(42, 41, 519, 46);
+		frmSimulator.getContentPane().add(panel);
+		panel.setLayout(new GridLayout(0, 11, 0, 0));
+		
+		JButton btnNewButton_1 = new JButton("New button");
+		panel.add(btnNewButton_1);
+		
+		JSeparator separator = new JSeparator();
+		panel.add(separator);
+		
+		JButton button = new JButton("New button");
+		panel.add(button);
+		
+		JButton button_1 = new JButton("New button");
+		panel.add(button_1);
+		
+		JButton button_2 = new JButton("New button");
+		panel.add(button_2);
+		
+		JSeparator separator_1 = new JSeparator();
+		panel.add(separator_1);
+		
+		JButton button_3 = new JButton("New button");
+		panel.add(button_3);
+		
+		JButton button_4 = new JButton("New button");
+		panel.add(button_4);
+		
+		JSeparator separator_2 = new JSeparator();
+		panel.add(separator_2);
+		
+		JButton button_5 = new JButton("New button");
+		panel.add(button_5);
+		
+		JButton button_6 = new JButton("New button");
+		panel.add(button_6);
+		
+		JLabel lblNewLabel = new JLabel("Clock");
+		lblNewLabel.setBounds(79, 406, 54, 15);
+		frmSimulator.getContentPane().add(lblNewLabel);
+		
+		JLabel label_2 = new JLabel("0");
+		label_2.setBounds(180, 406, 54, 15);
+		frmSimulator.getContentPane().add(label_2);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 884, 21);
+		frmSimulator.getContentPane().add(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("File[E]");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("New menu item");
+		mnNewMenu.add(mntmNewMenuItem);
+		
+		JMenu mnNewMenu_1 = new JMenu("Input[I]");
+		menuBar.add(mnNewMenu_1);
+		
+		JMenu mnAssigns = new JMenu("Assign[S]");
+		menuBar.add(mnAssigns);
+		
+		JMenu mnNewMenu_2 = new JMenu("Run[R]");
+		menuBar.add(mnNewMenu_2);
+		
+		JMenu mnMode = new JMenu("Mode[C]");
+		menuBar.add(mnMode);
+		
+		JMenu mnHelp = new JMenu("Help[H]");
+		menuBar.add(mnHelp);
+		
+
+	}
+	
+	void load_data() {
+		load_instr_queue();
+	}
+	
+	void load_instr_queue(){
+		
+	}
+}
