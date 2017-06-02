@@ -29,7 +29,8 @@ public class Instr {
 	public String toString() {
 		return 	"OP : " + ((op == null) ? "null" : op.name()) + "\n" +
 				"des : " + des.name() + "\n" +
-				"src : " + src1.name() + ", " + ((src2 == null) ? "null" : src2.name()) + "\n" +
+				"src : " + ((src1 == null) ? "null" : src1.name()) + 
+						", " + ((src2 == null) ? "null" : src2.name()) + "\n" +
 				"imm : " + imm;
 	}
 	

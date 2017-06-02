@@ -2,36 +2,61 @@ package kernel;
 
 import main.MainDriver;
 import util.ConstDefinition;
-import util.Instr;
 import util.Instr.OP;
 
 public class Adder {
 	private int time;
-	private Instr instr;
+	private ReserveStackEntry crRse = null;
 	public Adder(){}
-	void run(Instr instr) {
-		this.instr = instr;
-		if (instr.op == OP.ADD) {
-			time = ConstDefinition.OP_TIME[0];
+	
+	public void activate() {
+		assert(time < 0);
+		
+		/* 如果time为0, 表示当前运算部件没有执行操作，需要寻找一个可执行的保留站。 */
+		if (time == 0) {
+			crRse = ReserveStackEntry.getRunnableEntry(MainDriver.addGroup);
+			/* 如果没有可执行保留站，直接返回 */
+			if (crRse == null) return ;
+			System.out.println("Run instr : " + crRse.toString());
+			setTime();
 		}
-		else if (instr.op == OP.SUB) {
-			time = ConstDefinition.OP_TIME[1];
-		}
-		else {
-			System.out.println("操作符有错误！");
-		}
-	}
-	void activate() {
-		time--;
+
+		/* 默认时间减一 */
+		time --;
+		
+		/* 如果time为0,表示当前运算部件将要执行完操作。 */
 		if (time == 0) {
 			double ans;
-			if (instr.op == OP.ADD) {
-				ans = MainDriver.fp.get(instr.src1.ordinal()) + MainDriver.fp.get(instr.src2.ordinal());
+			if (crRse.OP == OP.ADD) {
+				ans = crRse.Vj + crRse.Vk;
 			}
 			else {
-				ans = MainDriver.fp.get(instr.src1.ordinal()) - MainDriver.fp.get(instr.src2.ordinal());
+				ans = crRse.Vj - crRse.Vk;
 			}
-			MainDriver.fp.set(instr.des.ordinal(), ans);
+			System.out.println("End instr : " + crRse.toString());
+			
+			/** 
+			 * 将计算结果放入总线，并唤醒其他等待该保留站计算结果的保留站
+			 * 如果有寄存器的保留站状态为当前状态，则写入 
+			 */
+			MainDriver.wake_up(crRse, ans);
+			
+			/* 保留站计算完需要释放 */
+			ReserveStackEntry.freeReserveEntry(crRse);
+			crRse = null;
+		}
+	}
+	
+	private void setTime() {
+		switch(crRse.OP) {
+		case ADD:
+			time = ConstDefinition.OP_TIME[0]; break;
+		case SUB:
+			time = ConstDefinition.OP_TIME[1]; break;
+		default:
+			System.out.println("Adder 操作符错误: " + crRse.toString());
+			System.exit(2);
+			break;
 		}
 	}
 	

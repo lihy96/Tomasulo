@@ -29,8 +29,13 @@ public class InstructionQueue {
 		return true;
 	}
 	
-	public void transfer(AbstractHandler ah) {
+	public void activate() {
+		transfer();
+	}
+	
+	private void transfer() {
 		if (crItr == null) crItr = itrsQue.poll();
+		if (crItr == null) return ;
 		
 		ReserveStackEntry reserveStackEntry = null;
 		switch (crItr.op) {
@@ -59,7 +64,7 @@ public class InstructionQueue {
 		InstructionQueue iq = new InstructionQueue();
 		Instr is;
 		
-		is = iq.decodeInstr("SUB F6, 34(F4)  ");
+		is = iq.decodeInstr("LOAD F6, 34  ");
 		if (is != null)
 			System.out.println(is.toString());
 		
@@ -71,11 +76,11 @@ public class InstructionQueue {
 		if (is != null)
 			System.out.println(is.toString());
 		
-		is = iq.decodeInstr("STOR	 F6, 34(F4)  ");
+		is = iq.decodeInstr("STOR	 F6, 34  ");
 		if (is != null)
 			System.out.println(is.toString());
 		
-		is = iq.decodeInstr("LOAD F6, 34(F4)  ");
+		is = iq.decodeInstr("LOAD F6, 34  ");
 		if (is != null)
 			System.out.println(is.toString());
 	}
@@ -90,9 +95,11 @@ public class InstructionQueue {
 			while ((op = infos[cc ++]).equals(""));
 			while ((left = infos[cc ++]).equals(""));
 			while ((mid = infos[cc ++]).equals(""));
-			while ((right = infos[cc ++]).equals(""));
+			if (cc < infos.length) {
+				while ((right = infos[cc ++]).equals(""));
+			}
 			
-			if (infos.length > cc) throw new Exception();
+			if (cc < infos.length) throw new Exception();
 		}
 		catch (Exception e) {
 			System.out.println(">>> Error at decode instruction : \n\t" + instr);
@@ -123,13 +130,6 @@ public class InstructionQueue {
 					istr.imm = Integer.parseInt(mid);
 				} catch (Exception e) {
 					System.out.println(">>> Error at decode immediate number : " + instr);
-					return null;
-				}
-				
-				try {
-					istr.src1 = FP.REG.valueOf(right);
-				} catch (IllegalArgumentException e) {
-					System.out.println(">>> Error at decode src1 : " + instr);
 					return null;
 				}
 				break;

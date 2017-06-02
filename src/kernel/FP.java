@@ -28,6 +28,22 @@ public class FP {
 		return __fp;
 	}
 	
+	public static void listen(FP fp, ReserveStackEntry rse) {
+		for (FloatEntry fe : fp.regs) {
+			if (fe.state == rse) {
+				fe.state = null;
+				fe.num = MainDriver.CDB_DATA;
+			}
+		}
+	}
+	public static void print(FP fp) {
+		for (FloatEntry fEntry : fp.regs) {
+			System.out.println(fEntry.reg.name() + " : " + 
+					fEntry.num + "\t" + 
+					((fEntry.state == null) ? "null" : fEntry.state.getID()));
+		}
+	}
+	
 	public void set(Integer id, double num) {
 		regs[id].num = num;
 	}
@@ -50,14 +66,6 @@ public class FP {
 	
 	public FloatEntry[] getState() {
 		return regs;
-	}
-	
-	public void print() {
-		for (FloatEntry fEntry : regs) {
-			System.out.println(fEntry.reg.name() + " : " + 
-					fEntry.num + "\t" + 
-					((fEntry.state == null) ? "null" : fEntry.state.getID()));
-		}
 	}
 	
 	private FP() {};
@@ -91,6 +99,6 @@ public class FP {
 		fp.set(reg, 6.7f);
 		reg = REG.F9;
 		fp.set(reg, 30.3f);
-		fp.print();
+		FP.print(fp);
 	}
 }

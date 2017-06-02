@@ -1,12 +1,15 @@
 package main;
 
-import jdk.internal.org.objectweb.asm.tree.IntInsnNode;
+import java.util.ArrayList;
+
 import kernel.Adder;
 import kernel.FP;
 import kernel.InstructionQueue;
 import kernel.Memory;
 import kernel.Multiplier;
 import kernel.ReserveStackEntry;
+import kernel.FP.REG;
+import sun.applet.Main;
 import util.ConstDefinition;
 
 public class MainDriver {
@@ -17,6 +20,7 @@ public class MainDriver {
 	public static Memory mem;
 	// 保留站组
 	public static ReserveStackEntry[] addGroup, mulGroup, loadGroup, storeGroup;
+	public static Double CDB_DATA;
 	public MainDriver() {
 		adder = new Adder();
 		multiplier = new Multiplier();
@@ -28,7 +32,64 @@ public class MainDriver {
 		loadGroup = ReserveStackEntry.initGroup(ConstDefinition.LOAD_RESERVE_ENTRY_NUM);
 		storeGroup = ReserveStackEntry.initGroup(ConstDefinition.STORE_RESERVE_ENTRY_NUM);
 	}
+	
+	public static void wake_up(ReserveStackEntry rse, Double ans) {
+		/* 将保留站计算的结果放入总线 */
+		CDB_DATA = ans;
+		/* 唤醒其他等待计算结果的保留站更新数据 */
+		ReserveStackEntry.listen(addGroup, rse);
+		ReserveStackEntry.listen(mulGroup, rse);
+		ReserveStackEntry.listen(loadGroup, rse);
+		ReserveStackEntry.listen(storeGroup, rse);
+		/* 唤醒等待被写入的寄存器更新数据 */
+		FP.listen(fp, rse);
+		/* 清空总线数据 */
+		CDB_DATA = null;
+	}
+	
+	public static void print_reserver_state() {
+		ReserveStackEntry.print(addGroup);
+		ReserveStackEntry.print(mulGroup);
+//		ReserveStackEntry.print(loadGroup);
+//		ReserveStackEntry.print(storeGroup);
+	}
+	
+	public static void print_fp_state() {
+		FP.print(fp);
+	}
+	
 	public static void main(String[] args) {
+		MainDriver md = new MainDriver();
+		fp.set(REG.F2, 6.2);
+		fp.set(REG.F5, 3.0);
+		fp.set(REG.F1, 7.0);
+		fp.set(REG.F3, 2.5);
+		fp.set(REG.F7, 4.8);
+		fp.set(REG.F6, 7.6);
+		fp.set(REG.F8, 1.1);
+		fp.set(REG.F9, 1.3);
+		ArrayList<String> instrs = new ArrayList<String>();
+		instrs.add("ADD F1, F2, F6");
+		instrs.add("SUB F3, F4, F3");
+		instrs.add("MUL F4, F5, F5");
+		instrs.add("SUB F3, F6, F5");
+		instrs.add("ADD F8, F9, F2");
+		instrs.add("MUL F4, F8, F7");
+//		instrs.add("ADD F2, F3, F2");
+//		instrs.add("ADD F3, F6, F9");
+//		instrs.add("ADD F3, F4, F4");
+//		instrs.add("ADD F7, F1, F7");
 		
+		queue.load(instrs);
+		int cycle = 30;
+		while (cycle-- > 0) {
+			System.out.println("clock : " + cycle);
+			queue.activate();
+			print_reserver_state();
+			adder.activate();
+			multiplier.activate();
+		}
+		
+		print_fp_state();
 	}
 }
