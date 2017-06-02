@@ -16,6 +16,7 @@ import java.awt.BorderLayout;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.Button;
@@ -29,18 +30,23 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-public class MainWindow {
+public class UserWindow {
 
-	private JFrame frmSimulator;
-	private JTable table_instrqueue;
-	private JTable table_state;
-	private JTable table_loadqueue;
-	private JTable table_storequeue;
-	private JTable table_mem;
-	private JTable table_station;
-	private JTable table_fu;
-	private JTable table_ru;
+	public JFrame frmSimulator;
+	
+	public JTable table_instrqueue;
+	public JTable table_state;
+	public JTable table_loadqueue;
+	public JTable table_storequeue;
+	public JTable table_mem;
+	public JTable table_station;
+	public JTable table_fu;
+	public JTable table_ru;
+	
+	public JLabel label_clock;
 
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -48,7 +54,7 @@ public class MainWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow window = new MainWindow();
+					UserWindow window = new UserWindow();
 					window.frmSimulator.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -60,7 +66,7 @@ public class MainWindow {
 	/**
 	 * Create the application.
 	 */
-	public MainWindow() {
+	public UserWindow() {
 		initialize();
 	}
 
@@ -94,7 +100,7 @@ public class MainWindow {
 		scrollPane_state.setViewportView(table_state);
 		
 		JScrollPane scrollPane_loadqueue = new JScrollPane();
-		scrollPane_loadqueue.setBounds(619, 56, 216, 67);
+		scrollPane_loadqueue.setBounds(661, 56, 174, 67);
 		frmSimulator.getContentPane().add(scrollPane_loadqueue);
 		
 		table_loadqueue = new JTable();
@@ -102,7 +108,7 @@ public class MainWindow {
 		scrollPane_loadqueue.setViewportView(table_loadqueue);
 		
 		JScrollPane scrollPane_storequeue = new JScrollPane();
-		scrollPane_storequeue.setBounds(619, 166, 216, 67);
+		scrollPane_storequeue.setBounds(661, 166, 174, 67);
 		frmSimulator.getContentPane().add(scrollPane_storequeue);
 		
 		table_storequeue = new JTable();
@@ -146,11 +152,11 @@ public class MainWindow {
 		frmSimulator.getContentPane().add(lblRunningState);
 		
 		JLabel lblLoadQueue = new JLabel("Load Queue");
-		lblLoadQueue.setBounds(681, 31, 122, 15);
+		lblLoadQueue.setBounds(713, 31, 122, 15);
 		frmSimulator.getContentPane().add(lblLoadQueue);
 		
 		JLabel lblStoreQueue = new JLabel("Store Queue");
-		lblStoreQueue.setBounds(681, 141, 122, 15);
+		lblStoreQueue.setBounds(713, 141, 122, 15);
 		frmSimulator.getContentPane().add(lblStoreQueue);
 		
 		JLabel lblMemory = new JLabel("Memory");
@@ -174,7 +180,7 @@ public class MainWindow {
 		frmSimulator.getContentPane().add(lblIntergerRegisteriu);
 		
 		JLabel lblRegisterNumber = new JLabel("Reg Number");
-		lblRegisterNumber.setBounds(16, 491, 65, 15);
+		lblRegisterNumber.setBounds(16, 491, 88, 15);
 		frmSimulator.getContentPane().add(lblRegisterNumber);
 		
 		JLabel lblExpression = new JLabel("Expression");
@@ -186,7 +192,7 @@ public class MainWindow {
 		frmSimulator.getContentPane().add(lblData);
 		
 		JLabel label = new JLabel("Reg Number");
-		label.setBounds(16, 592, 65, 15);
+		label.setBounds(16, 592, 88, 15);
 		frmSimulator.getContentPane().add(label);
 		
 		JLabel label_1 = new JLabel("data");
@@ -235,9 +241,9 @@ public class MainWindow {
 		lblNewLabel.setBounds(79, 406, 54, 15);
 		frmSimulator.getContentPane().add(lblNewLabel);
 		
-		JLabel label_2 = new JLabel("0");
-		label_2.setBounds(180, 406, 54, 15);
-		frmSimulator.getContentPane().add(label_2);
+		label_clock = new JLabel("0");
+		label_clock.setBounds(180, 406, 54, 15);
+		frmSimulator.getContentPane().add(label_clock);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBounds(0, 0, 884, 21);
@@ -264,14 +270,68 @@ public class MainWindow {
 		JMenu mnHelp = new JMenu("Help[H]");
 		menuBar.add(mnHelp);
 		
-
-	}
-	
-	void load_data() {
-		load_instr_queue();
-	}
-	
-	void load_instr_queue(){
+		JLabel lbLoad1 = new JLabel("Load1");
+		lbLoad1.setBounds(622, 77, 54, 15);
+		frmSimulator.getContentPane().add(lbLoad1);
 		
+		JLabel lbLoad2 = new JLabel("Load2");
+		lbLoad2.setBounds(622, 93, 54, 15);
+		frmSimulator.getContentPane().add(lbLoad2);
+		
+		JLabel lbLoad3 = new JLabel("Load3");
+		lbLoad3.setBounds(622, 108, 54, 15);
+		frmSimulator.getContentPane().add(lbLoad3);
+		
+		JLabel lbStore1 = new JLabel("Store1");
+		lbStore1.setBounds(622, 186, 54, 15);
+		frmSimulator.getContentPane().add(lbStore1);
+		
+		JLabel lbStore2 = new JLabel("Store2");
+		lbStore2.setBounds(622, 203, 54, 15);
+		frmSimulator.getContentPane().add(lbStore2);
+		
+		JLabel lbStore3 = new JLabel("Store3");
+		lbStore3.setBounds(622, 218, 54, 15);
+		frmSimulator.getContentPane().add(lbStore3);
+		
+		update_name();
 	}
+	
+	public void update_name() {
+		try {
+			DefaultTableModel model = null;
+		    model = (DefaultTableModel) table_instrqueue.getModel();
+		    model.setColumnIdentifiers(Config.instr_queue_name);
+		    model.fireTableDataChanged();
+		    
+		    model = (DefaultTableModel) table_state.getModel();
+		    model.setColumnIdentifiers(Config.run_state_name);
+		    model.fireTableDataChanged();
+		    
+		    model = (DefaultTableModel) table_loadqueue.getModel();
+		    model.setColumnIdentifiers(Config.load_queue_name);
+		    model.fireTableDataChanged();	
+		    
+		    model = (DefaultTableModel) table_storequeue.getModel();
+		    model.setColumnIdentifiers(Config.store_queue_name);
+		    model.fireTableDataChanged();	
+		    
+		    model = (DefaultTableModel) table_station.getModel();
+		    model.setColumnIdentifiers(Config.reserv_sta_name);
+		    model.fireTableDataChanged();	
+		    
+		    model = (DefaultTableModel) table_fu.getModel();
+		    model.setColumnIdentifiers(Config.fu_name);
+		    model.fireTableDataChanged();	
+		    
+		    model = (DefaultTableModel) table_ru.getModel();
+		    model.setColumnIdentifiers(Config.ru_name);
+		    model.fireTableDataChanged();	
+		    
+		    
+		} catch (Exception e) {
+			
+		}
+	}
+
 }
