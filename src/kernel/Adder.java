@@ -27,7 +27,7 @@ public class Adder {
 	void activate() {
 		time--;
 		if (time == 0) {
-			double ans;
+			float ans;
 			if (instr.op == OP.ADD) {
 				ans = main.fp.get(instr.src1.ordinal()) + main.fp.get(instr.src2.ordinal());
 			}

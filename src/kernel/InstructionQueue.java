@@ -39,9 +39,10 @@ public class InstructionQueue {
 		String[] infos = instr.split("[\t ,()]");
 		System.out.println(infos);
 
-		String left = null, mid = null, right = null;
+		String op = null, left = null, mid = null, right = null;
 		try {
-			int cc = 1;
+			int cc = 0;
+			while ((op = infos[cc ++]).equals(""));
 			while ((left = infos[cc ++]).equals(""));
 			while ((mid = infos[cc ++]).equals(""));
 			while ((right = infos[cc ++]).equals(""));
@@ -49,29 +50,29 @@ public class InstructionQueue {
 			if (infos.length > cc) throw new Exception();
 		}
 		catch (Exception e) {
-			System.out.println(">>> Error at decode instruction with wrong format.");
+			System.out.println(">>> Error at decode instruction : \n\t" + instr);
 			return null;
 		}
 
 		Instr istr = new Instr();
-		istr.des = Instr.REG.valueOf(left);
 		// 检查操作码
 		try {
-			istr.op = Instr.OP.valueOf(infos[0]);
+			istr.op = Instr.OP.valueOf(op);
+			istr.des = FP.REG.valueOf(left);
 			switch (istr.op) {
 			case ADD : 
 			case SUB : 
 			case MUL : 
 			case DIV : 
 				try {
-					istr.src1 = Instr.REG.valueOf(mid);
+					istr.src1 = FP.REG.valueOf(mid);
 				} catch (IllegalArgumentException e) {
 					System.out.println(">>> Error at decode src1 : " + instr);
 					return null;
 				}
 
 				try {
-					istr.src2 = Instr.REG.valueOf(right);
+					istr.src2 = FP.REG.valueOf(right);
 				} catch (IllegalArgumentException e) {
 					System.out.println(">>> Error at decode src2 : " + instr);
 					return null;
@@ -87,7 +88,7 @@ public class InstructionQueue {
 				}
 				
 				try {
-					istr.src1 = Instr.REG.valueOf(right);
+					istr.src1 = FP.REG.valueOf(right);
 				} catch (IllegalArgumentException e) {
 					System.out.println(">>> Error at decode src1 : " + instr);
 					return null;
@@ -127,7 +128,7 @@ public class InstructionQueue {
 		if (is != null)
 			System.out.println(is.toString());
 		
-		is = iq.decodeInstr("SUB F6, F5,  F4");
+		is = iq.decodeInstr("  SUB F6, F5,  F4, GET");
 		if (is != null)
 			System.out.println(is.toString());
 		
