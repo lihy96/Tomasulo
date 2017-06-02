@@ -22,8 +22,8 @@ public class MainDriver {
 		mem = new Memory();
 		rsAdd = new ReserveStackEntry[3];
 		rsMult = new ReserveStackEntry[2];
-		rsStore = new ReserveStackEntry[6];
-		rsLoad = new ReserveStackEntry[6];
+		rsStore = new ReserveStackEntry[3];
+		rsLoad = new ReserveStackEntry[3];
 	}
 	public static void main(String[] args) {
 		

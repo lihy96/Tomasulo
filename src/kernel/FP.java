@@ -33,16 +33,16 @@ public class FP {
 		return __fp;
 	}
 	
-	public void set(Integer id, float num) {
+	public void set(Integer id, double num) {
 		regs[id].num = num;
 	}
-	public void set(REG reg, float num) {
+	public void set(REG reg, double num) {
 		regs[reg.ordinal()].num = num;
 	}
-	public float get(Integer id) {
+	public double get(Integer id) {
 		return regs[id].num;
 	}
-	public float get(REG reg) {
+	public double get(REG reg) {
 		return regs[reg.ordinal()].num;
 	}
 	
@@ -72,7 +72,7 @@ public class FP {
 
 	private static class FloatEntry {
 		REG reg = null;
-		float num = 0;
+		double num = 0;
 		ReserveStackEntry state = null;
 		
 		public FloatEntry(REG __reg) {

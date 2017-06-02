@@ -24,7 +24,7 @@ public class Multiplier {
 	void activate() {
 		time--;
 		if (time == 0) {
-			float ans;
+			double ans;
 			if (instr.op == OP.MUL) {
 				ans = MainDriver.fp.get(instr.src1.ordinal()) * MainDriver.fp.get(instr.src2.ordinal());
 			}
