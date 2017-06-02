@@ -63,7 +63,7 @@ public class Clock {
 		FP.print(fp);
 	}
 	
-	public static ArrayList<ArrayList<String>> get_instr_queue() {
+	public static ArrayList<ArrayList<String>> update_instr_queue() {
 		return queue.get_instr_queue();
 	}
 	

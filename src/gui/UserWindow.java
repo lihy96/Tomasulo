@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import gui.DataLoader.DataType;
 import main.Clock;
 import main.MainDriver;
 
@@ -374,6 +375,7 @@ public class UserWindow {
 		    path = selectedFile.getAbsolutePath();
 		    System.out.println("Load file: " + path);
 		    Clock.queue.load(path);
+		    MainDriver.dataLoader.update_by_data(DataType.INSTR_QUEUE, Clock.update_instr_queue());
 		}
 	}
 	

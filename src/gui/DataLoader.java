@@ -12,7 +12,7 @@ public class DataLoader {
 	public static DataLoader dataLoader;
 	public static Data data;
 	
-	public enum Type {
+	public enum DataType {
 		INSTR_QUEUE,
 		RUNNING_STATE,
 		LOAD_QUEUE,
@@ -35,7 +35,7 @@ public class DataLoader {
 		
 	}
 	
-	public void update_by_data(Type type, ArrayList<ArrayList<String>> data) {
+	public void update_by_data(DataType type, ArrayList<ArrayList<String>> data) {
 		switch (type) {
 		case INSTR_QUEUE:
 			update_table(parent.table_instrqueue, data);
@@ -67,8 +67,8 @@ public class DataLoader {
 		
 	}
 	
-	public void update_by_data(Type type, int data) {
-		if (type != Type.CLOCK){
+	public void update_by_data(DataType type, int data) {
+		if (type != DataType.CLOCK){
 			System.out.println("!!!!!!!!!!!!!!!!!!!!bug");
 		}
 		parent.label_clock.setText(""+data);
