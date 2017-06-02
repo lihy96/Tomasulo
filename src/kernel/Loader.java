@@ -1,21 +1,22 @@
 package kernel;
 
+import kernel.FakeMemory;
+import kernel.ReserveStackEntry;
 import main.MainDriver;
 import util.ConstDefinition;
 import util.Instr;
-import util.Instr.OP;
 
-public class Multiplier {
+public class Loader {
 	private int time;
 	private ReserveStackEntry crRse = null;
-	public Multiplier(){}
+	public Loader(){}
 	
 	public void activate() {
 		assert(time < 0);
 		
 		/* 如果time为0, 表示当前运算部件没有执行操作，需要寻找一个可执行的保留站。 */
 		if (time == 0) {
-			crRse = ReserveStackEntry.getRunnableEntry(MainDriver.mulGroup, Instr.OP.MUL);
+			crRse = ReserveStackEntry.getRunnableEntry(MainDriver.loadGroup, Instr.OP.LOAD);
 			/* 如果没有可执行保留站，直接返回 */
 			if (crRse == null) return ;
 			System.out.println("Run instr : " + crRse.toString());
@@ -28,12 +29,7 @@ public class Multiplier {
 		/* 如果time为0,表示当前运算部件将要执行完操作。 */
 		if (time == 0) {
 			double ans;
-			if (crRse.OP == OP.MUL) {
-				ans = crRse.Vj * crRse.Vk;
-			}
-			else {
-				ans = crRse.Vj / crRse.Vk;
-			}
+			ans = MainDriver.mem.get(crRse.A);
 			System.out.println("End instr : " + crRse.toString());
 			
 			/** 
@@ -50,12 +46,10 @@ public class Multiplier {
 	
 	private void setTime() {
 		switch(crRse.OP) {
-		case MUL:
-			time = ConstDefinition.OP_TIME[2]; break;
-		case DIV:
-			time = ConstDefinition.OP_TIME[3]; break;
+		case LOAD:
+			time = ConstDefinition.OP_TIME[4]; break;
 		default:
-			System.out.println("Multiplier 操作符错误: " + crRse.toString());
+			System.out.println("Loader 操作符错误: " + crRse.toString());
 			System.exit(2);
 			break;
 		}

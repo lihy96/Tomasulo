@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import main.MainDriver;
+import sun.net.ftp.FtpReplyCode;
 import util.FileReaderUtil;
 import util.Instr;
 
@@ -110,32 +111,31 @@ public class InstructionQueue {
 		// 检查操作码
 		try {
 			istr.op = Instr.OP.valueOf(op);
-			istr.des = FP.REG.valueOf(left);
-			switch (istr.op) {
-			case ADD : 
-			case SUB : 
-			case MUL : 
-			case DIV : 
-				try {
+			try {
+				switch (istr.op) {
+				case ADD : 
+				case SUB : 
+				case MUL : 
+				case DIV : 
+					istr.des = FP.REG.valueOf(left);
 					istr.src1 = FP.REG.valueOf(mid);
 					istr.src2 = FP.REG.valueOf(right);
-				} catch (IllegalArgumentException e) {
-					System.out.println(">>> Error at decode src : " + instr);
-					return null;
-				}
-				break;
-			case LOAD : 
-			case STOR : 
-				try {
+					break;
+				case LOAD :
+					istr.des = FP.REG.valueOf(left);
 					istr.imm = Integer.parseInt(mid);
-				} catch (Exception e) {
-					System.out.println(">>> Error at decode immediate number : " + instr);
-					return null;
+					break;
+				case STOR : 
+					istr.src1 = FP.REG.valueOf(left);
+					istr.imm = Integer.parseInt(mid);
+					break;
+				default:
+					// should not goto here.
+					assert(true);
 				}
-				break;
-			default:
-				// should not goto here.
-				assert(true);
+			} catch (IllegalArgumentException e) {
+				System.out.println(">>> Error at decode reg or imm : " + instr);
+				return null;
 			}
 		}
 		catch (IllegalArgumentException e) {

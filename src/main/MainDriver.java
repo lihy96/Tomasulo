@@ -3,30 +3,35 @@ package main;
 import java.util.ArrayList;
 
 import kernel.Adder;
+import kernel.Loader;
 import kernel.FP;
 import kernel.InstructionQueue;
-import kernel.Memory;
+import kernel.FakeMemory;
 import kernel.Multiplier;
 import kernel.ReserveStackEntry;
+import kernel.Storer;
 import kernel.FP.REG;
-import sun.applet.Main;
 import util.ConstDefinition;
 
 public class MainDriver {
 	public static Adder adder;
 	public static Multiplier multiplier;
+	public static Loader loader;
+	public static Storer storer;
 	public static FP fp;
 	public static InstructionQueue queue;
-	public static Memory mem;
+	public static FakeMemory mem;
 	// 保留站组
 	public static ReserveStackEntry[] addGroup, mulGroup, loadGroup, storeGroup;
 	public static Double CDB_DATA;
 	public MainDriver() {
 		adder = new Adder();
 		multiplier = new Multiplier();
+		loader = new Loader();
+		storer = new Storer();
 		fp = FP.getInstance();
 		queue = new InstructionQueue();
-		mem = new Memory();
+		mem = new FakeMemory();
 		addGroup = ReserveStackEntry.initGroup(ConstDefinition.ADD_RESERVE_ENTRY_NUM);
 		mulGroup = ReserveStackEntry.initGroup(ConstDefinition.MUL_RESERVE_ENTRY_NUM);
 		loadGroup = ReserveStackEntry.initGroup(ConstDefinition.LOAD_RESERVE_ENTRY_NUM);
@@ -50,8 +55,8 @@ public class MainDriver {
 	public static void print_reserver_state() {
 		ReserveStackEntry.print(addGroup);
 		ReserveStackEntry.print(mulGroup);
-//		ReserveStackEntry.print(loadGroup);
-//		ReserveStackEntry.print(storeGroup);
+		ReserveStackEntry.print(loadGroup);
+		ReserveStackEntry.print(storeGroup);
 	}
 	
 	public static void print_fp_state() {
@@ -70,26 +75,28 @@ public class MainDriver {
 		fp.set(REG.F9, 1.3);
 		ArrayList<String> instrs = new ArrayList<String>();
 		instrs.add("ADD F1, F2, F6");
-		instrs.add("SUB F3, F4, F3");
-		instrs.add("MUL F4, F5, F5");
-		instrs.add("SUB F3, F6, F5");
+		instrs.add("SUB F2, F4, F3");
+		instrs.add("STOR F2, 0");
+		instrs.add("MUL F4, F0, F5");
+		instrs.add("SUB F5, F6, F5");
+		instrs.add("LOAD F5, 0");
 		instrs.add("ADD F8, F9, F2");
 		instrs.add("MUL F4, F8, F7");
-//		instrs.add("ADD F2, F3, F2");
-//		instrs.add("ADD F3, F6, F9");
-//		instrs.add("ADD F3, F4, F4");
-//		instrs.add("ADD F7, F1, F7");
+		instrs.add("STOR F3, 1");
+		instrs.add("LOAD F7, 1");
 		
 		queue.load(instrs);
-		int cycle = 30;
+		int cycle = 25;
 		while (cycle-- > 0) {
 			System.out.println("clock : " + cycle);
 			queue.activate();
-			print_reserver_state();
+//			print_reserver_state();
 			adder.activate();
 			multiplier.activate();
+			loader.activate();
+			storer.activate();
+			print_fp_state();
 		}
 		
-		print_fp_state();
 	}
 }

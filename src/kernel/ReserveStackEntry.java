@@ -76,7 +76,8 @@ public class ReserveStackEntry {
 		}
 		
 		// 修改目的寄存器
-		fp.setQ(itr.des, rse);
+		if (itr.des != null) 
+			fp.setQ(itr.des, rse);
 		// 修改保留站状态
 		rse.Busy = true;
 	}
@@ -95,15 +96,24 @@ public class ReserveStackEntry {
 		return reserveStackEntry;
 	}
 	
-	public static ReserveStackEntry getRunnableEntry(ReserveStackEntry[] group) {
+	public static ReserveStackEntry getRunnableEntry(ReserveStackEntry[] group, Instr.OP op) {
 		ReserveStackEntry reserveStackEntry = null;
 		for (ReserveStackEntry rse : group) {
 			/* 如果保留站为空闲状态，跳过 */
 			if (!rse.Busy) continue;
-			/* 加减乘除的操作数是否就绪 */
-			boolean is_ok = (rse.Vj != null && rse.Vk != null);
-			/* load, store操作是否就绪 */
-			is_ok = is_ok || (rse.Vj != null && rse.A != null);
+			
+			boolean is_ok = false;
+			switch(op) {
+			case ADD:
+			case SUB:
+			case MUL:
+			case DIV:
+				is_ok = (rse.Vj != null && rse.Vk != null); break;
+			case LOAD:
+				is_ok = true; break;
+			case STOR:
+				is_ok = (rse.Vj != null && rse.A != null); break;
+			}
 			if (is_ok) {
 				reserveStackEntry = rse;
 				break;

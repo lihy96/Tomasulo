@@ -2,6 +2,7 @@ package kernel;
 
 import main.MainDriver;
 import util.ConstDefinition;
+import util.Instr;
 import util.Instr.OP;
 
 public class Adder {
@@ -14,7 +15,7 @@ public class Adder {
 		
 		/* 如果time为0, 表示当前运算部件没有执行操作，需要寻找一个可执行的保留站。 */
 		if (time == 0) {
-			crRse = ReserveStackEntry.getRunnableEntry(MainDriver.addGroup);
+			crRse = ReserveStackEntry.getRunnableEntry(MainDriver.addGroup, Instr.OP.ADD);
 			/* 如果没有可执行保留站，直接返回 */
 			if (crRse == null) return ;
 			System.out.println("Run instr : " + crRse.toString());
