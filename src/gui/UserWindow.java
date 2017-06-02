@@ -264,14 +264,31 @@ public class UserWindow {
 		    }});
 		mnNewMenu.add(mntmNewMenuItem);
 		
-		JMenu mnNewMenu_1 = new JMenu("Input[I]");
-		menuBar.add(mnNewMenu_1);
+		JMenu mnInput = new JMenu("Input[I]");
+		menuBar.add(mnInput);
 		
 		JMenu mnAssigns = new JMenu("Assign[S]");
 		menuBar.add(mnAssigns);
 		
-		JMenu mnNewMenu_2 = new JMenu("Run[R]");
-		menuBar.add(mnNewMenu_2);
+		JMenu mnRun = new JMenu("Run[R]");
+		menuBar.add(mnRun);
+		
+		JMenuItem mnItem_run = new JMenuItem("运行");
+		mnItem_run.addActionListener(new ActionListener(){
+		    public void actionPerformed(ActionEvent event)
+		    {
+		    	run();
+		    }});
+		mnRun.add(mnItem_run);
+		
+		JMenuItem mnItem_RunOne = new JMenuItem("单步运行");
+		mnItem_RunOne.addActionListener(new ActionListener(){
+		    public void actionPerformed(ActionEvent event)
+		    {
+		    	run_one_step();
+		    }});
+		mnRun.add(mnItem_RunOne);
+		
 		
 		JMenu mnMode = new JMenu("Mode[C]");
 		menuBar.add(mnMode);
@@ -354,5 +371,13 @@ public class UserWindow {
 		    System.out.println("Selected file: " + path);
 		}
 	}
-
+	
+	public void run() {
+		System.out.println("run");
+	}
+	
+	
+	public void run_one_step() {
+		System.out.println("one step run");
+	}
 }
