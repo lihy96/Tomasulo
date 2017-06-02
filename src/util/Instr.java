@@ -21,9 +21,9 @@ public class Instr {
 	 * Load，Store指令默认使用R1: LOAD des, imm(src1)
 	 * 其他指令格式：ADD des, src1, src2
 	 */
-	public FP.REG src1, src2;	
-	public FP.REG des;	// 目的地址寄存器
-	public int imm;	// Load,Store指令中的立即数
+	public FP.REG src1 = null, src2 = null;	
+	public FP.REG des = null;	// 目的地址寄存器
+	public Integer imm = null;	// Load,Store指令中的立即数
 	
 	@Override
 	public String toString() {

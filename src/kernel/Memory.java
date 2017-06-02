@@ -33,10 +33,10 @@ public class Memory {
 		if (time == 0) {
 			FP fp = MainDriver.fp;
 			if (instr.op == OP.LOAD) {
-				//fp.set(instr.src1, get(instr.src2)+instr.imm));
+				fp.set(instr.src1, get(instr.imm));
 			}
 			else {
-				//set(, fp.get(instr.src1));
+				set(instr.imm, fp.get(instr.src1));
 			}
 		}
 	}
