@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import main.MainDriver;
+import main.Clock;
 import sun.net.ftp.FtpReplyCode;
 import util.FileReaderUtil;
 import util.Instr;
@@ -41,14 +41,14 @@ public class InstructionQueue {
 		ReserveStackEntry reserveStackEntry = null;
 		switch (crItr.op) {
 		case ADD:
-		case SUB: reserveStackEntry = ReserveStackEntry.getFreeEntry(MainDriver.addGroup);
+		case SUB: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.addGroup);
 			break;
 		case MUL:
-		case DIV: reserveStackEntry = ReserveStackEntry.getFreeEntry(MainDriver.mulGroup);
+		case DIV: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.mulGroup);
 			break;
-		case LOAD: reserveStackEntry = ReserveStackEntry.getFreeEntry(MainDriver.loadGroup);
+		case LOAD: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.loadGroup);
 			break;
-		case STOR: reserveStackEntry = ReserveStackEntry.getFreeEntry(MainDriver.storeGroup);
+		case STOR: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.storeGroup);
 			break;
 		}
 		if (reserveStackEntry == null) return ;

@@ -1,6 +1,6 @@
 package kernel;
 
-import main.MainDriver;
+import main.Clock;
 import util.ConstDefinition;
 import util.Instr;
 import util.Instr.OP;
@@ -15,7 +15,7 @@ public class Multiplier {
 		
 		/* 如果time为0, 表示当前运算部件没有执行操作，需要寻找一个可执行的保留站。 */
 		if (time == 0) {
-			crRse = ReserveStackEntry.getRunnableEntry(MainDriver.mulGroup, Instr.OP.MUL);
+			crRse = ReserveStackEntry.getRunnableEntry(Clock.mulGroup, Instr.OP.MUL);
 			/* 如果没有可执行保留站，直接返回 */
 			if (crRse == null) return ;
 			System.out.println("Run instr : " + crRse.toString());
@@ -40,7 +40,7 @@ public class Multiplier {
 			 * 将计算结果放入总线，并唤醒其他等待该保留站计算结果的保留站
 			 * 如果有寄存器的保留站状态为当前状态，则写入 
 			 */
-			MainDriver.wake_up(crRse, ans);
+			Clock.wake_up(crRse, ans);
 			
 			/* 保留站计算完需要释放 */
 			ReserveStackEntry.freeReserveEntry(crRse);

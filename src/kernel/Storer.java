@@ -1,6 +1,6 @@
 package kernel;
 
-import main.MainDriver;
+import main.Clock;
 import util.ConstDefinition;
 import util.Instr;
 
@@ -14,7 +14,7 @@ public class Storer {
 		
 		/* 如果time为0, 表示当前运算部件没有执行操作，需要寻找一个可执行的保留站。 */
 		if (time == 0) {
-			crRse = ReserveStackEntry.getRunnableEntry(MainDriver.storeGroup, Instr.OP.STOR);
+			crRse = ReserveStackEntry.getRunnableEntry(Clock.storeGroup, Instr.OP.STOR);
 			/* 如果没有可执行保留站，直接返回 */
 			if (crRse == null) return ;
 			System.out.println("Run instr : " + crRse.toString());
@@ -26,7 +26,7 @@ public class Storer {
 		
 		/* 如果time为0,表示当前运算部件将要执行完操作。 */
 		if (time == 0) {
-			MainDriver.mem.set(crRse.A, crRse.Vj);
+			Clock.mem.set(crRse.A, crRse.Vj);
 			System.out.println("End instr : " + crRse.toString());
 			
 			/* 保留站计算完需要释放 */

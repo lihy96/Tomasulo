@@ -1,6 +1,6 @@
 package kernel;
 
-import main.MainDriver;
+import main.Clock;
 import util.ConstDefinition;
 import util.Instr;
 import util.Instr.OP;

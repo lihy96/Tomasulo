@@ -255,8 +255,11 @@ public class UserWindow {
 		JMenuItem mntmNewMenuItem = new JMenuItem("New menu item");
 		mnNewMenu.add(mntmNewMenuItem);
 		
-		JMenu mnNewMenu_1 = new JMenu("Input[I]");
-		menuBar.add(mnNewMenu_1);
+		JMenu input = new JMenu("Input[I]");
+		menuBar.add(input);
+		
+		JMenuItem instrInput = new JMenuItem("输入指令");
+		input.add(instrInput);
 		
 		JMenu mnAssigns = new JMenu("Assign[S]");
 		menuBar.add(mnAssigns);

@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import jdk.internal.org.objectweb.asm.tree.IntInsnNode;
-
 public class DataLoader {
 	
 	public static UserWindow parent;
@@ -97,23 +95,21 @@ public class DataLoader {
 					window.frmSimulator.setVisible(true);
 					DataLoader dataLoader = new DataLoader(window);
 					
-					new Thread(){
-						public void run() {
-							int cnt = 0;
-							while(true)
-							try {
-								sleep(1000);
-								dataLoader.update_by_data(DataLoader.create_tmp_data(cnt++));
-								System.out.println("cnt "+cnt);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-
-						}
-					}.start();
-
-				
+//					new Thread(){
+//						public void run() {
+//							int cnt = 0;
+//							while(true)
+//							try {
+//								sleep(1000);
+//								dataLoader.update_by_data(DataLoader.create_tmp_data(cnt++));
+//								System.out.println("cnt "+cnt);
+//							} catch (InterruptedException e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+//
+//						}
+//					}.start();
 				
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -124,7 +120,10 @@ public class DataLoader {
 	}
 	
 	public static void main(String[] args) {
-		start_window();
+//		start_window();
+		UserWindow window = new UserWindow();
+		window.frmSimulator.setVisible(true);
+		DataLoader dataLoader = new DataLoader(window);
 	}
 	
 	public static Data create_tmp_data(int k) {

@@ -3,7 +3,7 @@ package kernel;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-import main.MainDriver;
+import main.Clock;
 
 public class FP {
 
@@ -32,7 +32,7 @@ public class FP {
 		for (FloatEntry fe : fp.regs) {
 			if (fe.state == rse) {
 				fe.state = null;
-				fe.num = MainDriver.CDB_DATA;
+				fe.num = Clock.CDB_DATA;
 			}
 		}
 	}
@@ -71,7 +71,7 @@ public class FP {
 	private FP() {};
 	private static FP __fp = null;
 	private FloatEntry[] regs = null;
-	private MainDriver main = null; 
+	private Clock main = null; 
 
 	private static class FloatEntry {
 		REG reg = null;

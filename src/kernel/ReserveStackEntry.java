@@ -1,6 +1,6 @@
 package kernel;
 
-import main.MainDriver;
+import main.Clock;
 import util.Instr;
 
 /**
@@ -62,7 +62,7 @@ public class ReserveStackEntry {
 		rse.OP = itr.op;
 		rse.A = itr.imm;
 		
-		FP fp = MainDriver.fp;
+		FP fp = Clock.fp;
 		if (itr.src1 != null) {
 			rse.Qj = fp.getQ(itr.src1);
 			if (rse.Qj == null) {
@@ -127,11 +127,11 @@ public class ReserveStackEntry {
 			if (!tmp.Busy) continue;
 			if (tmp.Qj == rse) {
 				tmp.Qj = null;
-				tmp.Vj = MainDriver.CDB_DATA;
+				tmp.Vj = Clock.CDB_DATA;
 			}
 			if (tmp.Qk == rse) {
 				tmp.Qk = null;
-				tmp.Vk = MainDriver.CDB_DATA;
+				tmp.Vk = Clock.CDB_DATA;
 			}
 		}
 	}
