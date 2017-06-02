@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import main.MainDriver;
 import util.FileReaderUtil;
 import util.Instr;
 
@@ -12,14 +11,9 @@ import util.Instr;
  * 指令队列
  */
 public class InstructionQueue {
-	private MainDriver main;
 	Queue<Instr> itrsQue = new LinkedList<Instr>();
 	
-	public InstructionQueue() {}	// 便于调试
-	
-	public InstructionQueue(MainDriver main) {
-		this.main = main;
-	}
+	public InstructionQueue() {}
 	
 	public boolean load(String fileName) {
 		ArrayList<String> instrs = new ArrayList<String>();
