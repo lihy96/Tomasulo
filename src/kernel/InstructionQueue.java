@@ -1,8 +1,11 @@
 package kernel;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import main.Clock;
 import sun.net.ftp.FtpReplyCode;
@@ -17,6 +20,16 @@ public class InstructionQueue {
 	Instr crItr = null;
 	
 	public InstructionQueue() {}
+	
+	public ArrayList<ArrayList<String>> get_instr_queue() {
+		ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+		Iterator<Instr> it = itrsQue.iterator();
+		while (it.hasNext()) {
+			Instr itr = it.next();
+			list.add(itr.get_list());
+		}
+		return list;
+	}
 	
 	public boolean load(String fileName) {
 		ArrayList<String> instrs = new ArrayList<String>();

@@ -1,5 +1,9 @@
 package util;
 
+import java.util.ArrayList;
+
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import kernel.FP;
 
 //import kernel.ReserveStackEntry;
@@ -32,6 +36,16 @@ public class Instr {
 				"src : " + ((src1 == null) ? "null" : src1.name()) + 
 						", " + ((src2 == null) ? "null" : src2.name()) + "\n" +
 				"imm : " + imm;
+	}
+	
+	public ArrayList<String> get_list() {
+		ArrayList<String> arr = new ArrayList<>();
+		arr.add(op.name());
+		if (des != null) arr.add(des.name());
+		if (src1 != null) arr.add(src1.name());
+		if (src2 != null) arr.add(src2.name());
+		if (imm != null) arr.add(imm.toString());
+		return arr;
 	}
 	
 }

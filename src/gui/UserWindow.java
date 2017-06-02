@@ -17,6 +17,10 @@ import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+import main.Clock;
+import main.MainDriver;
+
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.Button;
@@ -354,7 +358,8 @@ public class UserWindow {
 		if (result == JFileChooser.APPROVE_OPTION) {
 		    File selectedFile = fileChooser.getSelectedFile();
 		    path = selectedFile.getAbsolutePath();
-		    System.out.println("Selected file: " + path);
+		    System.out.println("Load file: " + path);
+		    Clock.queue.load(path);
 		}
 	}
 
