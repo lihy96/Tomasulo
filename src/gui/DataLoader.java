@@ -97,21 +97,21 @@ public class DataLoader {
 					window.frmSimulator.setVisible(true);
 					DataLoader dataLoader = new DataLoader(window);
 					
-					new Thread(){
-						public void run() {
-							int cnt = 0;
-							while(true)
-							try {
-								sleep(1000);
-								dataLoader.update_by_data(DataLoader.create_tmp_data(cnt++));
-								System.out.println("cnt "+cnt);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-
-						}
-					}.start();
+//					new Thread(){
+//						public void run() {
+//							int cnt = 0;
+//							while(true)
+//							try {
+//								sleep(1000);
+//								dataLoader.update_by_data(DataLoader.create_tmp_data(cnt++));
+//								System.out.println("cnt "+cnt);
+//							} catch (InterruptedException e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+//
+//						}
+//					}.start();
 
 				
 				

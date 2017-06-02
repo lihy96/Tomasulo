@@ -23,12 +23,16 @@ import java.awt.Button;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 
 public class UserWindow {
 
@@ -252,7 +256,12 @@ public class UserWindow {
 		JMenu mnNewMenu = new JMenu("File[E]");
 		menuBar.add(mnNewMenu);
 		
-		JMenuItem mntmNewMenuItem = new JMenuItem("New menu item");
+		JMenuItem mntmNewMenuItem = new JMenuItem("从文件导入");
+		mntmNewMenuItem.addActionListener(new ActionListener(){
+		    public void actionPerformed(ActionEvent event)
+		    {
+		    	load_from_file();
+		    }});
 		mnNewMenu.add(mntmNewMenuItem);
 		
 		JMenu mnNewMenu_1 = new JMenu("Input[I]");
@@ -331,6 +340,18 @@ public class UserWindow {
 		    
 		} catch (Exception e) {
 			
+		}
+	}
+	
+	public void load_from_file(){
+		String path = "";
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+		int result = fileChooser.showOpenDialog(frmSimulator);
+		if (result == JFileChooser.APPROVE_OPTION) {
+		    File selectedFile = fileChooser.getSelectedFile();
+		    path = selectedFile.getAbsolutePath();
+		    System.out.println("Selected file: " + path);
 		}
 	}
 
