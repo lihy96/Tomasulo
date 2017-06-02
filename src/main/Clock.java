@@ -67,6 +67,29 @@ public class Clock {
 		return queue.get_instr_queue();
 	}
 	
+	private static boolean flag = false;
+	private static int clock = 0;
+	public static void run() {
+		flag = true;
+		while (flag) {
+			run_one_step();
+		}
+	}
+	public static void run_one_step() {
+		queue.activate();
+		adder.activate();
+		multiplier.activate();
+		loader.activate();
+		storer.activate();
+	}
+	public static void stop() {
+		flag = false;
+	}
+	
+	public static int get_clock() {
+		return clock;
+	}
+	
 	public static void main(String[] args) {
 		Clock.sim_init();
 		

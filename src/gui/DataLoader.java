@@ -12,6 +12,18 @@ public class DataLoader {
 	public static DataLoader dataLoader;
 	public static Data data;
 	
+	public enum Type {
+		INSTR_QUEUE,
+		RUNNING_STATE,
+		LOAD_QUEUE,
+		STORE_QUEUE,
+		RESERV_STARION,
+		MEM,
+		FU,
+		RU,
+		CLOCK
+	}
+	
 	public static Data get_data() {
 		if (data == null)
 			data = new Data();
@@ -23,25 +35,50 @@ public class DataLoader {
 		
 	}
 	
-	public void update_by_data(Data data) {
-		update_table(parent.table_instrqueue, data.instr_queue);
-		update_table(parent.table_state, data.run_state);
-		update_table(parent.table_loadqueue, data.load_queue);
-		update_table(parent.table_storequeue, data.store_queue);
-		update_table(parent.table_station, data.reserv_station);
-		update_table(parent.table_fu, data.fu);
-		update_table(parent.table_ru, data.ru);
-		update_table(parent.table_mem, data.mem);
-		parent.label_clock.setText(""+data.clock);
+	public void update_by_data(Type type, ArrayList<ArrayList<String>> data) {
+		switch (type) {
+		case INSTR_QUEUE:
+			update_table(parent.table_instrqueue, data);
+			break;
+		case RUNNING_STATE:
+			update_table(parent.table_state, data);
+			break;
+		case LOAD_QUEUE:
+			update_table(parent.table_loadqueue, data);
+			break;
+		case STORE_QUEUE:
+			update_table(parent.table_storequeue, data);
+			break;
+		case MEM:
+			update_table(parent.table_mem, data);
+			break;
+		case RESERV_STARION:
+			update_table(parent.table_station, data);
+			break;
+		case FU:
+			update_table(parent.table_fu, data);
+			break;
+		case RU:
+			update_table(parent.table_ru, data);
+			break;
+		default:
+			break;
+		}
+		
 	}
 	
+	public void update_by_data(Type type, int data) {
+		if (type != Type.CLOCK){
+			System.out.println("!!!!!!!!!!!!!!!!!!!!bug");
+		}
+		parent.label_clock.setText(""+data);
+		
+	}
 	
 	public void update_table(JTable jTable, ArrayList<ArrayList<String>> info) {
 		try {
 			Object[][] table_data = change(info);
 		    DefaultTableModel model = (DefaultTableModel) jTable.getModel();
-		    
-		    
 		    
 		    if (table_data == null)
 		    	System.out.println("!@#!@#!@#!@#!@#!@#");
