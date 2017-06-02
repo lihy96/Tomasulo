@@ -21,14 +21,9 @@ public class FP {
 	};
 	
 	public static FP getInstance() {
-		return FP.getInstance(null);
-	}
-	
-	public static FP getInstance(MainDriver __main) {
 		if (__fp == null) {
 			__fp = new FP();
 			__fp.init();
-			__fp.main = __main;
 		}
 		return __fp;
 	}

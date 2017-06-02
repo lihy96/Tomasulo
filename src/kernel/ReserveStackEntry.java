@@ -36,6 +36,7 @@ public class ReserveStackEntry {
 	}
 	
 	public static ReserveStackEntry[] initGroup(int size) {
+		assert(size <= 0);
 		ReserveStackEntry[] group = null;
 		group = new ReserveStackEntry[size];
 		for (int i = 0; i < size; ++i) {
@@ -70,7 +71,7 @@ public class ReserveStackEntry {
 		rse.Busy = false;
 	}
 	
-	public static ReserveStackEntry getFreeGroup(ReserveStackEntry[] stack) {
+	public static ReserveStackEntry getFreeEntry(ReserveStackEntry[] stack) {
 		ReserveStackEntry reserveStackEntry = null;
 		for (ReserveStackEntry rse : stack) {
 			if (rse.Busy) continue;

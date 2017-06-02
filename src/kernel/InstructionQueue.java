@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import main.MainDriver;
-import sun.misc.FpUtils;
 import util.FileReaderUtil;
 import util.Instr;
 
@@ -36,14 +35,14 @@ public class InstructionQueue {
 		ReserveStackEntry reserveStackEntry = null;
 		switch (crItr.op) {
 		case ADD:
-		case SUB: reserveStackEntry = ReserveStackEntry.getFreeGroup(MainDriver.addGroup);
+		case SUB: reserveStackEntry = ReserveStackEntry.getFreeEntry(MainDriver.addGroup);
 			break;
 		case MUL:
-		case DIV: reserveStackEntry = ReserveStackEntry.getFreeGroup(MainDriver.mulGroup);
+		case DIV: reserveStackEntry = ReserveStackEntry.getFreeEntry(MainDriver.mulGroup);
 			break;
-		case LOAD: reserveStackEntry = ReserveStackEntry.getFreeGroup(MainDriver.loadGroup);
+		case LOAD: reserveStackEntry = ReserveStackEntry.getFreeEntry(MainDriver.loadGroup);
 			break;
-		case STOR: reserveStackEntry = ReserveStackEntry.getFreeGroup(MainDriver.storeGroup);
+		case STOR: reserveStackEntry = ReserveStackEntry.getFreeEntry(MainDriver.storeGroup);
 			break;
 		}
 		if (reserveStackEntry == null) return ;
