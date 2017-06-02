@@ -13,7 +13,7 @@ public class ReserveStackEntry {
 	public Instr.OP OP;	// 要对源操作数进行的操作
 	public ReserveStackEntry Qj = null, Qk = null;	// 将产生源操作数的保留站号.
 	// 源操作数的值，V和Q只有一个有效。对于load来说，Vk字段用于保存偏移量
-	public Float Vj = null, Vk = null;	
+	public Double Vj = null, Vk = null;	
 	public boolean Busy;	// 为True表示本保留站或缓冲单元“忙”
 	public Integer A;	// 仅load和store缓冲器有该字段。开始 是存放指令中的立即数字段，地址计算后存放有效地址
 	
