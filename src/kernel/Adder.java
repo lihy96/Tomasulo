@@ -24,7 +24,7 @@ public class Adder {
 	void activate() {
 		time--;
 		if (time == 0) {
-			float ans;
+			double ans;
 			if (instr.op == OP.ADD) {
 				ans = MainDriver.fp.get(instr.src1.ordinal()) + MainDriver.fp.get(instr.src2.ordinal());
 			}
