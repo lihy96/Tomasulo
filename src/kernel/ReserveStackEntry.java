@@ -82,8 +82,12 @@ public class ReserveStackEntry {
 		rse.Busy = true;
 	}
 	
-	public static void freeReserveEntry(ReserveStackEntry rse) {
+	public static void freeReserveEntry(ReserveStackEntry[] group, ReserveStackEntry rse) {
 		rse.Busy = false;
+		/* load和store缓冲区需要模仿队列操作 */
+		if (rse.OP == Instr.OP.LOAD || rse.OP == Instr.OP.STOR) {
+			adjustFakeQueue(group);
+		}
 	}
 	
 	public static ReserveStackEntry getFreeEntry(ReserveStackEntry[] group) {
@@ -94,6 +98,20 @@ public class ReserveStackEntry {
 			break;
 		}
 		return reserveStackEntry;
+	}
+	
+	private static void adjustFakeQueue(ReserveStackEntry[] group) {
+		/* 该函数只有在释放保留站的时候才调用，且释放的保留站的idx为0 */
+		int idx = 0;
+		for (int i = 1; i < group.length; ++i) {
+			if (group[i].Busy) {
+				if (i == idx) continue;
+				ReserveStackEntry rse = group[i];
+				group[i] = group[idx];
+				group[idx] = rse;
+				idx ++;
+			}
+		}
 	}
 	
 	public static ReserveStackEntry getRunnableEntry(ReserveStackEntry[] group, Instr.OP op) {
@@ -110,7 +128,9 @@ public class ReserveStackEntry {
 			case DIV:
 				is_ok = (rse.Vj != null && rse.Vk != null); break;
 			case LOAD:
-				is_ok = true; break;
+				is_ok = true;
+				
+				break;
 			case STOR:
 				is_ok = (rse.Vj != null && rse.A != null); break;
 			}

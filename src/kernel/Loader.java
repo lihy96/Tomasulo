@@ -1,8 +1,8 @@
 package kernel;
 
-import kernel.FakeMemory;
 import kernel.ReserveStackEntry;
 import main.Clock;
+import main.MainDriver;
 import util.ConstDefinition;
 import util.Instr;
 
@@ -39,7 +39,7 @@ public class Loader {
 			Clock.wake_up(crRse, ans);
 			
 			/* 保留站计算完需要释放 */
-			ReserveStackEntry.freeReserveEntry(crRse);
+			ReserveStackEntry.freeReserveEntry(Clock.loadGroup, crRse);
 			crRse = null;
 		}
 	}

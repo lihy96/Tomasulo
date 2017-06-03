@@ -1,6 +1,7 @@
 package kernel;
 
 import main.Clock;
+import main.MainDriver;
 import util.ConstDefinition;
 import util.Instr;
 import util.Instr.OP;
@@ -43,7 +44,7 @@ public class Adder {
 			Clock.wake_up(crRse, ans);
 			
 			/* 保留站计算完需要释放 */
-			ReserveStackEntry.freeReserveEntry(crRse);
+			ReserveStackEntry.freeReserveEntry(Clock.addGroup, crRse);
 			crRse = null;
 		}
 	}

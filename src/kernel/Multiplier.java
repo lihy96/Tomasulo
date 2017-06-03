@@ -43,7 +43,7 @@ public class Multiplier {
 			Clock.wake_up(crRse, ans);
 			
 			/* 保留站计算完需要释放 */
-			ReserveStackEntry.freeReserveEntry(crRse);
+			ReserveStackEntry.freeReserveEntry(Clock.mulGroup, crRse);
 			crRse = null;
 		}
 	}

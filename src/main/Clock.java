@@ -53,8 +53,8 @@ public class Clock {
 	}
 	
 	public static void print_reserver_state() {
-		ReserveStackEntry.print(addGroup);
-		ReserveStackEntry.print(mulGroup);
+//		ReserveStackEntry.print(addGroup);
+//		ReserveStackEntry.print(mulGroup);
 		ReserveStackEntry.print(loadGroup);
 		ReserveStackEntry.print(storeGroup);
 	}
@@ -104,9 +104,9 @@ public class Clock {
 		ArrayList<String> instrs = new ArrayList<String>();
 		instrs.add("ADD F1, F2, F6");
 		instrs.add("SUB F2, F4, F3");
-		instrs.add("STOR F2, 0");
-		instrs.add("MUL F4, F0, F5");
-		instrs.add("SUB F5, F6, F5");
+		instrs.add("LOAD F4, 3");
+		instrs.add("LOAD F2, 0");
+		instrs.add("LOAD F5, 2");
 		instrs.add("LOAD F5, 0");
 		instrs.add("ADD F8, F9, F2");
 		instrs.add("MUL F4, F8, F7");
@@ -118,12 +118,12 @@ public class Clock {
 		while (cycle-- > 0) {
 			System.out.println("clock : " + cycle);
 			queue.activate();
-//			print_reserver_state();
+			print_reserver_state();
 			adder.activate();
 			multiplier.activate();
 			loader.activate();
 			storer.activate();
-			print_fp_state();
+//			print_fp_state();
 		}
 		
 	}

@@ -30,7 +30,7 @@ public class Storer {
 			System.out.println("End instr : " + crRse.toString());
 			
 			/* 保留站计算完需要释放 */
-			ReserveStackEntry.freeReserveEntry(crRse);
+			ReserveStackEntry.freeReserveEntry(Clock.storeGroup, crRse);
 			crRse = null;
 		}
 	}
