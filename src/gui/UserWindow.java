@@ -48,6 +48,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.awt.Insets;
 import java.awt.Dimension;
+import javax.swing.JComboBox;
 
 public class UserWindow {
 
@@ -430,6 +431,18 @@ public class UserWindow {
 		lbStore3.setBounds(607, 218, 88, 15);
 		frmSimulator.getContentPane().add(lbStore3);
 		
+		JComboBox comboBox = new JComboBox<Integer>();
+		comboBox.setEditable(true);
+		comboBox.setBounds(222, 277, 54, 21);
+		for (int i = 0; i < 4096; i++)
+			comboBox.addItem(i);
+		comboBox.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		        update_mem_origin_addr((int)comboBox.getSelectedItem());
+		    }
+		});
+		frmSimulator.getContentPane().add(comboBox);
+		
 
 		
 
@@ -619,5 +632,11 @@ public class UserWindow {
 			break;
 		
 		}
+	}
+	
+	public void update_mem_origin_addr(int addr) {
+		if (addr >= 4096) addr = 4096;
+		if (addr < 0) addr = 0;
+		System.out.println("addr new origin :" + addr);
 	}
 }
