@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.EventQueue;
 import java.util.ArrayList;
 
 import javax.swing.JTable;
@@ -186,23 +185,18 @@ public class DataLoader {
 	public static void update_table_mem(int begin) {
 		MainDriver.dataLoader.update_by_data(DataType.MEM, Clock.get_fake_memory(begin));
 	}
-	
-	public static void update_table_load() {
-		
-	}
-	
-	public static void update_table_store() {
-		
+
+	public static void update_table_state() {
+		MainDriver.dataLoader.update_by_data(DataType.RUNNING_STATE, Clock.get_running_state());
 	}
 	
 	public static void update_all(int begin) {
 		update_table_instr();
-		update_table_load();
-		update_table_store();
 		
 		update_table_reserv();
 		update_table_fu();
 		update_table_mem(begin);
+		update_table_state();
 		update_clock();
 	}
 	
