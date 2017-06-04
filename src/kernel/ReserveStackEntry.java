@@ -12,6 +12,7 @@ public class ReserveStackEntry {
 	private static int id = 0;
 	
 	private int __id;	// 本保留站独有的id
+	private String __name;
 	public Instr.OP OP;	// 要对源操作数进行的操作
 	public ReserveStackEntry Qj = null, Qk = null;	// 将产生源操作数的保留站号.
 	// 源操作数的值，V和Q只有一个有效。对于load来说，Vk字段用于保存偏移量
@@ -21,8 +22,9 @@ public class ReserveStackEntry {
 	// 仅load和store缓冲器有该字段。开始 是存放指令中的立即数字段，地址计算后存放有效地址
 	public Integer A = null;	
 	
-	public ReserveStackEntry() {
+	public ReserveStackEntry(String _name) {
 		__id = id ++;
+		__name = _name;
 	}
 	
 	public ReserveStackEntry(boolean flag) {
@@ -32,6 +34,9 @@ public class ReserveStackEntry {
 	}
 	public int getID() {
 		return __id;
+	}
+	public String getName() {
+		return __name;
 	}
 	public int getTotalEntryNum() {
 		return id;
@@ -55,24 +60,24 @@ public class ReserveStackEntry {
 		for (ReserveStackEntry rse : group) {
 			ArrayList<String> entry = new ArrayList<String>();
 			entry.add("" + time);
-			entry.add("" + rse.getID());
+			entry.add("" + rse.getName());
 			entry.add("" + rse.Busy);
 			entry.add("" + ((rse.OP == null) ? "" : rse.OP.name()));
 			entry.add("" + rse.Vj);
 			entry.add("" + rse.Vk);
-			entry.add("" + ((rse.Qj == null) ? "" : rse.Qj.getID()));
-			entry.add("" + ((rse.Qk == null) ? "" : rse.Qk.getID()));
+			entry.add("" + ((rse.Qj == null) ? "" : rse.Qj.getName()));
+			entry.add("" + ((rse.Qk == null) ? "" : rse.Qk.getName()));
 			reserve_entrys.add(entry);
 		}
 		return reserve_entrys;
 	}
 	
-	public static ReserveStackEntry[] initGroup(int size) {
+	public static ReserveStackEntry[] initGroup(int size, String prefix) {
 		assert(size <= 0);
 		ReserveStackEntry[] group = null;
 		group = new ReserveStackEntry[size];
 		for (int i = 0; i < size; ++i) {
-			group[i] = new ReserveStackEntry();
+			group[i] = new ReserveStackEntry(prefix + i);
 		}
 		return group;
 	}

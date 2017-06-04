@@ -32,10 +32,10 @@ public class Clock {
 		fp = FP.getInstance();
 		queue = new InstructionQueue();
 		mem = new FakeMemory();
-		addGroup = ReserveStackEntry.initGroup(ConstDefinition.ADD_RESERVE_ENTRY_NUM);
-		mulGroup = ReserveStackEntry.initGroup(ConstDefinition.MUL_RESERVE_ENTRY_NUM);
-		loadGroup = ReserveStackEntry.initGroup(ConstDefinition.LOAD_RESERVE_ENTRY_NUM);
-		storeGroup = ReserveStackEntry.initGroup(ConstDefinition.STORE_RESERVE_ENTRY_NUM);
+		addGroup = ReserveStackEntry.initGroup(ConstDefinition.ADD_RESERVE_ENTRY_NUM, "Adder");
+		mulGroup = ReserveStackEntry.initGroup(ConstDefinition.MUL_RESERVE_ENTRY_NUM, "Multiplier");
+		loadGroup = ReserveStackEntry.initGroup(ConstDefinition.LOAD_RESERVE_ENTRY_NUM, "Loader");
+		storeGroup = ReserveStackEntry.initGroup(ConstDefinition.STORE_RESERVE_ENTRY_NUM, "Storer");
 	}
 	
 	public static void wake_up(ReserveStackEntry rse, Double ans) {
