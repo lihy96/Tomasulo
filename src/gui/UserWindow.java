@@ -410,6 +410,8 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(panel_console);
 		
 		ta_console = new JTextArea();
+		ta_console.setEnabled(false);
+		ta_console.setTabSize(4);
 		panel_console.setViewportView(ta_console);
 		
 		JLabel lblConsole = new JLabel("Console:");
@@ -448,29 +450,19 @@ public class UserWindow {
 			DefaultTableModel model = null;
 		    model = (DefaultTableModel) table_instrqueue.getModel();
 		    model.setColumnIdentifiers(Config.instr_queue_name);
-		    model.fireTableDataChanged();
 		    
 		    model = (DefaultTableModel) table_state.getModel();
 		    model.setColumnIdentifiers(Config.run_state_name);
-		    model.fireTableDataChanged();
-		    model.setColumnIdentifiers(Config.load_queue_name);
-		    model.fireTableDataChanged();
-		    model.setColumnIdentifiers(Config.store_queue_name);
-		    model.fireTableDataChanged();	
+	
 		    
 		    model = (DefaultTableModel) table_station.getModel();
 		    model.setColumnIdentifiers(Config.reserv_sta_name);
-		    model.fireTableDataChanged();	
+
 		    
 		    model = (DefaultTableModel) table_fu.getModel();
 		    model.setColumnIdentifiers(Config.fu_name);
 		    model.fireTableDataChanged();	
-		    
-//		    model = (DefaultTableModel) table_ru.getModel();
-//		    model.setColumnIdentifiers(Config.ru_name);
-//		    model.fireTableDataChanged();	
-		    
-		    
+		    		    
 		} catch (Exception e) {
 			
 		}
@@ -597,6 +589,7 @@ public class UserWindow {
 	public void do_stop() {
 		System.out.println("stop");
 		
+		DataLoader.update_all(0);
 	}
 	
 	public void do_A() {

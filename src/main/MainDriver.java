@@ -20,7 +20,7 @@ public class MainDriver {
 		init_data();
 	}
 	
-	private static void init_data() {
+	public static void init_data() {
 		DataLoader.update_all(0);
 		DataLoader.clear_console();
 	}
