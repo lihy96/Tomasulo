@@ -112,7 +112,7 @@ public class UserWindow {
 		frmSimulator = new JFrame();
 		frmSimulator.setAlwaysOnTop(true);
 		frmSimulator.setTitle("Simulator");
-		frmSimulator.setBounds(0, 0, 900, 613);
+		frmSimulator.setBounds(0, 0, 900, 702);
 		frmSimulator.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSimulator.getContentPane().setLayout(null);
 		
@@ -146,7 +146,7 @@ public class UserWindow {
 		scrollPane_mem.setViewportView(table_mem);
 		
 		JScrollPane scrollPane_station = new JScrollPane();
-		scrollPane_station.setBounds(327, 305, 508, 141);
+		scrollPane_station.setBounds(327, 305, 508, 200);
 		frmSimulator.getContentPane().add(scrollPane_station);
 		
 		table_station = new JTable();
@@ -155,7 +155,7 @@ public class UserWindow {
 		scrollPane_station.setViewportView(table_station);
 		
 		JScrollPane scrollPane_fu = new JScrollPane();
-		scrollPane_fu.setBounds(114, 490, 721, 60);
+		scrollPane_fu.setBounds(114, 572, 721, 55);
 		frmSimulator.getContentPane().add(scrollPane_fu);
 		
 		table_fu = new JTable();
@@ -189,20 +189,16 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(lblReservation);
 		
 		JLabel lblFloatRegistersfu = new JLabel("Float Registers(FU)");
-		lblFloatRegistersfu.setBounds(374, 467, 242, 15);
+		lblFloatRegistersfu.setBounds(359, 547, 242, 15);
 		frmSimulator.getContentPane().add(lblFloatRegistersfu);
 		
 		JLabel lblRegisterNumber = new JLabel("Reg Number");
-		lblRegisterNumber.setBounds(16, 491, 88, 15);
+		lblRegisterNumber.setBounds(16, 573, 88, 15);
 		frmSimulator.getContentPane().add(lblRegisterNumber);
 		
-		JLabel lblExpression = new JLabel("Expression");
-		lblExpression.setBounds(16, 516, 65, 15);
+		JLabel lblExpression = new JLabel("state");
+		lblExpression.setBounds(16, 592, 65, 15);
 		frmSimulator.getContentPane().add(lblExpression);
-		
-		JLabel lblData = new JLabel("data");
-		lblData.setBounds(16, 535, 65, 15);
-		frmSimulator.getContentPane().add(lblData);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(42, 41, 519, 46);
@@ -241,16 +237,6 @@ public class UserWindow {
 		btnExportMem.setIcon(new ImageIcon(MyImage.img_export_mem));
 		btnExportMem.setBorder(BorderFactory.createEmptyBorder());	
 		panel.add(btnExportMem);
-		
-		JButton btnStop = new JButton("");
-		btnStop.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				do_stop();
-			}
-		});
-		btnStop.setIcon(new ImageIcon(MyImage.img_stop));
-		btnStop.setBorder(BorderFactory.createEmptyBorder());	
-		panel.add(btnStop);
 		
 		JSeparator separator_1 = new JSeparator();
 		panel.add(separator_1);
@@ -294,6 +280,16 @@ public class UserWindow {
 				do_next();
 			}
 		});
+		
+		JButton btnStop = new JButton("");
+		btnStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_stop();
+			}
+		});
+		btnStop.setIcon(new ImageIcon(MyImage.img_stop));
+		btnStop.setBorder(BorderFactory.createEmptyBorder());	
+		panel.add(btnStop);
 		btnNext.setIcon(new ImageIcon(MyImage.img_next));
 		btnNext.setBorder(BorderFactory.createEmptyBorder());
 		panel.add(btnNext);
@@ -310,13 +306,13 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(btnAddInstr);
 		
 		JLabel lbClock = new JLabel("Clock");
-		lbClock.setBounds(74, 425, 40, 40);
+		lbClock.setBounds(73, 478, 40, 40);
 		lbClock.setIcon(new ImageIcon(MyImage.img_pc));
 		lbClock.setBorder(BorderFactory.createEmptyBorder());	
 		frmSimulator.getContentPane().add(lbClock);
 		
 		label_clock = new JLabel("0");
-		label_clock.setBounds(180, 440, 54, 15);
+		label_clock.setBounds(178, 491, 54, 15);
 		frmSimulator.getContentPane().add(label_clock);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -417,6 +413,10 @@ public class UserWindow {
 		JLabel lblConsole = new JLabel("Console:");
 		lblConsole.setBounds(598, 35, 88, 15);
 		frmSimulator.getContentPane().add(lblConsole);
+		
+		JLabel lblData_1 = new JLabel("data");
+		lblData_1.setBounds(16, 610, 65, 15);
+		frmSimulator.getContentPane().add(lblData_1);
 		
 		cb_ins1.addItem("");
 		cb_ins2.addItem("");
