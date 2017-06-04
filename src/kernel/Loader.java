@@ -11,6 +11,10 @@ public class Loader {
 	private ReserveStackEntry crRse = null;
 	public Loader(){}
 	
+	public int getTime() {
+		return time;
+	}
+	
 	public void activate() {
 		assert(time < 0);
 		

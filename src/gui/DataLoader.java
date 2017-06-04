@@ -38,6 +38,7 @@ public class DataLoader {
 	public void update_by_data(DataType type, ArrayList<ArrayList<String>> data) {
 		switch (type) {
 		case INSTR_QUEUE:
+			System.out.println("Update table : " + type.name());
 			update_table(parent.table_instrqueue, data);
 			break;
 		case RUNNING_STATE:
@@ -59,7 +60,7 @@ public class DataLoader {
 			update_table(parent.table_fu, data);
 			break;
 		case RU:
-			update_table(parent.table_ru, data);
+//			update_table(parent.table_ru, data);
 			break;
 		default:
 			break;
@@ -101,10 +102,10 @@ public class DataLoader {
 			    	model.addRow(table_data[i]);
 		    }
 		    
-
+		    System.out.println("Raw Num : " + model.getRowCount());
 		    model.fireTableDataChanged();
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 	}
 	
@@ -112,11 +113,15 @@ public class DataLoader {
 		if (list == null)
 			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		int row = list.size();
-		int col = row > 0 ? list.get(0).size() : 0;
-		Object[][] ret = new Object[row][col];
-		for (int i = 0; i < row; i++) {
-			for (int j = 0;j < col; j++){
-				ret[i][j] = list.get(i).get(j);
+//		int col = 30;
+		
+		Object[][] ret = new Object[row][];
+		for (int i = 0; i < list.size(); ++i) {
+			ArrayList<String> instr = list.get(i);
+			System.out.println(instr.size());
+			ret[i] = new String[instr.size()];
+			for (int j = 0; j < instr.size(); ++j) {
+				ret[i][j] = instr.get(j);
 			}
 		}
 		

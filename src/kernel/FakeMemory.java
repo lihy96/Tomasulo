@@ -1,5 +1,7 @@
 package kernel;
 
+import java.util.ArrayList;
+
 import main.Clock;
 import util.ConstDefinition;
 import util.Instr;
@@ -10,6 +12,18 @@ public class FakeMemory {
 //	private int time;
 //	private Instr instr;
 //	public FakeMemory() {}
+	public ArrayList<ArrayList<String>> get(int begin, int end) {
+		ArrayList<ArrayList<String>> mem = new ArrayList<ArrayList<String>>();
+		ArrayList<String> val = new ArrayList<String>();
+		ArrayList<String> name = new ArrayList<String>();
+		for (int i = begin; i < end; ++i) {
+			name.add("" + i);
+			val.add("" + get(i));
+		}
+		mem.add(name);
+		mem.add(val);
+		return mem;
+	}
 	public double get(int k) {
 		return m[k];
 	}

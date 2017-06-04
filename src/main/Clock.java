@@ -63,15 +63,32 @@ public class Clock {
 		FP.print(fp);
 	}
 	
-	public static ArrayList<ArrayList<String>> update_instr_queue() {
+	public static ArrayList<ArrayList<String>> get_instr_queue() {
+		System.out.println(queue.get_instr_queue().size());
 		return queue.get_instr_queue();
+	}
+	public static ArrayList<ArrayList<String>> get_fake_memory(int begin) {
+		return mem.get(begin, begin + 5);
+	}
+	public static ArrayList<ArrayList<String>> get_fp() {
+		return fp.get_fp();
+	}
+	public static ArrayList<ArrayList<String>> get_reserve_station() {
+		ArrayList<ArrayList<String>> reserve_station = new ArrayList<ArrayList<String>>();
+		reserve_station.addAll(ReserveStackEntry.get_reserved_entrys(addGroup, adder.getTime()));
+		reserve_station.addAll(ReserveStackEntry.get_reserved_entrys(mulGroup, multiplier.getTime()));
+		reserve_station.addAll(ReserveStackEntry.get_reserved_entrys(loadGroup, loader.getTime()));
+		reserve_station.addAll(ReserveStackEntry.get_reserved_entrys(storeGroup, storer.getTime()));
+		return reserve_station;
 	}
 	
 	private static boolean flag = false;
 	private static int clock = 0;
+	private static int clock_max = 100;
+	
 	public static void run() {
 		flag = true;
-		while (flag) {
+		while (flag && clock < clock_max) {
 			run_one_step();
 		}
 	}
@@ -81,6 +98,7 @@ public class Clock {
 		multiplier.activate();
 		loader.activate();
 		storer.activate();
+		clock ++;
 	}
 	public static void stop() {
 		flag = false;

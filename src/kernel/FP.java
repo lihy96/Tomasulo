@@ -1,5 +1,6 @@
 package kernel;
 
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -17,7 +18,8 @@ public class FP {
 		F6,
 		F7,
 		F8,
-		F9
+		F9,
+		F10
 	};
 	
 	public static FP getInstance() {
@@ -42,6 +44,19 @@ public class FP {
 					fEntry.num + "\t" + 
 					((fEntry.state == null) ? "null" : fEntry.state.getID()));
 		}
+	}
+	
+	public ArrayList<ArrayList<String>> get_fp() {
+		ArrayList<ArrayList<String>> fp = new ArrayList<ArrayList<String>>();
+		ArrayList<String> _regs = new ArrayList<>();
+		ArrayList<String> _states = new ArrayList<>();
+		for (int i = 0; i < regs.length; ++i) {
+			_regs.add("" + regs[i].num);
+			_states.add("" + (regs[i].state == null ? "" : regs[i].state.getID()));
+		}
+		fp.add(_states);
+		fp.add(_regs);
+		return fp;
 	}
 	
 	public void set(Integer id, double num) {

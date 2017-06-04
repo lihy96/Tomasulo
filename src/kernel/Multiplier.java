@@ -10,6 +10,10 @@ public class Multiplier {
 	private ReserveStackEntry crRse = null;
 	public Multiplier(){}
 	
+	public int getTime() {
+		return time;
+	}
+	
 	public void activate() {
 		assert(time < 0);
 		

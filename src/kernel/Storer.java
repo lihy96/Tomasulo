@@ -9,6 +9,10 @@ public class Storer {
 	private ReserveStackEntry crRse = null;
 	public Storer() {}
 	
+	public int getTime() {
+		return time;
+	}
+	
 	public void activate() {
 		assert(time < 0);
 		

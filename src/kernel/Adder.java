@@ -11,6 +11,10 @@ public class Adder {
 	private ReserveStackEntry crRse = null;
 	public Adder(){}
 	
+	public int getTime() {
+		return time;
+	}
+	
 	public void activate() {
 		assert(time < 0);
 		

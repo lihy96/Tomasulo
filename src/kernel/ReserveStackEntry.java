@@ -1,5 +1,7 @@
 package kernel;
 
+import java.util.ArrayList;
+
 import main.Clock;
 import util.Instr;
 
@@ -46,6 +48,23 @@ public class ReserveStackEntry {
 		for (ReserveStackEntry rse : group) {
 			System.out.println(rse.toString());
 		}
+	}
+	
+	public static ArrayList<ArrayList<String>> get_reserved_entrys(ReserveStackEntry[] group, int time) {
+		ArrayList<ArrayList<String>> reserve_entrys = new ArrayList<ArrayList<String>>();
+		for (ReserveStackEntry rse : group) {
+			ArrayList<String> entry = new ArrayList<String>();
+			entry.add("" + time);
+			entry.add("" + rse.getID());
+			entry.add("" + rse.Busy);
+			entry.add("" + ((rse.OP == null) ? "" : rse.OP.name()));
+			entry.add("" + rse.Vj);
+			entry.add("" + rse.Vk);
+			entry.add("" + ((rse.Qj == null) ? "" : rse.Qj.getID()));
+			entry.add("" + ((rse.Qk == null) ? "" : rse.Qk.getID()));
+			reserve_entrys.add(entry);
+		}
+		return reserve_entrys;
 	}
 	
 	public static ReserveStackEntry[] initGroup(int size) {

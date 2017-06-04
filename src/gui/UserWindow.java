@@ -63,7 +63,7 @@ public class UserWindow {
 	public JTable table_mem;
 	public JTable table_station;
 	public JTable table_fu;
-	public JTable table_ru;
+//	public JTable table_ru;
 	
 	public JLabel label_clock;
 	
@@ -169,14 +169,14 @@ public class UserWindow {
 		table_fu.getTableHeader().setReorderingAllowed(false);
 		scrollPane_fu.setViewportView(table_fu);
 		
-		JScrollPane scrollPane_ru = new JScrollPane();
-		scrollPane_ru.setBounds(114, 591, 727, 41);
-		frmSimulator.getContentPane().add(scrollPane_ru);
+//		JScrollPane scrollPane_ru = new JScrollPane();
+//		scrollPane_ru.setBounds(114, 591, 727, 41);
+//		frmSimulator.getContentPane().add(scrollPane_ru);
 		
-		table_ru = new JTable();
-		table_ru.setCellSelectionEnabled(true);
-		table_ru.getTableHeader().setReorderingAllowed(false);
-		scrollPane_ru.setViewportView(table_ru);
+//		table_ru = new JTable();
+//		table_ru.setCellSelectionEnabled(true);
+//		table_ru.getTableHeader().setReorderingAllowed(false);
+//		scrollPane_ru.setViewportView(table_ru);
 		
 		JLabel lblRunningState = new JLabel("Running State");
 		lblRunningState.setBounds(398, 115, 122, 15);
@@ -398,7 +398,7 @@ public class UserWindow {
 		mnItem_RunOne.addActionListener(new ActionListener(){
 		    public void actionPerformed(ActionEvent event)
 		    {
-		    	do_run_one_step();
+		    	do_next();
 		    }});
 		mnRun.add(mnItem_RunOne);
 		
@@ -433,7 +433,7 @@ public class UserWindow {
 		lbStore3.setBounds(607, 218, 88, 15);
 		frmSimulator.getContentPane().add(lbStore3);
 		
-		JComboBox comboBox = new JComboBox<Integer>();
+		JComboBox<Integer> comboBox = new JComboBox<Integer>();
 		comboBox.setEditable(true);
 		comboBox.setBounds(222, 277, 54, 21);
 		for (int i = 0; i < 4096; i++)
@@ -443,6 +443,7 @@ public class UserWindow {
 		        update_mem_origin_addr((int)comboBox.getSelectedItem());
 		    }
 		});
+		comboBox.setSelectedIndex(0);
 		frmSimulator.getContentPane().add(comboBox);
 		
 
@@ -480,9 +481,9 @@ public class UserWindow {
 		    model.setColumnIdentifiers(Config.fu_name);
 		    model.fireTableDataChanged();	
 		    
-		    model = (DefaultTableModel) table_ru.getModel();
-		    model.setColumnIdentifiers(Config.ru_name);
-		    model.fireTableDataChanged();	
+//		    model = (DefaultTableModel) table_ru.getModel();
+//		    model.setColumnIdentifiers(Config.ru_name);
+//		    model.fireTableDataChanged();	
 		    
 		    
 		} catch (Exception e) {
@@ -543,17 +544,15 @@ public class UserWindow {
 		    path = selectedFile.getAbsolutePath();
 		    System.out.println("Load file: " + path);
 		    Clock.queue.load(path);
-		    MainDriver.dataLoader.update_by_data(DataType.INSTR_QUEUE, Clock.update_instr_queue());
+		    
+		    MainDriver.dataLoader.update_by_data(DataType.INSTR_QUEUE, Clock.get_instr_queue());
+		    MainDriver.dataLoader.update_by_data(DataType.CLOCK, Clock.get_clock());
 		}
 	}
 	
 	public void do_run() {
 		System.out.println("run");
-	}
-	
-	
-	public void do_run_one_step() {
-		System.out.println("one step run");
+//		Clock.run();
 	}
 	
 	/**
@@ -561,6 +560,7 @@ public class UserWindow {
 	 */
 	public void do_next() {
 		System.out.println("next");
+		Clock.run_one_step();
 	}
 	
 	/**
