@@ -1,6 +1,8 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 import kernel.Adder;
 import kernel.Loader;
@@ -66,13 +68,19 @@ public class Clock {
 	
 	public static ArrayList<ArrayList<String>> get_running_state() {
 		ArrayList<ArrayList<String>> states = new ArrayList<ArrayList<String>>();
-		for (Instr instr : running_state) {
+		Iterator<Instr> it = running_state.iterator();
+		while (it.hasNext()) {
+			Instr itr = it.next();
+			if (itr == null) continue;
+			
 			ArrayList<String> info = new ArrayList<String>();
-			info.add(instr.toString());
-			info.add("" + instr.state.flow);
-			info.add("" + instr.state.running);
-			info.add("" + instr.state.write_back);
+			info.add(itr.toString());
+			info.add("" + itr.state.flow);
+			info.add("" + itr.state.running);
+			info.add("" + itr.state.write_back);
 			states.add(info);
+			
+			if (itr.state.mark) it.remove();
 		}
 		return states;
 	}
@@ -96,13 +104,26 @@ public class Clock {
 	
 	private static boolean flag = false;
 	private static int clock = 0;
-	private static int clock_max = 100;
+	private static int clock_max = 1000;
+	private static long timeout = 0;
 	
 	public static void run() {
 		flag = true;
 		while (flag && clock < clock_max) {
 			run_one_step();
+			try {
+				TimeUnit.MILLISECONDS.sleep(timeout);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+	}
+	public static void setTimeOut(long _timeout) {
+		timeout = _timeout;
+	}
+	public static void setMaxCycle(int max) {
+		clock_max = max;
 	}
 	public static void run_one_step() {
 		queue.activate();

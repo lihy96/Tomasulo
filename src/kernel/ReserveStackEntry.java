@@ -1,6 +1,7 @@
 package kernel;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import main.Clock;
 import main.MainDriver;
@@ -114,11 +115,13 @@ public class ReserveStackEntry {
 	}
 	
 	public static void freeReserveEntry(ReserveStackEntry[] group, ReserveStackEntry rse) {
-		for (Instr instr : Clock.running_state) {
-			if (instr == rse.instr) {
-				Clock.running_state.remove(instr);
-			}
+		Iterator<Instr> it = Clock.running_state.iterator();
+		while (it.hasNext()) {
+			Instr itr = it.next();
+			if (itr == null) continue;
+			if (itr == rse.instr) itr.state.mark = true;
 		}
+		
 		rse.Busy = false;
 		/* load和store缓冲区需要模仿队列操作 */
 		if (rse.OP == Instr.OP.LOAD || rse.OP == Instr.OP.STOR) {
@@ -180,6 +183,7 @@ public class ReserveStackEntry {
 	}
 	
 	public static void listen(ReserveStackEntry[] group, ReserveStackEntry rse) {
+		rse.instr.state.running = false;
 		rse.instr.state.write_back = true;
 		for (ReserveStackEntry tmp : group) {
 			if (!tmp.Busy) continue;
