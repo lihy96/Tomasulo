@@ -120,7 +120,7 @@ public class Clock {
 	}
 	public static void run() {
 		while (flag && clock < clock_max) {
-			clock ++;
+			
 			run_one_step();
 			try {
 				TimeUnit.MILLISECONDS.sleep(timeout);
@@ -140,6 +140,7 @@ public class Clock {
 		clock_max = max;
 	}
 	public static void run_one_step() {
+		clock ++;
 		queue.activate();
 		adder.activate();
 		multiplier.activate();

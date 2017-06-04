@@ -25,6 +25,7 @@ import javax.swing.table.TableColumnModel;
 import com.sun.org.apache.bcel.internal.generic.SWITCH;
 
 import gui.DataLoader.DataType;
+import jdk.nashorn.internal.ir.Flags;
 import kernel.FP;
 import kernel.FakeMemory;
 import main.Clock;
@@ -82,6 +83,7 @@ public class UserWindow {
 	public static JTextArea ta_console;
 	public TimeSetter timeSetter;
 	public Thread thread = null;
+	public ClockRun runnable = null;
 	/**
 	 * Create the application.
 	 */
@@ -230,16 +232,6 @@ public class UserWindow {
 		btnStop.setBorder(BorderFactory.createEmptyBorder());	
 		panel.add(btnStop);
 		
-		JSeparator separator = new JSeparator();
-		panel.add(separator);
-		
-		JButton btnExportReg = new JButton("");
-		btnExportReg.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				do_export_reg();
-			}
-		});
-		
 		JButton btnNext = new JButton("");
 		btnNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -250,24 +242,15 @@ public class UserWindow {
 		btnNext.setBorder(BorderFactory.createEmptyBorder());
 		panel.add(btnNext);
 		
-		JSeparator separator_2 = new JSeparator();
-		panel.add(separator_2);
-		btnExportReg.setIcon(new ImageIcon(MyImage.img_export_reg));
-		btnExportReg.setBorder(BorderFactory.createEmptyBorder());	
-		panel.add(btnExportReg);
+		JSeparator separator = new JSeparator();
+		panel.add(separator);
 		
-		JButton btnExportMem = new JButton("");
-		btnExportMem.addActionListener(new ActionListener() {
+		JButton btnExportReg = new JButton("");
+		btnExportReg.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				do_export_mem();
+				do_export_reg();
 			}
 		});
-		btnExportMem.setIcon(new ImageIcon(MyImage.img_export_mem));
-		btnExportMem.setBorder(BorderFactory.createEmptyBorder());	
-		panel.add(btnExportMem);
-		
-		JSeparator separator_1 = new JSeparator();
-		panel.add(separator_1);
 		
 		JButton btnSetReg = new JButton("");
 		btnSetReg.addActionListener(new ActionListener() {
@@ -275,6 +258,15 @@ public class UserWindow {
 				do_set_reg();
 			}
 		});
+		
+		JButton btn_loadfile = new JButton("");
+		btn_loadfile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_load_from_file();
+			}
+		});
+		btn_loadfile.setIcon(new ImageIcon(MyImage.img_load));
+		panel.add(btn_loadfile);
 		btnSetReg.setIcon(new ImageIcon(MyImage.img_reg));
 		btnSetReg.setBorder(BorderFactory.createEmptyBorder());
 		panel.add(btnSetReg);
@@ -288,6 +280,22 @@ public class UserWindow {
 		btnSetMem.setIcon(new ImageIcon(MyImage.img_mem));
 		btnSetMem.setBorder(BorderFactory.createEmptyBorder());
 		panel.add(btnSetMem);
+		
+		JSeparator separator_1 = new JSeparator();
+		panel.add(separator_1);
+		btnExportReg.setIcon(new ImageIcon(MyImage.img_export_reg));
+		btnExportReg.setBorder(BorderFactory.createEmptyBorder());	
+		panel.add(btnExportReg);
+		
+		JButton btnExportMem = new JButton("");
+		btnExportMem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_export_mem();
+			}
+		});
+		btnExportMem.setIcon(new ImageIcon(MyImage.img_export_mem));
+		btnExportMem.setBorder(BorderFactory.createEmptyBorder());	
+		panel.add(btnExportMem);
 		
 		JButton btnAddInstr = new JButton("");
 		btnAddInstr.setBounds(286, 272, 25, 25);
@@ -627,19 +635,49 @@ public class UserWindow {
 	public void do_Run() {
 		System.out.println("run");
 		
+//		Clock.run();
+//		DataLoader.update_all(0);
+		
 		if (thread != null) {
 			thread.stop();
 			thread = null;
 		}
 		else {
-			thread = new Thread() {
+			thread = new Thread(new Runnable() {
+				
 				@Override
 				public void run() {
+					// TODO Auto-generated method stub
 					Clock.run();
 				}
-			};
+			});
 			thread.start();
 		}
+//		try {
+//			thread.join();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+//		if (thread != null) {
+//			runnable.terminate();
+//			try {
+//				thread.join();
+//				System.out.println("Thread end.");
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			thread = null;
+//		}
+//		else {
+////			System.out.println("lslls");
+//			runnable = new ClockRun() ;
+//			thread = new Thread(runnable);
+////	        System.out.println("Starting thread: " + thread);
+//			thread.start();
+//		}
 		
 	}
 	
@@ -717,5 +755,28 @@ public class UserWindow {
 		Clock.queue.load(instrs);
 		
 		DataLoader.update_all(addr_mem);
+	}
+	
+	public class ClockRun implements Runnable {
+			
+	    private volatile boolean running = true;
+
+	    public void terminate() {
+	        running = false;
+	    }
+		
+		@Override
+		public void run() {
+//			System.out.println("" + running + " : " + Clock.get_clock());
+			while(running && Clock.get_clock() < get_circles()) {
+				Clock.run_one_step();
+				try {
+					Thread.sleep(get_space());
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

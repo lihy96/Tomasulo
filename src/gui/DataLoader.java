@@ -179,6 +179,7 @@ public class DataLoader {
 	}
 	
 	public static void update_clock() {
+	
 		MainDriver.dataLoader.update_by_data(DataType.CLOCK, Clock.get_clock());
 	}
 	
@@ -191,7 +192,7 @@ public class DataLoader {
 	}
 	
 	public static void update_all(int begin) {
-		System.out.println("update !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//		System.out.println("update !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		update_table_instr();
 		
 		update_table_reserv();
