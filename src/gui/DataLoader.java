@@ -6,10 +6,15 @@ import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import gui.DataLoader.DataType;
+import kernel.FakeMemory;
+import main.Clock;
+import main.MainDriver;
+
 public class DataLoader {
 	
 	public static UserWindow parent;
-	public static DataLoader dataLoader;
+//	public static DataLoader dataLoader;
 	public static Data data;
 	
 	public enum DataType {
@@ -128,38 +133,38 @@ public class DataLoader {
 		return ret;
 	}
 	
-	public static void start_window() {
-
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UserWindow window = new UserWindow();
-					window.frmSimulator.setVisible(true);
-					DataLoader dataLoader = new DataLoader(window);
-					
-//					new Thread(){
-//						public void run() {
-//							int cnt = 0;
-//							while(true)
-//							try {
-//								sleep(1000);
-//								dataLoader.update_by_data(DataLoader.create_tmp_data(cnt++));
-//								System.out.println("cnt "+cnt);
-//							} catch (InterruptedException e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							}
+//	public static void start_window() {
 //
-//						}
-//					}.start();
-				
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		
-	}
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					UserWindow window = new UserWindow();
+//					window.frmSimulator.setVisible(true);
+//					DataLoader dataLoader = new DataLoader(window);
+//					
+////					new Thread(){
+////						public void run() {
+////							int cnt = 0;
+////							while(true)
+////							try {
+////								sleep(1000);
+////								dataLoader.update_by_data(DataLoader.create_tmp_data(cnt++));
+////								System.out.println("cnt "+cnt);
+////							} catch (InterruptedException e) {
+////								// TODO Auto-generated catch block
+////								e.printStackTrace();
+////							}
+////
+////						}
+////					}.start();
+//				
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//		
+//	}
 	
 //	public static void main(String[] args) {
 ////		start_window();
@@ -202,6 +207,45 @@ public class DataLoader {
 		data.clock = k;
 			
 		return data;
+	}
+	
+	public static void update_table_instr() {
+		MainDriver.dataLoader.update_by_data(DataType.INSTR_QUEUE, Clock.get_instr_queue());
+	}
+	
+	public static void update_table_fu() {
+		MainDriver.dataLoader.update_by_data(DataType.FU, Clock.get_fp());
+	}
+	
+	public static void update_table_reserv() {
+		MainDriver.dataLoader.update_by_data(DataType.RESERV_STARION, Clock.get_reserve_station());
+	}
+	
+	public static void update_clock() {
+		MainDriver.dataLoader.update_by_data(DataType.CLOCK, Clock.get_clock());
+	}
+	
+	public static void update_table_mem(int begin) {
+		System.out.println("fake mem " + Clock.mem.get(1));
+		MainDriver.dataLoader.update_by_data(DataType.MEM, Clock.get_fake_memory(begin));
+	}
+	
+	public static void update_table_load() {
+		
+	}
+	
+	public static void update_table_store() {
+		
+	}
+	
+	public static void update_all(int begin) {
+		update_table_instr();
+		update_table_load();
+		update_table_store();
+		update_table_reserv();
+		update_table_fu();
+		update_table_mem(begin);
+		update_clock();
 	}
 	
 }

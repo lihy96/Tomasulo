@@ -23,6 +23,7 @@ import javax.swing.table.DefaultTableModel;
 import com.sun.org.apache.bcel.internal.generic.SWITCH;
 
 import gui.DataLoader.DataType;
+import kernel.FP;
 import main.Clock;
 import main.MainDriver;
 
@@ -67,6 +68,11 @@ public class UserWindow {
 	
 	public JLabel label_clock;
 	
+	public int addr_mem;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField textField_2;
+	
 	
 	/**
 	 * Launch the application.
@@ -101,7 +107,7 @@ public class UserWindow {
 		frmSimulator = new JFrame();
 		frmSimulator.setAlwaysOnTop(true);
 		frmSimulator.setTitle("Simulator");
-		frmSimulator.setBounds(0, 0, 900, 700);
+		frmSimulator.setBounds(0, 0, 900, 613);
 		frmSimulator.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSimulator.getContentPane().setLayout(null);
 		
@@ -143,7 +149,7 @@ public class UserWindow {
 		scrollPane_storequeue.setViewportView(table_storequeue);
 		
 		JScrollPane scrollPane_mem = new JScrollPane();
-		scrollPane_mem.setBounds(42, 305, 234, 39);
+		scrollPane_mem.setBounds(42, 376, 234, 39);
 		frmSimulator.getContentPane().add(scrollPane_mem);
 		
 		table_mem = new JTable();
@@ -191,7 +197,7 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(lblStoreQueue);
 		
 		JLabel lblMemory = new JLabel("Memory");
-		lblMemory.setBounds(135, 280, 122, 15);
+		lblMemory.setBounds(114, 351, 122, 15);
 		frmSimulator.getContentPane().add(lblMemory);
 		
 		JLabel lblInstructionQueue = new JLabel("Instruction Queue");
@@ -206,10 +212,6 @@ public class UserWindow {
 		lblFloatRegistersfu.setBounds(374, 467, 242, 15);
 		frmSimulator.getContentPane().add(lblFloatRegistersfu);
 		
-		JLabel lblIntergerRegisteriu = new JLabel("Interger Register(RU)");
-		lblIntergerRegisteriu.setBounds(363, 566, 313, 15);
-		frmSimulator.getContentPane().add(lblIntergerRegisteriu);
-		
 		JLabel lblRegisterNumber = new JLabel("Reg Number");
 		lblRegisterNumber.setBounds(16, 491, 88, 15);
 		frmSimulator.getContentPane().add(lblRegisterNumber);
@@ -221,14 +223,6 @@ public class UserWindow {
 		JLabel lblData = new JLabel("data");
 		lblData.setBounds(16, 535, 65, 15);
 		frmSimulator.getContentPane().add(lblData);
-		
-		JLabel label = new JLabel("Reg Number");
-		label.setBounds(16, 592, 88, 15);
-		frmSimulator.getContentPane().add(label);
-		
-		JLabel label_1 = new JLabel("data");
-		label_1.setBounds(16, 617, 65, 15);
-		frmSimulator.getContentPane().add(label_1);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(42, 41, 519, 46);
@@ -325,7 +319,7 @@ public class UserWindow {
 		panel.add(btnNext);
 		
 		JButton btnAddInstr = new JButton("");
-		btnAddInstr.setBounds(220, 105, 28, 28);
+		btnAddInstr.setBounds(280, 267, 28, 28);
 		btnAddInstr.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				isClickedDel = false;
@@ -353,13 +347,13 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(btnDelInstr);
 		
 		JLabel lbClock = new JLabel("Clock");
-		lbClock.setBounds(79, 390, 40, 40);
+		lbClock.setBounds(74, 425, 40, 40);
 		lbClock.setIcon(new ImageIcon(MyImage.img_pc));
 		lbClock.setBorder(BorderFactory.createEmptyBorder());	
 		frmSimulator.getContentPane().add(lbClock);
 		
 		label_clock = new JLabel("0");
-		label_clock.setBounds(180, 400, 54, 15);
+		label_clock.setBounds(180, 440, 54, 15);
 		frmSimulator.getContentPane().add(label_clock);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -435,16 +429,36 @@ public class UserWindow {
 		
 		JComboBox<Integer> comboBox = new JComboBox<Integer>();
 		comboBox.setEditable(true);
-		comboBox.setBounds(222, 277, 54, 21);
+		comboBox.setBounds(220, 345, 54, 21);
 		for (int i = 0; i < 4096; i++)
 			comboBox.addItem(i);
+		comboBox.setSelectedIndex(0);
 		comboBox.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
 		        update_mem_origin_addr((int)comboBox.getSelectedItem());
 		    }
 		});
-		comboBox.setSelectedIndex(0);
 		frmSimulator.getContentPane().add(comboBox);
+		
+		JPanel panel_addIns = new JPanel();
+		panel_addIns.setBounds(42, 275, 234, 20);
+		frmSimulator.getContentPane().add(panel_addIns);
+		panel_addIns.setLayout(new GridLayout(1, 4, 0, 0));
+		
+		JComboBox comboBox_1 = new JComboBox();
+		panel_addIns.add(comboBox_1);
+		
+		textField = new JTextField();
+		panel_addIns.add(textField);
+		textField.setColumns(10);
+		
+		textField_1 = new JTextField();
+		panel_addIns.add(textField_1);
+		textField_1.setColumns(10);
+		
+		textField_2 = new JTextField();
+		panel_addIns.add(textField_2);
+		textField_2.setColumns(10);
 		
 
 		
@@ -526,6 +540,20 @@ public class UserWindow {
 		         }
 		      }
 	    });
+		
+		
+		table_fu.getModel().addTableModelListener(new TableModelListener() {
+		      public void tableChanged(TableModelEvent e) {
+		    	 int row = e.getFirstRow();
+		         int col = e.getColumn();
+		         if (col >= 0) { // user change data in table
+		        	 update_table_data(DataLoader.DataType.FU, row, col, get_table_data(table_fu, row, col), false);
+		         } 		   
+		         else { // nothing
+		        	 
+		         }
+		      }
+	    });
 	}
 	
 	
@@ -545,8 +573,8 @@ public class UserWindow {
 		    System.out.println("Load file: " + path);
 		    Clock.queue.load(path);
 		    
-		    MainDriver.dataLoader.update_by_data(DataType.INSTR_QUEUE, Clock.get_instr_queue());
-		    MainDriver.dataLoader.update_by_data(DataType.CLOCK, Clock.get_clock());
+		    DataLoader.update_table_instr();
+		    DataLoader.update_clock();
 		}
 	}
 	
@@ -559,8 +587,8 @@ public class UserWindow {
 	 * 单步执行下一条指令
 	 */
 	public void do_next() {
-		System.out.println("next");
 		Clock.run_one_step();
+		DataLoader.update_all(addr_mem);
 	}
 	
 	/**
@@ -625,7 +653,11 @@ public class UserWindow {
 	
 			break;
 		case FU:
-	
+			try {
+				FP.getInstance().set(col, Double.parseDouble(newdata));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			break;
 		case RU:
 		
@@ -639,6 +671,8 @@ public class UserWindow {
 	public void update_mem_origin_addr(int addr) {
 		if (addr >= 4096) addr = 4096;
 		if (addr < 0) addr = 0;
-		System.out.println("addr new origin :" + addr);
+		addr_mem = addr;
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		DataLoader.update_all(addr);
 	}
 }
