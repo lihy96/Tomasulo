@@ -22,5 +22,6 @@ public class MainDriver {
 	
 	private static void init_data() {
 		DataLoader.update_all(0);
+		DataLoader.clear_console();
 	}
 }

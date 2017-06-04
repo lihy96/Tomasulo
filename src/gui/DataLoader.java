@@ -47,12 +47,12 @@ public class DataLoader {
 		case RUNNING_STATE:
 			update_table(parent.table_state, data);
 			break;
-		case LOAD_QUEUE:
-			update_table(parent.table_loadqueue, data);
-			break;
-		case STORE_QUEUE:
-			update_table(parent.table_storequeue, data);
-			break;
+//		case LOAD_QUEUE:
+//			update_table(parent.table_loadqueue, data);
+//			break;
+//		case STORE_QUEUE:
+//			update_table(parent.table_storequeue, data);
+//			break;
 		case MEM:
 			update_table(parent.table_mem, data);
 			break;
@@ -203,6 +203,13 @@ public class DataLoader {
 		update_table_fu();
 		update_table_mem(begin);
 		update_clock();
+	}
+	
+	public static void update_console(String str) {
+		UserWindow.ta_console.append(str);
+	}
+	public static void clear_console() {
+		UserWindow.ta_console.setText("");
 	}
 	
 }
