@@ -104,7 +104,7 @@ public class InstructionQueue {
 
 	private Instr decodeInstr(String instr) {
 		String[] infos = instr.split("[\t ,()]");
-		System.out.println(infos);
+//		System.out.println(infos);
 
 		String op = null, left = null, mid = null, right = null;
 		try {
@@ -123,7 +123,7 @@ public class InstructionQueue {
 			return null;
 		}
 
-		Instr istr = new Instr();
+		Instr istr = new Instr(instr);
 		// 检查操作码
 		try {
 			istr.op = Instr.OP.valueOf(op);

@@ -1,7 +1,9 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
 import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import kernel.FP;
@@ -19,6 +21,8 @@ public class Instr {
 		STOR
 	};
 	
+	public State state = new State();
+	
 	public OP op;	// 要对源操作数进行的操作
 	
 	/* 源寄存器地址，
@@ -28,14 +32,15 @@ public class Instr {
 	public FP.REG src1 = null, src2 = null;	
 	public FP.REG des = null;	// 目的地址寄存器
 	public Integer imm = null;	// Load,Store指令中的立即数
+	private String instr = null;
+	
+	public Instr(String _instr) {
+		instr = _instr;
+	}
 	
 	@Override
 	public String toString() {
-		return 	"OP : " + ((op == null) ? "null" : op.name()) + "\n" +
-				"des : " + ((des == null) ? "null" : des.name()) + "\n" +
-				"src : " + ((src1 == null) ? "null" : src1.name()) + 
-						", " + ((src2 == null) ? "null" : src2.name()) + "\n" +
-				"imm : " + imm;
+		return instr;
 	}
 	
 	public ArrayList<String> get_list() {

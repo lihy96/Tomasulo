@@ -13,6 +13,7 @@ public class ReserveStackEntry {
 	
 	private int __id;	// 本保留站独有的id
 	private String __name;
+	private Instr instr;
 	public Instr.OP OP;	// 要对源操作数进行的操作
 	public ReserveStackEntry Qj = null, Qk = null;	// 将产生源操作数的保留站号.
 	// 源操作数的值，V和Q只有一个有效。对于load来说，Vk字段用于保存偏移量
@@ -83,6 +84,9 @@ public class ReserveStackEntry {
 	}
 	
 	public static void setReserveEntry(ReserveStackEntry rse, Instr itr) {
+		rse.instr = itr;
+		rse.instr.state.flow = true;
+		
 		rse.OP = itr.op;
 		rse.A = itr.imm;
 		
@@ -160,6 +164,7 @@ public class ReserveStackEntry {
 			}
 			if (is_ok) {
 				reserveStackEntry = rse;
+				reserveStackEntry.instr.state.runnning = true;
 				break;
 			}
 		}
@@ -167,6 +172,7 @@ public class ReserveStackEntry {
 	}
 	
 	public static void listen(ReserveStackEntry[] group, ReserveStackEntry rse) {
+		rse.instr.state.write_back = true;
 		for (ReserveStackEntry tmp : group) {
 			if (!tmp.Busy) continue;
 			if (tmp.Qj == rse) {

@@ -24,6 +24,7 @@ public class Clock {
 	// 保留站组
 	public static ReserveStackEntry[] addGroup, mulGroup, loadGroup, storeGroup;
 	public static Double CDB_DATA;
+	public static ArrayList<ArrayList<String>> run_state = new ArrayList<ArrayList<String>>();
 	public static void sim_init() {
 		adder = new Adder();
 		multiplier = new Multiplier();
@@ -53,12 +54,11 @@ public class Clock {
 	}
 	
 	public static void print_reserver_state() {
-//		ReserveStackEntry.print(addGroup);
-//		ReserveStackEntry.print(mulGroup);
+		ReserveStackEntry.print(addGroup);
+		ReserveStackEntry.print(mulGroup);
 		ReserveStackEntry.print(loadGroup);
 		ReserveStackEntry.print(storeGroup);
 	}
-	
 	public static void print_fp_state() {
 		FP.print(fp);
 	}
