@@ -19,6 +19,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import com.sun.org.apache.bcel.internal.generic.SWITCH;
 
@@ -32,6 +34,8 @@ import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.Button;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ActionEvent;
 
 import javax.swing.BorderFactory;
@@ -131,6 +135,7 @@ public class UserWindow {
 		table_state.setCellSelectionEnabled(true);
 		table_state.getTableHeader().setReorderingAllowed(false);
 		scrollPane_state.setViewportView(table_state);
+		
 		
 		JScrollPane scrollPane_loadqueue = new JScrollPane();
 		scrollPane_loadqueue.setBounds(661, 56, 174, 67);
@@ -469,6 +474,12 @@ public class UserWindow {
 
 		
 		update_name();
+		frmSimulator.addComponentListener(new ComponentAdapter() {
+	        @Override
+	        public void componentResized(ComponentEvent e) {
+	            resizeColumns(table_state);
+	        }
+	    });
 		add_table_listener();
 	}
 	
@@ -554,6 +565,18 @@ public class UserWindow {
 	    });
 	}
 	
+	private void resizeColumns(JTable jTable1) {
+	    int tW = jTable1.getWidth();
+	    System.out.println("wieth " + tW);
+	    TableColumn column;
+	    TableColumnModel jTableColumnModel = jTable1.getColumnModel();
+	    int cantCols = jTableColumnModel.getColumnCount();
+	    for (int i = 0; i < cantCols; i++) {
+	        column = jTableColumnModel.getColumn(i);
+	        int pWidth = Math.round(Config.columnWidthPercentage[i] * tW);
+	        column.setPreferredWidth(pWidth);
+	    }
+	}
 	
 	private String get_table_data(JTable table, int row, int col) {
 		DefaultTableModel model = ((DefaultTableModel) table.getModel());
@@ -617,6 +640,7 @@ public class UserWindow {
 	
 	public void do_stop() {
 		System.out.println("stop");
+		
 	}
 	
 	public void do_A() {
