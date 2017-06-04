@@ -16,7 +16,7 @@ public class ReserveStackEntry {
 	private int __id;	// 本保留站独有的id
 	private String __name;
 	private Instr instr;
-	public Instr.OP OP;	// 要对源操作数进行的操作
+	public Instr.OP OP = null;	// 要对源操作数进行的操作
 	public ReserveStackEntry Qj = null, Qk = null;	// 将产生源操作数的保留站号.
 	// 源操作数的值，V和Q只有一个有效。对于load来说，Vk字段用于保存偏移量
 	public Double Vj = null, Vk = null;	
@@ -43,6 +43,14 @@ public class ReserveStackEntry {
 	}
 	public int getTotalEntryNum() {
 		return id;
+	}
+	public void clear() {
+		this.instr = null;
+		this.OP = null;
+		this.A = null;
+		this.Busy = false;
+		this.Qj = null; this.Qk = null;
+		this.Vj = null; this.Vk = null;
 	}
 	public String toString() {
 		return "" + __id + "\t" + OP + " : " + 
@@ -112,6 +120,12 @@ public class ReserveStackEntry {
 			fp.setQ(itr.des, rse);
 		// 修改保留站状态
 		rse.Busy = true;
+	}
+	
+	public static void clear(ReserveStackEntry[] group) {
+		for (ReserveStackEntry rse : group) {
+			rse.clear();
+		}
 	}
 	
 	public static void freeReserveEntry(ReserveStackEntry[] group, ReserveStackEntry rse) {

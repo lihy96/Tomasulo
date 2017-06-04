@@ -102,14 +102,14 @@ public class Clock {
 		return reserve_station;
 	}
 	
-	private static boolean flag = false;
+	private static boolean flag = true;
 	private static int clock = 0;
 	private static int clock_max = 1000;
 	private static long timeout = 0;
 	
 	public static void run() {
-		flag = true;
 		while (flag && clock < clock_max) {
+			clock ++;
 			run_one_step();
 			try {
 				TimeUnit.MILLISECONDS.sleep(timeout);
@@ -118,11 +118,14 @@ public class Clock {
 				e.printStackTrace();
 			}
 		}
+		clock = 0;
 	}
 	public static void setTimeOut(long _timeout) {
+		if (_timeout <= 0) return ;
 		timeout = _timeout;
 	}
 	public static void setMaxCycle(int max) {
+		if (max <= 0) return ;
 		clock_max = max;
 	}
 	public static void run_one_step() {
@@ -131,12 +134,28 @@ public class Clock {
 		multiplier.activate();
 		loader.activate();
 		storer.activate();
-		clock ++;
 	}
 	public static void stop() {
-		flag = false;
+		flag = !flag;
 	}
-	
+	public static void clear() {
+		ReserveStackEntry.clear(addGroup);
+		ReserveStackEntry.clear(mulGroup);
+		ReserveStackEntry.clear(loadGroup);
+		ReserveStackEntry.clear(storeGroup);
+		queue.clear();
+		adder.clear();
+		multiplier.clear();
+		loader.clear();
+		storer.clear();
+		FP.clear(fp);
+		mem.clear();
+		running_state.clear();
+		clock = 0;
+		clock_max = 1000;
+		timeout = 0;
+		flag = true;
+	}
 	public static int get_clock() {
 		return clock;
 	}

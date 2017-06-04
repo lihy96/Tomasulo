@@ -33,6 +33,10 @@ public class InstructionQueue {
 		return list;
 	}
 	
+	public void clear() {
+		itrsQue.clear();
+	}
+	
 	public boolean load(String fileName) {
 		ArrayList<String> instrs = new ArrayList<String>();
 		FileReaderUtil.readFileToList(fileName, instrs);

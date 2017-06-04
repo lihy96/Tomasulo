@@ -29,7 +29,12 @@ public class FP {
 		}
 		return __fp;
 	}
-	
+	public static void clear(FP fp) {
+		for (FloatEntry fe : fp.regs) {
+			fe.num = 0;
+			fe.state = null;
+		}
+	}
 	public static void listen(FP fp, ReserveStackEntry rse) {
 		for (FloatEntry fe : fp.regs) {
 			if (fe.state == rse) {
@@ -89,7 +94,7 @@ public class FP {
 	private Clock main = null; 
 
 	private static class FloatEntry {
-		REG reg = null;
+		private REG reg = null;
 		double num = 0;
 		ReserveStackEntry state = null;
 		
