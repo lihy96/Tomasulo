@@ -24,6 +24,7 @@ import com.sun.org.apache.bcel.internal.generic.SWITCH;
 
 import gui.DataLoader.DataType;
 import kernel.FP;
+import kernel.FakeMemory;
 import main.Clock;
 import main.MainDriver;
 
@@ -641,6 +642,12 @@ public class UserWindow {
 		
 			break;
 		case MEM:
+			try {
+				Clock.mem.set(addr_mem + col,Double.parseDouble(newdata));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 			break;
 		case RESERV_STARION:
 	
