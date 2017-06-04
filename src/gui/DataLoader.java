@@ -156,12 +156,12 @@ public class DataLoader {
 		
 	}
 	
-	public static void main(String[] args) {
-//		start_window();
-		UserWindow window = new UserWindow();
-		window.frmSimulator.setVisible(true);
-		DataLoader dataLoader = new DataLoader(window);
-	}
+//	public static void main(String[] args) {
+////		start_window();
+//		UserWindow window = new UserWindow();
+//		window.frmSimulator.setVisible(true);
+//		DataLoader dataLoader = new DataLoader(window);
+//	}
 	
 	public static Data create_tmp_data(int k) {
 		Data data = new Data();
