@@ -47,13 +47,14 @@ import javax.swing.JMenuItem;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.awt.Insets;
 import java.awt.Dimension;
 import javax.swing.JComboBox;
 
 public class UserWindow {
 
-	private boolean isClickedDel = true;
+//	private boolean isClickedDel = true;
 	
 	public JFrame frmSimulator;
 	
@@ -69,9 +70,8 @@ public class UserWindow {
 	public JLabel label_clock;
 	
 	public int addr_mem;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	
+	JComboBox<String> cb_ins0,cb_ins1,cb_ins2,cb_ins3;
 	
 	
 	/**
@@ -116,6 +116,7 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(scrollPane_instrqueue);
 		
 		table_instrqueue = new JTable();
+		table_instrqueue.setEnabled(false);
 		scrollPane_instrqueue.setViewportView(table_instrqueue);
 		table_instrqueue.setCellSelectionEnabled(true);
 		table_instrqueue.getTableHeader().setReorderingAllowed(false);
@@ -319,32 +320,15 @@ public class UserWindow {
 		panel.add(btnNext);
 		
 		JButton btnAddInstr = new JButton("");
-		btnAddInstr.setBounds(280, 267, 28, 28);
+		btnAddInstr.setBounds(286, 272, 25, 25);
 		btnAddInstr.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				isClickedDel = false;
-				DefaultTableModel model = ((DefaultTableModel) table_instrqueue.getModel());
-				model.addRow(new Object[4]);
+				do_add_instr();
 			}
 		});
 		btnAddInstr.setIcon(new ImageIcon(MyImage.img_add));
 		btnAddInstr.setBorder(BorderFactory.createEmptyBorder());
 		frmSimulator.getContentPane().add(btnAddInstr);
-		
-		
-		JButton btnDelInstr = new JButton("");
-		btnDelInstr.setBorder(BorderFactory.createEmptyBorder());
-		btnDelInstr.setBounds(250, 105, 28, 28);
-		btnDelInstr.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				isClickedDel = true;
-				DefaultTableModel model = ((DefaultTableModel) table_instrqueue.getModel());
-				model.removeRow(model.getRowCount() - 1);
-				
-			}
-		});
-		btnDelInstr.setIcon(new ImageIcon(MyImage.img_sub));
-		frmSimulator.getContentPane().add(btnDelInstr);
 		
 		JLabel lbClock = new JLabel("Clock");
 		lbClock.setBounds(74, 425, 40, 40);
@@ -445,21 +429,40 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(panel_addIns);
 		panel_addIns.setLayout(new GridLayout(1, 4, 0, 0));
 		
-		JComboBox comboBox_1 = new JComboBox();
-		panel_addIns.add(comboBox_1);
+		cb_ins0 = new JComboBox<String>();
+		panel_addIns.add(cb_ins0);
 		
-		textField = new JTextField();
-		panel_addIns.add(textField);
-		textField.setColumns(10);
+		cb_ins0.addItem("");
+		for (String s: Config.cmds) {
+			cb_ins0.addItem(s);
+		}
 		
-		textField_1 = new JTextField();
-		panel_addIns.add(textField_1);
-		textField_1.setColumns(10);
+		cb_ins1 = new JComboBox<String>();
+		cb_ins1.setEditable(true);
+		panel_addIns.add(cb_ins1);
 		
-		textField_2 = new JTextField();
-		panel_addIns.add(textField_2);
-		textField_2.setColumns(10);
 		
+		cb_ins2 = new JComboBox<String>();
+		cb_ins2.setEditable(true);
+		panel_addIns.add(cb_ins2);
+		
+		cb_ins3 = new JComboBox<String>();
+		cb_ins3.setEditable(true);
+		panel_addIns.add(cb_ins3);
+		
+		cb_ins1.addItem("");
+		cb_ins2.addItem("");
+		cb_ins3.addItem("");
+		for (int i = 0; i <= 10; i++){
+			cb_ins1.addItem("F"+i);
+			cb_ins2.addItem("F"+i);
+			cb_ins3.addItem("F"+i);
+		}
+		for (int i = 0; i < 4096; i++){
+			cb_ins1.addItem(""+i);
+			cb_ins2.addItem(""+i);
+			cb_ins3.addItem(""+i);
+		}
 
 		
 
@@ -511,15 +514,10 @@ public class UserWindow {
 		         int row = e.getFirstRow();
 		         int row2 = e.getLastRow();
 		         
-		         System.out.println("instr t change " + e.getColumn() + " "+ row + row2);
 		         int col = e.getColumn();
-		         System.out.println(row + " " + col);
 		         if (col >= 0) { // user change data in table
 		        	 update_table_data(DataLoader.DataType.INSTR_QUEUE, e.getFirstRow(), e.getColumn(), get_table_data(table_instrqueue, row, col), false);
-		         } else if (isClickedDel){ // user clicked del a row
-		        	 update_table_data(DataLoader.DataType.INSTR_QUEUE, -1, -1, "", true);
-		         }
-		         
+		         } 
 		         else { // add row 
 		        	 
 		         }
@@ -531,7 +529,6 @@ public class UserWindow {
 		      public void tableChanged(TableModelEvent e) {
 		         int row = 0;
 		         int col = e.getColumn();
-		         System.out.println(row + " " + col);
 		         if (col >= 0) { // user change data in table
 		        	 update_table_data(DataLoader.DataType.MEM, e.getFirstRow(), e.getColumn(), get_table_data(table_mem, row, col), false);
 		         } 		   
@@ -644,10 +641,6 @@ public class UserWindow {
 		
 			break;
 		case MEM:
-			System.out.printf("mem updata data %d %d: %s\n", row, col, newdata);
-			if (isdel) {
-				System.out.println("del row");
-			}
 			break;
 		case RESERV_STARION:
 	
@@ -674,5 +667,28 @@ public class UserWindow {
 		addr_mem = addr;
 		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		DataLoader.update_all(addr);
+	}
+	
+	public void do_add_instr() {
+		String ret = "";
+		ret = (String) cb_ins0.getSelectedItem();
+		if (ret.equals(""))
+			return;
+		
+		String op1 = (String) cb_ins1.getSelectedItem();
+		String op2 = (String) cb_ins2.getSelectedItem();
+		String op3 = (String) cb_ins3.getSelectedItem();
+		
+		ret += op1.equals("") ? "" : " " + op1;
+		ret += op2.equals("") ? "" : "," + op2;
+		ret += op3.equals("") ? "" : "," + op3;
+		
+		
+		ArrayList<String> instrs = new ArrayList<String>();
+		instrs.add(ret);
+		
+		Clock.queue.load(instrs);
+		
+		DataLoader.update_all(addr_mem);
 	}
 }

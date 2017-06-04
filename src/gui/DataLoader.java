@@ -43,7 +43,6 @@ public class DataLoader {
 	public void update_by_data(DataType type, ArrayList<ArrayList<String>> data) {
 		switch (type) {
 		case INSTR_QUEUE:
-			System.out.println("Update table : " + type.name());
 			update_table(parent.table_instrqueue, data);
 			break;
 		case RUNNING_STATE:
@@ -107,7 +106,6 @@ public class DataLoader {
 			    	model.addRow(table_data[i]);
 		    }
 		    
-		    System.out.println("Raw Num : " + model.getRowCount());
 		    model.fireTableDataChanged();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -123,7 +121,6 @@ public class DataLoader {
 		Object[][] ret = new Object[row][];
 		for (int i = 0; i < list.size(); ++i) {
 			ArrayList<String> instr = list.get(i);
-			System.out.println(instr.size());
 			ret[i] = new String[instr.size()];
 			for (int j = 0; j < instr.size(); ++j) {
 				ret[i][j] = instr.get(j);
@@ -133,45 +130,6 @@ public class DataLoader {
 		return ret;
 	}
 	
-//	public static void start_window() {
-//
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					UserWindow window = new UserWindow();
-//					window.frmSimulator.setVisible(true);
-//					DataLoader dataLoader = new DataLoader(window);
-//					
-////					new Thread(){
-////						public void run() {
-////							int cnt = 0;
-////							while(true)
-////							try {
-////								sleep(1000);
-////								dataLoader.update_by_data(DataLoader.create_tmp_data(cnt++));
-////								System.out.println("cnt "+cnt);
-////							} catch (InterruptedException e) {
-////								// TODO Auto-generated catch block
-////								e.printStackTrace();
-////							}
-////
-////						}
-////					}.start();
-//				
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//		
-//	}
-	
-//	public static void main(String[] args) {
-////		start_window();
-//		UserWindow window = new UserWindow();
-//		window.frmSimulator.setVisible(true);
-//		DataLoader dataLoader = new DataLoader(window);
-//	}
 	
 	public static Data create_tmp_data(int k) {
 		Data data = new Data();
@@ -226,7 +184,6 @@ public class DataLoader {
 	}
 	
 	public static void update_table_mem(int begin) {
-		System.out.println("fake mem " + Clock.mem.get(1));
 		MainDriver.dataLoader.update_by_data(DataType.MEM, Clock.get_fake_memory(begin));
 	}
 	
@@ -242,6 +199,7 @@ public class DataLoader {
 		update_table_instr();
 		update_table_load();
 		update_table_store();
+		
 		update_table_reserv();
 		update_table_fu();
 		update_table_mem(begin);

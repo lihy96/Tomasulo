@@ -64,7 +64,6 @@ public class Clock {
 	}
 	
 	public static ArrayList<ArrayList<String>> get_instr_queue() {
-		System.out.println(queue.get_instr_queue().size());
 		return queue.get_instr_queue();
 	}
 	public static ArrayList<ArrayList<String>> get_fake_memory(int begin) {

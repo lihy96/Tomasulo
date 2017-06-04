@@ -23,9 +23,11 @@ public class InstructionQueue {
 	
 	public ArrayList<ArrayList<String>> get_instr_queue() {
 		ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+//		System.out.println(itrsQue.size());
 		Iterator<Instr> it = itrsQue.iterator();
 		while (it.hasNext()) {
 			Instr itr = it.next();
+			if (itr == null) continue;
 			list.add(itr.get_list());
 		}
 		return list;
@@ -42,6 +44,7 @@ public class InstructionQueue {
 		}
 		return true;
 	}
+	
 	
 	public void activate() {
 		transfer();
@@ -147,17 +150,17 @@ public class InstructionQueue {
 					assert(true);
 				}
 			} catch (IllegalArgumentException e) {
-				System.out.println(">>> Error at decode reg or imm : " + instr);
+				System.out.println(">>> Error at decode reg or imm : \n\t" + instr);
 				return null;
 			}
 		}
 		catch (IllegalArgumentException e) {
 			e.printStackTrace();
-			System.out.println(">>> Error at decode operator : " + instr);
+			System.out.println(">>> Error at decode operator : \n\t" + instr);
 			return null;
 		}
 		catch (Exception e) {
-			System.out.println(">>> Unrecognized error : " + instr);
+			System.out.println(">>> Unrecognized error : \n\t" + instr);
 			return null;
 		}
 		
