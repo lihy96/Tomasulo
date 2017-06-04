@@ -78,39 +78,31 @@ public class UserWindow {
 	
 	JComboBox<String> cb_ins0,cb_ins1,cb_ins2,cb_ins3;
 	public static JTextArea ta_console;
-	
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					UserWindow window = new UserWindow();
-//					window.frmSimulator.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
+	public TimeSetter timeSetter;
 	/**
 	 * Create the application.
 	 */
 	public UserWindow() {
 		initialize();
 	}
+	
+	public int get_circles() {
+		return timeSetter.circles;
+	}
+	
+	public long get_space() {
+		return timeSetter.space;
+	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		timeSetter = new TimeSetter(this);
 		
 		MyImage.init_img();
 		
 		frmSimulator = new JFrame();
-		frmSimulator.setAlwaysOnTop(true);
 		frmSimulator.setTitle("Simulator");
 		frmSimulator.setBounds(0, 0, 900, 702);
 		frmSimulator.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -208,12 +200,32 @@ public class UserWindow {
 		JButton btnInputInstr = new JButton("");
 		btnInputInstr.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				do_A();
+				do_Run();
 			}
 		});
 		btnInputInstr.setIcon(new ImageIcon(MyImage.img_a));
 		btnInputInstr.setBorder(BorderFactory.createEmptyBorder());	
 		panel.add(btnInputInstr);
+		
+		JButton btnStop = new JButton("");
+		btnStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_stop();
+			}
+		});
+		
+		JButton btnSetClock = new JButton("");
+		btnSetClock.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_clock();
+			}
+		});
+		btnSetClock.setIcon(new ImageIcon(MyImage.img_clock));
+		btnSetClock.setBorder(BorderFactory.createEmptyBorder());
+		panel.add(btnSetClock);
+		btnStop.setIcon(new ImageIcon(MyImage.img_stop));
+		btnStop.setBorder(BorderFactory.createEmptyBorder());	
+		panel.add(btnStop);
 		
 		JSeparator separator = new JSeparator();
 		panel.add(separator);
@@ -224,6 +236,19 @@ public class UserWindow {
 				do_export_reg();
 			}
 		});
+		
+		JButton btnNext = new JButton("");
+		btnNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_next();
+			}
+		});
+		btnNext.setIcon(new ImageIcon(MyImage.img_next));
+		btnNext.setBorder(BorderFactory.createEmptyBorder());
+		panel.add(btnNext);
+		
+		JSeparator separator_2 = new JSeparator();
+		panel.add(separator_2);
 		btnExportReg.setIcon(new ImageIcon(MyImage.img_export_reg));
 		btnExportReg.setBorder(BorderFactory.createEmptyBorder());	
 		panel.add(btnExportReg);
@@ -260,39 +285,6 @@ public class UserWindow {
 		btnSetMem.setIcon(new ImageIcon(MyImage.img_mem));
 		btnSetMem.setBorder(BorderFactory.createEmptyBorder());
 		panel.add(btnSetMem);
-		
-		JSeparator separator_2 = new JSeparator();
-		panel.add(separator_2);
-		
-		JButton btnSetClock = new JButton("");
-		btnSetClock.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				do_clock();
-			}
-		});
-		btnSetClock.setIcon(new ImageIcon(MyImage.img_clock));
-		btnSetClock.setBorder(BorderFactory.createEmptyBorder());
-		panel.add(btnSetClock);
-		
-		JButton btnNext = new JButton("");
-		btnNext.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				do_next();
-			}
-		});
-		
-		JButton btnStop = new JButton("");
-		btnStop.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				do_stop();
-			}
-		});
-		btnStop.setIcon(new ImageIcon(MyImage.img_stop));
-		btnStop.setBorder(BorderFactory.createEmptyBorder());	
-		panel.add(btnStop);
-		btnNext.setIcon(new ImageIcon(MyImage.img_next));
-		btnNext.setBorder(BorderFactory.createEmptyBorder());
-		panel.add(btnNext);
 		
 		JButton btnAddInstr = new JButton("");
 		btnAddInstr.setBounds(286, 272, 25, 25);
@@ -343,7 +335,7 @@ public class UserWindow {
 		mnItem_run.addActionListener(new ActionListener(){
 		    public void actionPerformed(ActionEvent event)
 		    {
-		    	do_run();
+
 		    }});
 		mnRun.add(mnItem_run);
 		
@@ -515,7 +507,6 @@ public class UserWindow {
 	
 	private void resizeColumns(JTable jTable1) {
 	    int tW = jTable1.getWidth();
-	    System.out.println("wieth " + tW);
 	    TableColumn column;
 	    TableColumnModel jTableColumnModel = jTable1.getColumnModel();
 	    int cantCols = jTableColumnModel.getColumnCount();
@@ -547,10 +538,6 @@ public class UserWindow {
 		}
 	}
 	
-	public void do_run() {
-		System.out.println("run");
-//		Clock.run();
-	}
 	
 	/**
 	 * 单步执行下一条指令
@@ -564,26 +551,65 @@ public class UserWindow {
 	 * 导出内存中的数据
 	 */
 	public void do_export_mem() {
-		System.out.println("export mem");
+		String path = "";
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int result = fileChooser.showOpenDialog(frmSimulator);
+		if (result == JFileChooser.APPROVE_OPTION) {
+		    File selectedFile = fileChooser.getSelectedFile();
+		    path = selectedFile.getAbsolutePath();
+		    System.out.println("Load file: " + path);
+		    
+		    // add wanglt code here for export mem data
+		}
 	}
 	
 	/**
 	 * 导出寄存器中的数据
 	 */
 	public void do_export_reg() {
-		System.out.println("export reg");
+		String path = "";
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int result = fileChooser.showOpenDialog(frmSimulator);
+		if (result == JFileChooser.APPROVE_OPTION) {
+		    File selectedFile = fileChooser.getSelectedFile();
+		    path = selectedFile.getAbsolutePath();
+		    System.out.println("Load file: " + path);
+		    
+		    // add wanglt code here for export reg data
+		}
 	}
 	
 	public void do_clock() {
 		System.out.println("clock");
+		timeSetter.setVisible(true);
 	}
 	
 	public void do_set_mem() {
-		System.out.println("mem set");
+		String path = "";
+		JFileChooser fileChooser = new JFileChooser();
+		int result = fileChooser.showOpenDialog(frmSimulator);
+		if (result == JFileChooser.APPROVE_OPTION) {
+		    File selectedFile = fileChooser.getSelectedFile();
+		    path = selectedFile.getAbsolutePath();
+		    System.out.println("Load file: " + path);
+		    
+		    // add wanglt code here for load mem data
+		}
 	}
 	
 	public void do_set_reg(){
-		System.out.println("reg set");
+		String path = "";
+		JFileChooser fileChooser = new JFileChooser();
+		int result = fileChooser.showOpenDialog(frmSimulator);
+		if (result == JFileChooser.APPROVE_OPTION) {
+		    File selectedFile = fileChooser.getSelectedFile();
+		    path = selectedFile.getAbsolutePath();
+		    System.out.println("Load file: " + path);
+		    
+		    // add wanglt code here for load reg data
+		}
 	}
 	
 	public void do_stop() {
@@ -592,8 +618,9 @@ public class UserWindow {
 		DataLoader.update_all(0);
 	}
 	
-	public void do_A() {
-		System.out.println("A");
+	public void do_Run() {
+		System.out.println("run");
+		
 	}
 	
 	

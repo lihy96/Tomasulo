@@ -34,7 +34,7 @@ public class MyImage {
 			img_export_mem = ImageIO.read(new File("static/images/export_mem.png")).getScaledInstance( NEW_WIDTH, NEW_HEIGHT,  java.awt.Image.SCALE_SMOOTH );; 
 			img_export_reg = ImageIO.read(new File("static/images/export_reg.png")).getScaledInstance( NEW_WIDTH, NEW_HEIGHT,  java.awt.Image.SCALE_SMOOTH );;
 			img_a = ImageIO.read(new File("static/images/a.png")).getScaledInstance( NEW_WIDTH, NEW_HEIGHT,  java.awt.Image.SCALE_SMOOTH );;
-			img_add = ImageIO.read(new File("static/images/add.png")).getScaledInstance( NEW_WIDTH, NEW_HEIGHT,  java.awt.Image.SCALE_SMOOTH );;
+			img_add = ImageIO.read(new File("static/images/add.png")).getScaledInstance( 25, 25,  java.awt.Image.SCALE_SMOOTH );;
 			img_sub = ImageIO.read(new File("static/images/sub.png")).getScaledInstance( NEW_WIDTH, NEW_HEIGHT,  java.awt.Image.SCALE_SMOOTH );;
 			img_pc = ImageIO.read(new File("static/images/pc.png")).getScaledInstance( 40, 40,  java.awt.Image.SCALE_SMOOTH );;
 
