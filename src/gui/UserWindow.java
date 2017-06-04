@@ -16,7 +16,11 @@ import java.awt.BorderLayout;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+
+import com.sun.org.apache.bcel.internal.generic.SWITCH;
 
 import gui.DataLoader.DataType;
 import main.Clock;
@@ -27,6 +31,10 @@ import java.awt.Color;
 import java.awt.Button;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JSeparator;
@@ -38,9 +46,13 @@ import javax.swing.JMenuItem;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.awt.Insets;
+import java.awt.Dimension;
 
 public class UserWindow {
 
+	private boolean isClickedDel = true;
+	
 	public JFrame frmSimulator;
 	
 	public JTable table_instrqueue;
@@ -53,24 +65,23 @@ public class UserWindow {
 	public JTable table_ru;
 	
 	public JLabel label_clock;
-
 	
 	
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UserWindow window = new UserWindow();
-					window.frmSimulator.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					UserWindow window = new UserWindow();
+//					window.frmSimulator.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the application.
@@ -83,6 +94,9 @@ public class UserWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		MyImage.init_img();
+		
 		frmSimulator = new JFrame();
 		frmSimulator.setAlwaysOnTop(true);
 		frmSimulator.setTitle("Simulator");
@@ -106,6 +120,7 @@ public class UserWindow {
 		
 		table_state = new JTable();
 		table_state.setCellSelectionEnabled(true);
+		table_state.getTableHeader().setReorderingAllowed(false);
 		scrollPane_state.setViewportView(table_state);
 		
 		JScrollPane scrollPane_loadqueue = new JScrollPane();
@@ -114,6 +129,7 @@ public class UserWindow {
 		
 		table_loadqueue = new JTable();
 		table_loadqueue.setCellSelectionEnabled(true);
+		table_loadqueue.getTableHeader().setReorderingAllowed(false);
 		scrollPane_loadqueue.setViewportView(table_loadqueue);
 		
 		JScrollPane scrollPane_storequeue = new JScrollPane();
@@ -122,14 +138,16 @@ public class UserWindow {
 		
 		table_storequeue = new JTable();
 		table_storequeue.setCellSelectionEnabled(true);
+		table_storequeue.getTableHeader().setReorderingAllowed(false);
 		scrollPane_storequeue.setViewportView(table_storequeue);
 		
 		JScrollPane scrollPane_mem = new JScrollPane();
-		scrollPane_mem.setBounds(42, 305, 234, 49);
+		scrollPane_mem.setBounds(42, 305, 234, 39);
 		frmSimulator.getContentPane().add(scrollPane_mem);
 		
 		table_mem = new JTable();
 		table_mem.setCellSelectionEnabled(true);
+		table_mem.getTableHeader().setReorderingAllowed(false);
 		scrollPane_mem.setViewportView(table_mem);
 		
 		JScrollPane scrollPane_station = new JScrollPane();
@@ -138,6 +156,7 @@ public class UserWindow {
 		
 		table_station = new JTable();
 		table_station.setCellSelectionEnabled(true);
+		table_station.getTableHeader().setReorderingAllowed(false);
 		scrollPane_station.setViewportView(table_station);
 		
 		JScrollPane scrollPane_fu = new JScrollPane();
@@ -146,6 +165,7 @@ public class UserWindow {
 		
 		table_fu = new JTable();
 		table_fu.setCellSelectionEnabled(true);
+		table_fu.getTableHeader().setReorderingAllowed(false);
 		scrollPane_fu.setViewportView(table_fu);
 		
 		JScrollPane scrollPane_ru = new JScrollPane();
@@ -154,6 +174,7 @@ public class UserWindow {
 		
 		table_ru = new JTable();
 		table_ru.setCellSelectionEnabled(true);
+		table_ru.getTableHeader().setReorderingAllowed(false);
 		scrollPane_ru.setViewportView(table_ru);
 		
 		JLabel lblRunningState = new JLabel("Running State");
@@ -173,19 +194,19 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(lblMemory);
 		
 		JLabel lblInstructionQueue = new JLabel("Instruction Queue");
-		lblInstructionQueue.setBounds(103, 115, 122, 15);
+		lblInstructionQueue.setBounds(103, 115, 116, 15);
 		frmSimulator.getContentPane().add(lblInstructionQueue);
 		
 		JLabel lblReservation = new JLabel("Reservation Stations");
-		lblReservation.setBounds(518, 280, 122, 15);
+		lblReservation.setBounds(518, 280, 219, 15);
 		frmSimulator.getContentPane().add(lblReservation);
 		
 		JLabel lblFloatRegistersfu = new JLabel("Float Registers(FU)");
-		lblFloatRegistersfu.setBounds(374, 467, 122, 15);
+		lblFloatRegistersfu.setBounds(374, 467, 242, 15);
 		frmSimulator.getContentPane().add(lblFloatRegistersfu);
 		
 		JLabel lblIntergerRegisteriu = new JLabel("Interger Register(RU)");
-		lblIntergerRegisteriu.setBounds(363, 566, 148, 15);
+		lblIntergerRegisteriu.setBounds(363, 566, 313, 15);
 		frmSimulator.getContentPane().add(lblIntergerRegisteriu);
 		
 		JLabel lblRegisterNumber = new JLabel("Reg Number");
@@ -213,41 +234,125 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(panel);
 		panel.setLayout(new GridLayout(0, 11, 0, 0));
 		
-		JButton btnNewButton_1 = new JButton("New button");
-		panel.add(btnNewButton_1);
+		JButton btnInputInstr = new JButton("");
+		btnInputInstr.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_A();
+			}
+		});
+		btnInputInstr.setIcon(new ImageIcon(MyImage.img_a));
+		btnInputInstr.setBorder(BorderFactory.createEmptyBorder());	
+		panel.add(btnInputInstr);
 		
 		JSeparator separator = new JSeparator();
 		panel.add(separator);
 		
-		JButton button = new JButton("New button");
-		panel.add(button);
+		JButton btnExportReg = new JButton("");
+		btnExportReg.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_export_reg();
+			}
+		});
+		btnExportReg.setIcon(new ImageIcon(MyImage.img_export_reg));
+		btnExportReg.setBorder(BorderFactory.createEmptyBorder());	
+		panel.add(btnExportReg);
 		
-		JButton button_1 = new JButton("New button");
-		panel.add(button_1);
+		JButton btnExportMem = new JButton("");
+		btnExportMem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_export_mem();
+			}
+		});
+		btnExportMem.setIcon(new ImageIcon(MyImage.img_export_mem));
+		btnExportMem.setBorder(BorderFactory.createEmptyBorder());	
+		panel.add(btnExportMem);
 		
-		JButton button_2 = new JButton("New button");
-		panel.add(button_2);
+		JButton btnStop = new JButton("");
+		btnStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_stop();
+			}
+		});
+		btnStop.setIcon(new ImageIcon(MyImage.img_stop));
+		btnStop.setBorder(BorderFactory.createEmptyBorder());	
+		panel.add(btnStop);
 		
 		JSeparator separator_1 = new JSeparator();
 		panel.add(separator_1);
 		
-		JButton button_3 = new JButton("New button");
-		panel.add(button_3);
+		JButton btnSetReg = new JButton("");
+		btnSetReg.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_set_reg();
+			}
+		});
+		btnSetReg.setIcon(new ImageIcon(MyImage.img_reg));
+		btnSetReg.setBorder(BorderFactory.createEmptyBorder());
+		panel.add(btnSetReg);
 		
-		JButton button_4 = new JButton("New button");
-		panel.add(button_4);
+		JButton btnSetMem = new JButton("");
+		btnSetMem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_set_mem();
+			}
+		});
+		btnSetMem.setIcon(new ImageIcon(MyImage.img_mem));
+		btnSetMem.setBorder(BorderFactory.createEmptyBorder());
+		panel.add(btnSetMem);
 		
 		JSeparator separator_2 = new JSeparator();
 		panel.add(separator_2);
 		
-		JButton button_5 = new JButton("New button");
-		panel.add(button_5);
+		JButton btnSetClock = new JButton("");
+		btnSetClock.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_clock();
+			}
+		});
+		btnSetClock.setIcon(new ImageIcon(MyImage.img_clock));
+		btnSetClock.setBorder(BorderFactory.createEmptyBorder());
+		panel.add(btnSetClock);
 		
-		JButton button_6 = new JButton("New button");
-		panel.add(button_6);
+		JButton btnNext = new JButton("");
+		btnNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_next();
+			}
+		});
+		btnNext.setIcon(new ImageIcon(MyImage.img_next));
+		btnNext.setBorder(BorderFactory.createEmptyBorder());
+		panel.add(btnNext);
+		
+		JButton btnAddInstr = new JButton("");
+		btnAddInstr.setBounds(220, 105, 28, 28);
+		btnAddInstr.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				isClickedDel = false;
+				DefaultTableModel model = ((DefaultTableModel) table_instrqueue.getModel());
+				model.addRow(new Object[4]);
+			}
+		});
+		btnAddInstr.setIcon(new ImageIcon(MyImage.img_add));
+		btnAddInstr.setBorder(BorderFactory.createEmptyBorder());
+		frmSimulator.getContentPane().add(btnAddInstr);
+		
+		
+		JButton btnDelInstr = new JButton("");
+		btnDelInstr.setBorder(BorderFactory.createEmptyBorder());
+		btnDelInstr.setBounds(250, 105, 28, 28);
+		btnDelInstr.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				isClickedDel = true;
+				DefaultTableModel model = ((DefaultTableModel) table_instrqueue.getModel());
+				model.removeRow(model.getRowCount() - 1);
+				
+			}
+		});
+		btnDelInstr.setIcon(new ImageIcon(MyImage.img_sub));
+		frmSimulator.getContentPane().add(btnDelInstr);
 		
 		JLabel lblNewLabel = new JLabel("Clock");
-		lblNewLabel.setBounds(79, 406, 54, 15);
+		lblNewLabel.setBounds(79, 406, 75, 15);
 		frmSimulator.getContentPane().add(lblNewLabel);
 		
 		label_clock = new JLabel("0");
@@ -265,7 +370,7 @@ public class UserWindow {
 		mntmNewMenuItem.addActionListener(new ActionListener(){
 		    public void actionPerformed(ActionEvent event)
 		    {
-		    	load_from_file();
+		    	do_load_from_file();
 		    }});
 		mnNewMenu.add(mntmNewMenuItem);
 
@@ -282,7 +387,7 @@ public class UserWindow {
 		mnItem_run.addActionListener(new ActionListener(){
 		    public void actionPerformed(ActionEvent event)
 		    {
-		    	run();
+		    	do_run();
 		    }});
 		mnRun.add(mnItem_run);
 		
@@ -290,7 +395,7 @@ public class UserWindow {
 		mnItem_RunOne.addActionListener(new ActionListener(){
 		    public void actionPerformed(ActionEvent event)
 		    {
-		    	run_one_step();
+		    	do_run_one_step();
 		    }});
 		mnRun.add(mnItem_RunOne);
 		
@@ -302,30 +407,35 @@ public class UserWindow {
 		menuBar.add(mnHelp);
 		
 		JLabel lbLoad1 = new JLabel("Load1");
-		lbLoad1.setBounds(622, 77, 54, 15);
+		lbLoad1.setBounds(607, 77, 88, 15);
 		frmSimulator.getContentPane().add(lbLoad1);
 		
 		JLabel lbLoad2 = new JLabel("Load2");
-		lbLoad2.setBounds(622, 93, 54, 15);
+		lbLoad2.setBounds(607, 90, 88, 15);
 		frmSimulator.getContentPane().add(lbLoad2);
 		
 		JLabel lbLoad3 = new JLabel("Load3");
-		lbLoad3.setBounds(622, 108, 54, 15);
+		lbLoad3.setBounds(607, 108, 88, 15);
 		frmSimulator.getContentPane().add(lbLoad3);
 		
 		JLabel lbStore1 = new JLabel("Store1");
-		lbStore1.setBounds(622, 186, 54, 15);
+		lbStore1.setBounds(607, 185, 88, 15);
 		frmSimulator.getContentPane().add(lbStore1);
 		
 		JLabel lbStore2 = new JLabel("Store2");
-		lbStore2.setBounds(622, 203, 54, 15);
+		lbStore2.setBounds(607, 203, 88, 15);
 		frmSimulator.getContentPane().add(lbStore2);
 		
 		JLabel lbStore3 = new JLabel("Store3");
-		lbStore3.setBounds(622, 218, 54, 15);
+		lbStore3.setBounds(607, 218, 88, 15);
 		frmSimulator.getContentPane().add(lbStore3);
 		
+
+		
+
+		
 		update_name();
+		add_table_listener();
 	}
 	
 	public void update_name() {
@@ -365,7 +475,50 @@ public class UserWindow {
 		}
 	}
 	
-	public void load_from_file(){
+	public void add_table_listener() {
+		table_instrqueue.getModel().addTableModelListener(new TableModelListener() {
+		      public void tableChanged(TableModelEvent e) {
+		         int row = e.getFirstRow();
+		         int row2 = e.getLastRow();
+		         
+		         System.out.println("instr t change " + e.getColumn() + " "+ row + row2);
+		         int col = e.getColumn();
+		         System.out.println(row + " " + col);
+		         if (col >= 0) { // user change data in table
+		        	 update_table_data(DataLoader.DataType.INSTR_QUEUE, e.getFirstRow(), e.getColumn(), get_table_data(table_instrqueue, row, col), false);
+		         } else if (isClickedDel){ // user clicked del a row
+		        	 update_table_data(DataLoader.DataType.INSTR_QUEUE, -1, -1, "", true);
+		         }
+		         
+		         else { // add row 
+		        	 
+		         }
+		      }
+	    });
+		
+		
+		table_mem.getModel().addTableModelListener(new TableModelListener() {
+		      public void tableChanged(TableModelEvent e) {
+		         int row = 0;
+		         int col = e.getColumn();
+		         System.out.println(row + " " + col);
+		         if (col >= 0) { // user change data in table
+		        	 update_table_data(DataLoader.DataType.MEM, e.getFirstRow(), e.getColumn(), get_table_data(table_mem, row, col), false);
+		         } 		   
+		         else { // nothing
+		        	 
+		         }
+		      }
+	    });
+	}
+	
+	
+	private String get_table_data(JTable table, int row, int col) {
+		DefaultTableModel model = ((DefaultTableModel) table.getModel());
+		return (String) model.getValueAt(row, col);
+	}
+		
+	public void do_load_from_file(){
 		String path = "";
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
@@ -379,12 +532,92 @@ public class UserWindow {
 		}
 	}
 	
-	public void run() {
+	public void do_run() {
 		System.out.println("run");
 	}
 	
 	
-	public void run_one_step() {
+	public void do_run_one_step() {
 		System.out.println("one step run");
+	}
+	
+	/**
+	 * 单步执行下一条指令
+	 */
+	public void do_next() {
+		System.out.println("next");
+	}
+	
+	/**
+	 * 导出内存中的数据
+	 */
+	public void do_export_mem() {
+		System.out.println("export mem");
+	}
+	
+	/**
+	 * 导出寄存器中的数据
+	 */
+	public void do_export_reg() {
+		System.out.println("export reg");
+	}
+	
+	public void do_clock() {
+		System.out.println("clock");
+	}
+	
+	public void do_set_mem() {
+		System.out.println("mem set");
+	}
+	
+	public void do_set_reg(){
+		System.out.println("reg set");
+	}
+	
+	public void do_stop() {
+		System.out.println("stop");
+	}
+	
+	public void do_A() {
+		System.out.println("A");
+	}
+	
+	
+	public void update_table_data(DataLoader.DataType type, int row, int col, String newdata, Boolean isdel) {
+		switch (type) {
+		case INSTR_QUEUE:
+			System.out.printf("ins updata data %d %d: %s\n", row, col, newdata);
+			if (isdel) {
+				System.out.println("del row");
+			}
+			break;
+		case RUNNING_STATE:
+		
+			break;
+		case LOAD_QUEUE:
+		
+			break;
+		case STORE_QUEUE:
+		
+			break;
+		case MEM:
+			System.out.printf("mem updata data %d %d: %s\n", row, col, newdata);
+			if (isdel) {
+				System.out.println("del row");
+			}
+			break;
+		case RESERV_STARION:
+	
+			break;
+		case FU:
+	
+			break;
+		case RU:
+		
+			break;
+		default:
+			break;
+		
+		}
 	}
 }
