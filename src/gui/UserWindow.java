@@ -56,6 +56,8 @@ import java.util.ArrayList;
 import java.awt.Insets;
 import java.awt.Dimension;
 import javax.swing.JComboBox;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JTextArea;
 
 public class UserWindow {
 
@@ -65,8 +67,6 @@ public class UserWindow {
 	
 	public JTable table_instrqueue;
 	public JTable table_state;
-	public JTable table_loadqueue;
-	public JTable table_storequeue;
 	public JTable table_mem;
 	public JTable table_station;
 	public JTable table_fu;
@@ -77,7 +77,7 @@ public class UserWindow {
 	public int addr_mem;
 	
 	JComboBox<String> cb_ins0,cb_ins1,cb_ins2,cb_ins3;
-	
+	public static JTextArea ta_console;
 	
 	/**
 	 * Launch the application.
@@ -136,25 +136,6 @@ public class UserWindow {
 		table_state.getTableHeader().setReorderingAllowed(false);
 		scrollPane_state.setViewportView(table_state);
 		
-		
-		JScrollPane scrollPane_loadqueue = new JScrollPane();
-		scrollPane_loadqueue.setBounds(661, 56, 174, 67);
-		frmSimulator.getContentPane().add(scrollPane_loadqueue);
-		
-		table_loadqueue = new JTable();
-		table_loadqueue.setCellSelectionEnabled(true);
-		table_loadqueue.getTableHeader().setReorderingAllowed(false);
-		scrollPane_loadqueue.setViewportView(table_loadqueue);
-		
-		JScrollPane scrollPane_storequeue = new JScrollPane();
-		scrollPane_storequeue.setBounds(661, 166, 174, 67);
-		frmSimulator.getContentPane().add(scrollPane_storequeue);
-		
-		table_storequeue = new JTable();
-		table_storequeue.setCellSelectionEnabled(true);
-		table_storequeue.getTableHeader().setReorderingAllowed(false);
-		scrollPane_storequeue.setViewportView(table_storequeue);
-		
 		JScrollPane scrollPane_mem = new JScrollPane();
 		scrollPane_mem.setBounds(42, 376, 234, 39);
 		frmSimulator.getContentPane().add(scrollPane_mem);
@@ -194,14 +175,6 @@ public class UserWindow {
 		JLabel lblRunningState = new JLabel("Running State");
 		lblRunningState.setBounds(398, 115, 122, 15);
 		frmSimulator.getContentPane().add(lblRunningState);
-		
-		JLabel lblLoadQueue = new JLabel("Load Queue");
-		lblLoadQueue.setBounds(713, 31, 122, 15);
-		frmSimulator.getContentPane().add(lblLoadQueue);
-		
-		JLabel lblStoreQueue = new JLabel("Store Queue");
-		lblStoreQueue.setBounds(713, 141, 122, 15);
-		frmSimulator.getContentPane().add(lblStoreQueue);
 		
 		JLabel lblMemory = new JLabel("Memory");
 		lblMemory.setBounds(114, 351, 122, 15);
@@ -393,30 +366,6 @@ public class UserWindow {
 		JMenu mnHelp = new JMenu("Help[H]");
 		menuBar.add(mnHelp);
 		
-		JLabel lbLoad1 = new JLabel("Load1");
-		lbLoad1.setBounds(607, 77, 88, 15);
-		frmSimulator.getContentPane().add(lbLoad1);
-		
-		JLabel lbLoad2 = new JLabel("Load2");
-		lbLoad2.setBounds(607, 90, 88, 15);
-		frmSimulator.getContentPane().add(lbLoad2);
-		
-		JLabel lbLoad3 = new JLabel("Load3");
-		lbLoad3.setBounds(607, 108, 88, 15);
-		frmSimulator.getContentPane().add(lbLoad3);
-		
-		JLabel lbStore1 = new JLabel("Store1");
-		lbStore1.setBounds(607, 185, 88, 15);
-		frmSimulator.getContentPane().add(lbStore1);
-		
-		JLabel lbStore2 = new JLabel("Store2");
-		lbStore2.setBounds(607, 203, 88, 15);
-		frmSimulator.getContentPane().add(lbStore2);
-		
-		JLabel lbStore3 = new JLabel("Store3");
-		lbStore3.setBounds(607, 218, 88, 15);
-		frmSimulator.getContentPane().add(lbStore3);
-		
 		JComboBox<Integer> comboBox = new JComboBox<Integer>();
 		comboBox.setEditable(true);
 		comboBox.setBounds(220, 345, 54, 21);
@@ -456,6 +405,17 @@ public class UserWindow {
 		cb_ins3.setEditable(true);
 		panel_addIns.add(cb_ins3);
 		
+		JScrollPane panel_console = new JScrollPane();
+		panel_console.setBounds(598, 60, 276, 200);
+		frmSimulator.getContentPane().add(panel_console);
+		
+		ta_console = new JTextArea();
+		panel_console.setViewportView(ta_console);
+		
+		JLabel lblConsole = new JLabel("Console:");
+		lblConsole.setBounds(598, 35, 88, 15);
+		frmSimulator.getContentPane().add(lblConsole);
+		
 		cb_ins1.addItem("");
 		cb_ins2.addItem("");
 		cb_ins3.addItem("");
@@ -493,12 +453,8 @@ public class UserWindow {
 		    model = (DefaultTableModel) table_state.getModel();
 		    model.setColumnIdentifiers(Config.run_state_name);
 		    model.fireTableDataChanged();
-		    
-		    model = (DefaultTableModel) table_loadqueue.getModel();
 		    model.setColumnIdentifiers(Config.load_queue_name);
-		    model.fireTableDataChanged();	
-		    
-		    model = (DefaultTableModel) table_storequeue.getModel();
+		    model.fireTableDataChanged();
 		    model.setColumnIdentifiers(Config.store_queue_name);
 		    model.fireTableDataChanged();	
 		    
