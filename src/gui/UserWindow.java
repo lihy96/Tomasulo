@@ -352,12 +352,14 @@ public class UserWindow {
 		btnDelInstr.setIcon(new ImageIcon(MyImage.img_sub));
 		frmSimulator.getContentPane().add(btnDelInstr);
 		
-		JLabel lblNewLabel = new JLabel("Clock");
-		lblNewLabel.setBounds(79, 406, 75, 15);
-		frmSimulator.getContentPane().add(lblNewLabel);
+		JLabel lbClock = new JLabel("Clock");
+		lbClock.setBounds(79, 390, 40, 40);
+		lbClock.setIcon(new ImageIcon(MyImage.img_pc));
+		lbClock.setBorder(BorderFactory.createEmptyBorder());	
+		frmSimulator.getContentPane().add(lbClock);
 		
 		label_clock = new JLabel("0");
-		label_clock.setBounds(180, 406, 54, 15);
+		label_clock.setBounds(180, 400, 54, 15);
 		frmSimulator.getContentPane().add(label_clock);
 		
 		JMenuBar menuBar = new JMenuBar();
