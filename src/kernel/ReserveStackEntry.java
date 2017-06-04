@@ -3,6 +3,7 @@ package kernel;
 import java.util.ArrayList;
 
 import main.Clock;
+import main.MainDriver;
 import util.Instr;
 
 /**
@@ -84,6 +85,8 @@ public class ReserveStackEntry {
 	}
 	
 	public static void setReserveEntry(ReserveStackEntry rse, Instr itr) {
+		// 添加进监控状态表
+		Clock.running_state.add(itr);
 		rse.instr = itr;
 		rse.instr.state.flow = true;
 		
@@ -111,6 +114,11 @@ public class ReserveStackEntry {
 	}
 	
 	public static void freeReserveEntry(ReserveStackEntry[] group, ReserveStackEntry rse) {
+		for (Instr instr : Clock.running_state) {
+			if (instr == rse.instr) {
+				Clock.running_state.remove(instr);
+			}
+		}
 		rse.Busy = false;
 		/* load和store缓冲区需要模仿队列操作 */
 		if (rse.OP == Instr.OP.LOAD || rse.OP == Instr.OP.STOR) {
@@ -164,7 +172,7 @@ public class ReserveStackEntry {
 			}
 			if (is_ok) {
 				reserveStackEntry = rse;
-				reserveStackEntry.instr.state.runnning = true;
+				reserveStackEntry.instr.state.running = true;
 				break;
 			}
 		}

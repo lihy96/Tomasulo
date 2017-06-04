@@ -12,6 +12,7 @@ import kernel.ReserveStackEntry;
 import kernel.Storer;
 import kernel.FP.REG;
 import util.ConstDefinition;
+import util.Instr;
 
 public class Clock {
 	public static Adder adder;
@@ -24,7 +25,7 @@ public class Clock {
 	// 保留站组
 	public static ReserveStackEntry[] addGroup, mulGroup, loadGroup, storeGroup;
 	public static Double CDB_DATA;
-	public static ArrayList<ArrayList<String>> run_state = new ArrayList<ArrayList<String>>();
+	public static ArrayList<Instr> running_state = new ArrayList<Instr>();
 	public static void sim_init() {
 		adder = new Adder();
 		multiplier = new Multiplier();
@@ -63,6 +64,18 @@ public class Clock {
 		FP.print(fp);
 	}
 	
+	public static ArrayList<ArrayList<String>> get_running_state() {
+		ArrayList<ArrayList<String>> states = new ArrayList<ArrayList<String>>();
+		for (Instr instr : running_state) {
+			ArrayList<String> info = new ArrayList<String>();
+			info.add(instr.toString());
+			info.add("" + instr.state.flow);
+			info.add("" + instr.state.running);
+			info.add("" + instr.state.write_back);
+			states.add(info);
+		}
+		return states;
+	}
 	public static ArrayList<ArrayList<String>> get_instr_queue() {
 		return queue.get_instr_queue();
 	}
