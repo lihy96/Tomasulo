@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
+import gui.DataLoader;
+import gui.UserWindow;
 import kernel.Adder;
 import kernel.Loader;
 import kernel.FP;
@@ -13,6 +15,7 @@ import kernel.Multiplier;
 import kernel.ReserveStackEntry;
 import kernel.Storer;
 import kernel.FP.REG;
+import sun.security.action.GetBooleanAction;
 import util.ConstDefinition;
 import util.Instr;
 
@@ -107,6 +110,14 @@ public class Clock {
 	private static int clock_max = 1000;
 	private static long timeout = 0;
 	
+	public static int get_clock_max() {
+		return clock_max;
+	}
+	
+	
+	public static long get_timeout() {
+		return timeout;
+	}
 	public static void run() {
 		while (flag && clock < clock_max) {
 			clock ++;
@@ -134,6 +145,7 @@ public class Clock {
 		multiplier.activate();
 		loader.activate();
 		storer.activate();
+		DataLoader.update_all(MainDriver.window.addr_mem);
 	}
 	public static void stop() {
 		flag = !flag;

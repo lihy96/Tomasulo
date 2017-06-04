@@ -191,6 +191,7 @@ public class DataLoader {
 	}
 	
 	public static void update_all(int begin) {
+		System.out.println("update !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		update_table_instr();
 		
 		update_table_reserv();
@@ -201,7 +202,7 @@ public class DataLoader {
 	}
 	
 	public static void update_console(String str) {
-		UserWindow.ta_console.append(str);
+		UserWindow.ta_console.append(str+"\n");
 	}
 	public static void clear_console() {
 		UserWindow.ta_console.setText("");

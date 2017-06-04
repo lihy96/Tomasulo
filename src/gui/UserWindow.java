@@ -58,6 +58,7 @@ import java.awt.Dimension;
 import javax.swing.JComboBox;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTextArea;
+import java.awt.Font;
 
 public class UserWindow {
 
@@ -77,8 +78,10 @@ public class UserWindow {
 	public int addr_mem;
 	
 	JComboBox<String> cb_ins0,cb_ins1,cb_ins2,cb_ins3;
+	JComboBox<Integer> cb_addr;
 	public static JTextArea ta_console;
 	public TimeSetter timeSetter;
+	public Thread thread = null;
 	/**
 	 * Create the application.
 	 */
@@ -210,7 +213,7 @@ public class UserWindow {
 		JButton btnStop = new JButton("");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				do_stop();
+				do_clear();
 			}
 		});
 		
@@ -354,18 +357,18 @@ public class UserWindow {
 		JMenu mnHelp = new JMenu("Help[H]");
 		menuBar.add(mnHelp);
 		
-		JComboBox<Integer> comboBox = new JComboBox<Integer>();
-		comboBox.setEditable(true);
-		comboBox.setBounds(220, 345, 54, 21);
+		cb_addr = new JComboBox<Integer>();
+		cb_addr.setEditable(true);
+		cb_addr.setBounds(220, 345, 54, 21);
 		for (int i = 0; i < 4096; i++)
-			comboBox.addItem(i);
-		comboBox.setSelectedIndex(0);
-		comboBox.addActionListener (new ActionListener () {
+			cb_addr.addItem(i);
+		cb_addr.setSelectedIndex(0);
+		cb_addr.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
-		        update_mem_origin_addr((int)comboBox.getSelectedItem());
+		        update_mem_origin_addr((int)cb_addr.getSelectedItem());
 		    }
 		});
-		frmSimulator.getContentPane().add(comboBox);
+		frmSimulator.getContentPane().add(cb_addr);
 		
 		JPanel panel_addIns = new JPanel();
 		panel_addIns.setBounds(42, 275, 234, 20);
@@ -398,6 +401,9 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(panel_console);
 		
 		ta_console = new JTextArea();
+		ta_console.setBackground(new Color(255, 255, 255));
+		ta_console.setForeground(Color.WHITE);
+		ta_console.setFont(new Font("Courier New", Font.PLAIN, 13));
 		ta_console.setEnabled(false);
 		ta_console.setTabSize(4);
 		panel_console.setViewportView(ta_console);
@@ -544,7 +550,6 @@ public class UserWindow {
 	 */
 	public void do_next() {
 		Clock.run_one_step();
-		DataLoader.update_all(addr_mem);
 	}
 	
 	/**
@@ -612,14 +617,29 @@ public class UserWindow {
 		}
 	}
 	
-	public void do_stop() {
+	public void do_clear() {
 		System.out.println("stop");
-		
+		Clock.clear();
+		cb_addr.setSelectedIndex(0);
 		DataLoader.update_all(0);
 	}
 	
 	public void do_Run() {
 		System.out.println("run");
+		
+		if (thread != null) {
+			thread.stop();
+			thread = null;
+		}
+		else {
+			thread = new Thread() {
+				@Override
+				public void run() {
+					Clock.run();
+				}
+			};
+			thread.start();
+		}
 		
 	}
 	
