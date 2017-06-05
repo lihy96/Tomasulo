@@ -108,7 +108,7 @@ public class UserWindow {
 		MyImage.init_img();
 		
 		frmSimulator = new JFrame();
-		frmSimulator.setTitle("Simulator");
+		frmSimulator.setTitle("Tomasulo Simulator");
 		frmSimulator.setBounds(0, 0, 900, 702);
 		frmSimulator.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSimulator.getContentPane().setLayout(null);
@@ -317,53 +317,6 @@ public class UserWindow {
 		label_clock = new JLabel("0");
 		label_clock.setBounds(178, 491, 54, 15);
 		frmSimulator.getContentPane().add(label_clock);
-		
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 884, 21);
-		frmSimulator.getContentPane().add(menuBar);
-		
-		JMenu mnNewMenu = new JMenu("File[E]");
-		menuBar.add(mnNewMenu);
-		
-		JMenuItem mntmNewMenuItem = new JMenuItem("从文件导入");
-		mntmNewMenuItem.addActionListener(new ActionListener(){
-		    public void actionPerformed(ActionEvent event)
-		    {
-		    	do_load_from_file();
-		    }});
-		mnNewMenu.add(mntmNewMenuItem);
-
-		JMenu mnInput = new JMenu("Input[I]");
-		menuBar.add(mnInput);
-		
-		JMenu mnAssigns = new JMenu("Assign[S]");
-		menuBar.add(mnAssigns);
-		
-		JMenu mnRun = new JMenu("Run[R]");
-		menuBar.add(mnRun);
-		
-		JMenuItem mnItem_run = new JMenuItem("运行");
-		mnItem_run.addActionListener(new ActionListener(){
-		    public void actionPerformed(ActionEvent event)
-		    {
-
-		    }});
-		mnRun.add(mnItem_run);
-		
-		JMenuItem mnItem_RunOne = new JMenuItem("单步运行");
-		mnItem_RunOne.addActionListener(new ActionListener(){
-		    public void actionPerformed(ActionEvent event)
-		    {
-		    	do_next();
-		    }});
-		mnRun.add(mnItem_RunOne);
-		
-		
-		JMenu mnMode = new JMenu("Mode[C]");
-		menuBar.add(mnMode);
-		
-		JMenu mnHelp = new JMenu("Help[H]");
-		menuBar.add(mnHelp);
 		
 		cb_addr = new JComboBox<Integer>();
 		cb_addr.setEditable(true);
