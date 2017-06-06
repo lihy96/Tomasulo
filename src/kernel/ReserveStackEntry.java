@@ -27,6 +27,8 @@ public class ReserveStackEntry {
 	// 仅load和store缓冲器有该字段。开始 是存放指令中的立即数字段，地址计算后存放有效地址
 	public Integer A = null;	
 	
+	public Integer time = null;
+	
 	public ReserveStackEntry(String _name) {
 		__id = id ++;
 		__name = _name;

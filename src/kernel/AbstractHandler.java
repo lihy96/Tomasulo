@@ -1,6 +1,8 @@
 package kernel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import main.Clock;
 import util.ConstDefinition;
@@ -24,8 +26,21 @@ public abstract class AbstractHandler {
 
 	public ArrayList<Integer> getTime() {
 		ArrayList<Integer> times = new ArrayList<Integer>();
+		Map<ReserveStackEntry, Integer> map = new HashMap<ReserveStackEntry, Integer>();
 		for (int i = 0; i < pipeline.length; ++i) {
-			times.add(pipeline[i].getTime());
+			PipeLineSegment pls = pipeline[i];
+			if (!pls.Busy) continue;
+			
+			map.put(pls.rse, pls.getTime());
+		}
+		
+		for (ReserveStackEntry rse : this.group) {
+			if (map.containsKey(rse)) {
+				times.add(map.get(rse));
+			}
+			else {
+				times.add(0);
+			}
 		}
 		return times;
 	}
