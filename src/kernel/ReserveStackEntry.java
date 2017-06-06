@@ -22,6 +22,8 @@ public class ReserveStackEntry {
 	public Double Vj = null, Vk = null;	
 	// 为True表示本保留站或缓冲单元“忙”,初始化为空闲
 	public boolean Busy = false;	
+	// 在流水线中表示当前保留站是否有指令正在执行
+	public boolean Run = false;
 	// 仅load和store缓冲器有该字段。开始 是存放指令中的立即数字段，地址计算后存放有效地址
 	public Integer A = null;	
 	
@@ -29,11 +31,17 @@ public class ReserveStackEntry {
 		__id = id ++;
 		__name = _name;
 	}
-	
-	public ReserveStackEntry(boolean flag) {
-		if (flag) {
-			__id = id ++;
-		}
+	public ReserveStackEntry() {}
+	public boolean load(ReserveStackEntry rse) {
+		if (rse == null) return false;
+		// 如果是载入流水线过程，那么默认数据都已经准备好了，所以对于Qj, Qk不进行载入
+		this.instr = rse.instr;
+		this.OP = rse.OP;
+		this.Vj = rse.Vj; this.Vk = rse.Vk;
+		// 设置当前保留站正在执行指令
+		this.Busy = true;
+		this.A = rse.A;
+		return true;
 	}
 	public int getID() {
 		return __id;
@@ -49,6 +57,7 @@ public class ReserveStackEntry {
 		this.OP = null;
 		this.A = null;
 		this.Busy = false;
+		this.Run = false;
 		this.Qj = null; this.Qk = null;
 		this.Vj = null; this.Vk = null;
 	}
@@ -57,7 +66,8 @@ public class ReserveStackEntry {
 				"<" + (Qj == null ? "null" : Qj.getID()) + 
 					", " + (Qk == null ? "null" : Qk.getID()) + ">---" +
 				"<" + Vj + ", " + Vk + ", " + A + "> : " + 
-				"Busy ?" + Busy;
+				"Busy? " + Busy + ", " +
+				"Run? " + Run;
 	}
 	
 	public static void print(ReserveStackEntry[] group) {
@@ -66,11 +76,12 @@ public class ReserveStackEntry {
 		}
 	}
 	
-	public static ArrayList<ArrayList<String>> get_reserved_entrys(ReserveStackEntry[] group, int time) {
+	public static ArrayList<ArrayList<String>> get_reserved_entrys(ReserveStackEntry[] group, ArrayList<Integer> time) {
 		ArrayList<ArrayList<String>> reserve_entrys = new ArrayList<ArrayList<String>>();
-		for (ReserveStackEntry rse : group) {
+		for (int i = 0; i < group.length; ++i) {
+			ReserveStackEntry rse = group[i];
 			ArrayList<String> entry = new ArrayList<String>();
-			entry.add("" + time);
+			entry.add("" + time.get(i));
 			entry.add("" + rse.getName());
 			entry.add("" + rse.Busy);
 			entry.add("" + ((rse.OP == null) ? "" : rse.OP.name()));
@@ -120,6 +131,7 @@ public class ReserveStackEntry {
 			fp.setQ(itr.des, rse);
 		// 修改保留站状态
 		rse.Busy = true;
+		rse.Run = false;
 	}
 	
 	public static void clear(ReserveStackEntry[] group) {
@@ -137,6 +149,7 @@ public class ReserveStackEntry {
 		}
 		
 		rse.Busy = false;
+		rse.Run = false;
 		/* load和store缓冲区需要模仿队列操作 */
 		if (rse.OP == Instr.OP.LOAD || rse.OP == Instr.OP.STOR) {
 			adjustFakeQueue(group);
@@ -172,6 +185,7 @@ public class ReserveStackEntry {
 		for (ReserveStackEntry rse : group) {
 			/* 如果保留站为空闲状态，跳过 */
 			if (!rse.Busy) continue;
+			if (rse.Run) continue;
 			
 			boolean is_ok = false;
 			switch(rse.OP) {
@@ -188,6 +202,7 @@ public class ReserveStackEntry {
 			}
 			if (is_ok) {
 				reserveStackEntry = rse;
+				reserveStackEntry.Run = true;
 				reserveStackEntry.instr.state.running = true;
 				break;
 			}

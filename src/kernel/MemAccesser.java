@@ -2,67 +2,32 @@ package kernel;
 
 import main.Clock;
 import util.ConstDefinition;
+import util.Instr.OP;
 
-public class MemAccesser {
-	private int time;
-	private ReserveStackEntry crRse = null;
-	public MemAccesser() {}
-	
-	public int getTime() {
-		return time;
+public class MemAccesser extends AbstractHandler {
+	// 4 or 5
+	private PipeLineSegment[] pipeline = new PipeLineSegment[ConstDefinition.OP_PILELINE_TIME[4].length];
+	public MemAccesser(ReserveStackEntry[] _group){
+		super(_group);
+		// 重新设置流水段
+		super.pipeline = this.pipeline;
+		for (int i = 0; i < pipeline.length; ++i) {
+			// 各段流水线的模拟，简单保存保留站
+			pipeline[i] = new PipeLineSegment();
+		}
 	}
 	
-	public void clear() {
-		time = 0;
-		crRse = null;
-	}
-	
-	public void activate() {
-		if (time < 0) {
-			System.out.println("> Error at time is negetive.");
-			System.exit(2);
-		}
-		
-		/* 如果time为0, 表示当前运算部件没有执行操作，需要寻找一个可执行的保留站。 */
-		if (time == 0) {
-			crRse = ReserveStackEntry.getRunnableEntry(Clock.memGroup);
-			/* 如果没有可执行保留站，直接返回 */
-			if (crRse == null) return ;
-			System.out.println("Run instr : " + crRse.toString());
-			setTime();
-		}
-		
-		/* 默认时间减一 */
-		time --;
-		
-		/* 如果time为0,表示当前运算部件将要执行完操作。 */
-		if (time == 0) {
-			double ans;
-			ans = Clock.mem.get(crRse.A);
-			System.out.println("End instr : " + crRse.toString());
-			
+	protected void calFunc(PipeLineSegment pls) {
+		if (pls.OP == OP.LOAD) {
+			double ans = Clock.mem.get(pls.A);
 			/** 
 			 * 将计算结果放入总线，并唤醒其他等待该保留站计算结果的保留站
 			 * 如果有寄存器的保留站状态为当前状态，则写入 
 			 */
-			Clock.wake_up(crRse, ans);
-			
-			/* 保留站计算完需要释放 */
-			ReserveStackEntry.freeReserveEntry(Clock.memGroup, crRse);
-			crRse = null;
+			Clock.wake_up(pls.rse, ans);
 		}
-	}
-	
-	private void setTime() {
-		switch(crRse.OP) {
-		case LOAD:
-			time = ConstDefinition.OP_TIME[4]; break;
-		case STOR:
-			time = ConstDefinition.OP_TIME[5]; break;
-		default:
-			System.out.println("MemAccesser 操作符错误: " + crRse.toString());
-			System.exit(2);
-			break;
+		else {
+			Clock.mem.set(pls.A, pls.Vj);
 		}
 	}
 }

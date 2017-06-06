@@ -26,18 +26,18 @@ public final class ConstDefinition {
 				2
 			}
 	};
-	static {
-		final int[] OP_PILELINE_NUM = new int[OP_PILELINE_TIME.length];
-		for (int i = 0; i < OP_PILELINE_TIME.length; ++i) {
-			OP_PILELINE_NUM[i] = OP_PILELINE_TIME[i].length;
-		}
-		if ((OP_PILELINE_NUM[0] != OP_PILELINE_NUM[1]) || 
-				(OP_PILELINE_NUM[2] != OP_PILELINE_NUM[3]) ||
-				(OP_PILELINE_NUM[4] != OP_PILELINE_NUM[5])) {
-			System.out.println("> Error at error pileline cycle.");
-			System.exit(2);;
-		}
-	}
+//	static {
+//		OP_PILELINE_NUM = new int[OP_PILELINE_TIME.length];
+//		for (int i = 0; i < OP_PILELINE_TIME.length; ++i) {
+//			OP_PILELINE_NUM[i] = OP_PILELINE_TIME[i].length;
+//		}
+//		if ((OP_PILELINE_NUM[0] != OP_PILELINE_NUM[1]) || 
+//				(OP_PILELINE_NUM[2] != OP_PILELINE_NUM[3]) ||
+//				(OP_PILELINE_NUM[4] != OP_PILELINE_NUM[5])) {
+//			System.out.println("> Error at error pileline cycle.");
+//			System.exit(2);;
+//		}
+//	}
 	
 	public final static int FP_NUM = 10;
 	public final static int MEM_NUM = 5000;

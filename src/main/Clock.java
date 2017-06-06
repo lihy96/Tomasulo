@@ -19,32 +19,26 @@ import util.Instr;
 public class Clock {
 	public static Adder adder;
 	public static Multiplier multiplier;
-//	public static Loader loader;
-//	public static Storer storer;
 	public static MemAccesser memAccesser;
 	public static FP fp;
 	public static InstructionQueue queue;
 	public static FakeMemory mem;
 	// 保留站组
 	public static ReserveStackEntry[] addGroup, mulGroup;
-//	public static ReserveStackEntry[] loadGroup, storeGroup;
 	public static ReserveStackEntry[] memGroup;
 	public static Double CDB_DATA;
 	public static ArrayList<Instr> running_state = new ArrayList<Instr>();
 	public static void sim_init() {
-		adder = new Adder();
-		multiplier = new Multiplier();
-//		loader = new Loader();
-//		storer = new Storer();
-		memAccesser = new MemAccesser();
 		fp = FP.getInstance();
 		queue = new InstructionQueue();
 		mem = new FakeMemory();
 		addGroup = ReserveStackEntry.initGroup(ConstDefinition.ADD_RESERVE_ENTRY_NUM, "Adder");
 		mulGroup = ReserveStackEntry.initGroup(ConstDefinition.MUL_RESERVE_ENTRY_NUM, "Multiplier");
 		memGroup = ReserveStackEntry.initGroup(ConstDefinition.MEM_ACCESS_RESERVE_ENTRY_NUM, "MemAccesser");
-//		loadGroup = ReserveStackEntry.initGroup(ConstDefinition.LOAD_RESERVE_ENTRY_NUM, "Loader");
-//		storeGroup = ReserveStackEntry.initGroup(ConstDefinition.STORE_RESERVE_ENTRY_NUM, "Storer");
+
+		adder = new Adder(addGroup);
+		multiplier = new Multiplier(mulGroup);
+		memAccesser = new MemAccesser(memGroup);
 	}
 	
 	public static void wake_up(ReserveStackEntry rse, Double ans) {
@@ -54,8 +48,6 @@ public class Clock {
 		ReserveStackEntry.listen(addGroup, rse);
 		ReserveStackEntry.listen(mulGroup, rse);
 		ReserveStackEntry.listen(memGroup, rse);
-//		ReserveStackEntry.listen(loadGroup, rse);
-//		ReserveStackEntry.listen(storeGroup, rse);
 		/* 唤醒等待被写入的寄存器更新数据 */
 		FP.listen(fp, rse);
 		/* 清空总线数据 */
@@ -65,9 +57,10 @@ public class Clock {
 	public static void print_reserver_state() {
 		ReserveStackEntry.print(addGroup);
 		ReserveStackEntry.print(mulGroup);
-//		ReserveStackEntry.print(loadGroup);
-//		ReserveStackEntry.print(storeGroup);
 		ReserveStackEntry.print(memGroup);
+	}
+	public static void print_pipeline_state() {
+		adder.print();
 	}
 	public static void print_fp_state() {
 		FP.print(fp);
@@ -104,8 +97,6 @@ public class Clock {
 		ArrayList<ArrayList<String>> reserve_station = new ArrayList<ArrayList<String>>();
 		reserve_station.addAll(ReserveStackEntry.get_reserved_entrys(addGroup, adder.getTime()));
 		reserve_station.addAll(ReserveStackEntry.get_reserved_entrys(mulGroup, multiplier.getTime()));
-//		reserve_station.addAll(ReserveStackEntry.get_reserved_entrys(loadGroup, loader.getTime()));
-//		reserve_station.addAll(ReserveStackEntry.get_reserved_entrys(storeGroup, storer.getTime()));
 		reserve_station.addAll(ReserveStackEntry.get_reserved_entrys(memGroup, memAccesser.getTime()));
 		return reserve_station;
 	}
@@ -130,7 +121,6 @@ public class Clock {
 			try {
 				TimeUnit.MILLISECONDS.sleep(timeout);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -150,8 +140,6 @@ public class Clock {
 		adder.activate();
 		multiplier.activate();
 		memAccesser.activate();
-//		loader.activate();
-//		storer.activate();
 		DataLoader.update_all(MainDriver.window.addr_mem);
 	}
 	public static void stop() {
@@ -160,14 +148,10 @@ public class Clock {
 	public static void clear() {
 		ReserveStackEntry.clear(addGroup);
 		ReserveStackEntry.clear(mulGroup);
-//		ReserveStackEntry.clear(loadGroup);
-//		ReserveStackEntry.clear(storeGroup);
 		ReserveStackEntry.clear(memGroup);
 		queue.clear();
 		adder.clear();
 		multiplier.clear();
-//		loader.clear();
-//		storer.clear();
 		memAccesser.clear();
 		FP.clear(fp);
 		mem.clear();
@@ -183,13 +167,13 @@ public class Clock {
 	
 	public static void main(String[] args) {
 		Clock.sim_init();
-		
-		fp.set(REG.F2, 6.2);
-		fp.set(REG.F5, 3.0);
+
 		fp.set(REG.F1, 7.0);
+		fp.set(REG.F2, 6.2);
 		fp.set(REG.F3, 2.5);
-		fp.set(REG.F7, 4.8);
+		fp.set(REG.F5, 3.0);
 		fp.set(REG.F6, 7.6);
+		fp.set(REG.F7, 4.8);
 		fp.set(REG.F8, 1.1);
 		fp.set(REG.F9, 1.3);
 		ArrayList<String> instrs = new ArrayList<String>();
@@ -198,25 +182,25 @@ public class Clock {
 		instrs.add("LOAD F4, 3");
 		instrs.add("STOR F2, 0");
 		instrs.add("STOR F5, 2");
-		instrs.add("LOAD F5, 2");
-//		instrs.add("ADD F8, F9, F2");
-//		instrs.add("MUL F4, F8, F7");
+		instrs.add("LOAD F5, 0");
+		instrs.add("ADD F8, F9, F2");
+		instrs.add("MUL F4, F8, F7");
 		instrs.add("STOR F3, 1");
 		instrs.add("LOAD F7, 1");
 		
 		queue.load(instrs);
-		int cycle = 25;
+		int cycle = 50;
 		while (cycle-- > 0) {
 			System.out.println("clock : " + cycle);
 			queue.activate();
-			print_reserver_state();
+//			print_reserver_state();
 			adder.activate();
+//			print_pipeline_state();
 			multiplier.activate();
-//			loader.activate();
-//			storer.activate();
 			memAccesser.activate();
 //			print_fp_state();
 		}
+		print_fp_state();
 		
 	}
 }
