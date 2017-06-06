@@ -1,8 +1,10 @@
 package kernel;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import main.Clock;
+import main.MainDriver;
 import util.Instr;
 
 /**
@@ -13,7 +15,8 @@ public class ReserveStackEntry {
 	
 	private int __id;	// 本保留站独有的id
 	private String __name;
-	public Instr.OP OP;	// 要对源操作数进行的操作
+	private Instr instr;
+	public Instr.OP OP = null;	// 要对源操作数进行的操作
 	public ReserveStackEntry Qj = null, Qk = null;	// 将产生源操作数的保留站号.
 	// 源操作数的值，V和Q只有一个有效。对于load来说，Vk字段用于保存偏移量
 	public Double Vj = null, Vk = null;	
@@ -40,6 +43,14 @@ public class ReserveStackEntry {
 	}
 	public int getTotalEntryNum() {
 		return id;
+	}
+	public void clear() {
+		this.instr = null;
+		this.OP = null;
+		this.A = null;
+		this.Busy = false;
+		this.Qj = null; this.Qk = null;
+		this.Vj = null; this.Vk = null;
 	}
 	public String toString() {
 		return "" + __id + "\t" + OP + " : " + 
@@ -83,6 +94,11 @@ public class ReserveStackEntry {
 	}
 	
 	public static void setReserveEntry(ReserveStackEntry rse, Instr itr) {
+		// 添加进监控状态表
+		Clock.running_state.add(itr);
+		rse.instr = itr;
+		rse.instr.state.flow = true;
+		
 		rse.OP = itr.op;
 		rse.A = itr.imm;
 		
@@ -106,7 +122,20 @@ public class ReserveStackEntry {
 		rse.Busy = true;
 	}
 	
+	public static void clear(ReserveStackEntry[] group) {
+		for (ReserveStackEntry rse : group) {
+			rse.clear();
+		}
+	}
+	
 	public static void freeReserveEntry(ReserveStackEntry[] group, ReserveStackEntry rse) {
+		Iterator<Instr> it = Clock.running_state.iterator();
+		while (it.hasNext()) {
+			Instr itr = it.next();
+			if (itr == null) continue;
+			if (itr == rse.instr) itr.state.mark = true;
+		}
+		
 		rse.Busy = false;
 		/* load和store缓冲区需要模仿队列操作 */
 		if (rse.OP == Instr.OP.LOAD || rse.OP == Instr.OP.STOR) {
@@ -160,6 +189,7 @@ public class ReserveStackEntry {
 			}
 			if (is_ok) {
 				reserveStackEntry = rse;
+				reserveStackEntry.instr.state.running = true;
 				break;
 			}
 		}
@@ -167,6 +197,8 @@ public class ReserveStackEntry {
 	}
 	
 	public static void listen(ReserveStackEntry[] group, ReserveStackEntry rse) {
+		rse.instr.state.running = false;
+		rse.instr.state.write_back = true;
 		for (ReserveStackEntry tmp : group) {
 			if (!tmp.Busy) continue;
 			if (tmp.Qj == rse) {

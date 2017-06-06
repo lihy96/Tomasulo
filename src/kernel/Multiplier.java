@@ -14,6 +14,11 @@ public class Multiplier {
 		return time;
 	}
 	
+	public void clear() {
+		time = 0;
+		crRse = null;
+	}
+	
 	public void activate() {
 		assert(time < 0);
 		

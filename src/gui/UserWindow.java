@@ -19,18 +19,26 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import com.sun.org.apache.bcel.internal.generic.SWITCH;
+import com.sun.org.apache.xpath.internal.operations.And;
 
 import gui.DataLoader.DataType;
+import jdk.nashorn.internal.ir.Flags;
 import kernel.FP;
+import kernel.FakeMemory;
 import main.Clock;
 import main.MainDriver;
+import util.ConstDefinition;
 
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.Button;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ActionEvent;
 
 import javax.swing.BorderFactory;
@@ -46,21 +54,32 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.awt.Insets;
 import java.awt.Dimension;
 import javax.swing.JComboBox;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JTextArea;
+import java.awt.Font;
 
 public class UserWindow {
 
-	private boolean isClickedDel = true;
+//	private boolean isClickedDel = true;
 	
 	public JFrame frmSimulator;
 	
 	public JTable table_instrqueue;
 	public JTable table_state;
-	public JTable table_loadqueue;
-	public JTable table_storequeue;
 	public JTable table_mem;
 	public JTable table_station;
 	public JTable table_fu;
@@ -69,45 +88,39 @@ public class UserWindow {
 	public JLabel label_clock;
 	
 	public int addr_mem;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
 	
-	
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					UserWindow window = new UserWindow();
-//					window.frmSimulator.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
+	JComboBox<String> cb_ins0,cb_ins1,cb_ins2,cb_ins3;
+	JComboBox<Integer> cb_addr;
+	public static JTextArea ta_console;
+	public TimeSetter timeSetter;
+	public Thread thread = null;
+	public ClockRun runnable = null;
 	/**
 	 * Create the application.
 	 */
 	public UserWindow() {
 		initialize();
 	}
+	
+	public int get_circles() {
+		return timeSetter.circles;
+	}
+	
+	public long get_space() {
+		return timeSetter.space;
+	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		timeSetter = new TimeSetter(this);
 		
 		MyImage.init_img();
 		
 		frmSimulator = new JFrame();
-		frmSimulator.setAlwaysOnTop(true);
-		frmSimulator.setTitle("Simulator");
-		frmSimulator.setBounds(0, 0, 900, 613);
+		frmSimulator.setTitle("Tomasulo Simulator");
+		frmSimulator.setBounds(0, 0, 900, 702);
 		frmSimulator.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSimulator.getContentPane().setLayout(null);
 		
@@ -116,6 +129,7 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(scrollPane_instrqueue);
 		
 		table_instrqueue = new JTable();
+		table_instrqueue.setEnabled(false);
 		scrollPane_instrqueue.setViewportView(table_instrqueue);
 		table_instrqueue.setCellSelectionEnabled(true);
 		table_instrqueue.getTableHeader().setReorderingAllowed(false);
@@ -130,24 +144,6 @@ public class UserWindow {
 		table_state.getTableHeader().setReorderingAllowed(false);
 		scrollPane_state.setViewportView(table_state);
 		
-		JScrollPane scrollPane_loadqueue = new JScrollPane();
-		scrollPane_loadqueue.setBounds(661, 56, 174, 67);
-		frmSimulator.getContentPane().add(scrollPane_loadqueue);
-		
-		table_loadqueue = new JTable();
-		table_loadqueue.setCellSelectionEnabled(true);
-		table_loadqueue.getTableHeader().setReorderingAllowed(false);
-		scrollPane_loadqueue.setViewportView(table_loadqueue);
-		
-		JScrollPane scrollPane_storequeue = new JScrollPane();
-		scrollPane_storequeue.setBounds(661, 166, 174, 67);
-		frmSimulator.getContentPane().add(scrollPane_storequeue);
-		
-		table_storequeue = new JTable();
-		table_storequeue.setCellSelectionEnabled(true);
-		table_storequeue.getTableHeader().setReorderingAllowed(false);
-		scrollPane_storequeue.setViewportView(table_storequeue);
-		
 		JScrollPane scrollPane_mem = new JScrollPane();
 		scrollPane_mem.setBounds(42, 376, 234, 39);
 		frmSimulator.getContentPane().add(scrollPane_mem);
@@ -158,7 +154,7 @@ public class UserWindow {
 		scrollPane_mem.setViewportView(table_mem);
 		
 		JScrollPane scrollPane_station = new JScrollPane();
-		scrollPane_station.setBounds(327, 305, 508, 141);
+		scrollPane_station.setBounds(327, 305, 508, 200);
 		frmSimulator.getContentPane().add(scrollPane_station);
 		
 		table_station = new JTable();
@@ -167,7 +163,7 @@ public class UserWindow {
 		scrollPane_station.setViewportView(table_station);
 		
 		JScrollPane scrollPane_fu = new JScrollPane();
-		scrollPane_fu.setBounds(114, 490, 721, 60);
+		scrollPane_fu.setBounds(114, 572, 721, 55);
 		frmSimulator.getContentPane().add(scrollPane_fu);
 		
 		table_fu = new JTable();
@@ -188,14 +184,6 @@ public class UserWindow {
 		lblRunningState.setBounds(398, 115, 122, 15);
 		frmSimulator.getContentPane().add(lblRunningState);
 		
-		JLabel lblLoadQueue = new JLabel("Load Queue");
-		lblLoadQueue.setBounds(713, 31, 122, 15);
-		frmSimulator.getContentPane().add(lblLoadQueue);
-		
-		JLabel lblStoreQueue = new JLabel("Store Queue");
-		lblStoreQueue.setBounds(713, 141, 122, 15);
-		frmSimulator.getContentPane().add(lblStoreQueue);
-		
 		JLabel lblMemory = new JLabel("Memory");
 		lblMemory.setBounds(114, 351, 122, 15);
 		frmSimulator.getContentPane().add(lblMemory);
@@ -209,20 +197,16 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(lblReservation);
 		
 		JLabel lblFloatRegistersfu = new JLabel("Float Registers(FU)");
-		lblFloatRegistersfu.setBounds(374, 467, 242, 15);
+		lblFloatRegistersfu.setBounds(359, 547, 242, 15);
 		frmSimulator.getContentPane().add(lblFloatRegistersfu);
 		
 		JLabel lblRegisterNumber = new JLabel("Reg Number");
-		lblRegisterNumber.setBounds(16, 491, 88, 15);
+		lblRegisterNumber.setBounds(16, 573, 88, 15);
 		frmSimulator.getContentPane().add(lblRegisterNumber);
 		
-		JLabel lblExpression = new JLabel("Expression");
-		lblExpression.setBounds(16, 516, 65, 15);
+		JLabel lblExpression = new JLabel("state");
+		lblExpression.setBounds(16, 592, 65, 15);
 		frmSimulator.getContentPane().add(lblExpression);
-		
-		JLabel lblData = new JLabel("data");
-		lblData.setBounds(16, 535, 65, 15);
-		frmSimulator.getContentPane().add(lblData);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(42, 41, 519, 46);
@@ -232,12 +216,42 @@ public class UserWindow {
 		JButton btnInputInstr = new JButton("");
 		btnInputInstr.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				do_A();
+				do_Run();
 			}
 		});
 		btnInputInstr.setIcon(new ImageIcon(MyImage.img_a));
 		btnInputInstr.setBorder(BorderFactory.createEmptyBorder());	
 		panel.add(btnInputInstr);
+		
+		JButton btnStop = new JButton("");
+		btnStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_clear();
+			}
+		});
+		
+		JButton btnSetClock = new JButton("");
+		btnSetClock.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_clock();
+			}
+		});
+		btnSetClock.setIcon(new ImageIcon(MyImage.img_clock));
+		btnSetClock.setBorder(BorderFactory.createEmptyBorder());
+		panel.add(btnSetClock);
+		btnStop.setIcon(new ImageIcon(MyImage.img_stop));
+		btnStop.setBorder(BorderFactory.createEmptyBorder());	
+		panel.add(btnStop);
+		
+		JButton btnNext = new JButton("");
+		btnNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_next();
+			}
+		});
+		btnNext.setIcon(new ImageIcon(MyImage.img_next));
+		btnNext.setBorder(BorderFactory.createEmptyBorder());
+		panel.add(btnNext);
 		
 		JSeparator separator = new JSeparator();
 		panel.add(separator);
@@ -248,32 +262,6 @@ public class UserWindow {
 				do_export_reg();
 			}
 		});
-		btnExportReg.setIcon(new ImageIcon(MyImage.img_export_reg));
-		btnExportReg.setBorder(BorderFactory.createEmptyBorder());	
-		panel.add(btnExportReg);
-		
-		JButton btnExportMem = new JButton("");
-		btnExportMem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				do_export_mem();
-			}
-		});
-		btnExportMem.setIcon(new ImageIcon(MyImage.img_export_mem));
-		btnExportMem.setBorder(BorderFactory.createEmptyBorder());	
-		panel.add(btnExportMem);
-		
-		JButton btnStop = new JButton("");
-		btnStop.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				do_stop();
-			}
-		});
-		btnStop.setIcon(new ImageIcon(MyImage.img_stop));
-		btnStop.setBorder(BorderFactory.createEmptyBorder());	
-		panel.add(btnStop);
-		
-		JSeparator separator_1 = new JSeparator();
-		panel.add(separator_1);
 		
 		JButton btnSetReg = new JButton("");
 		btnSetReg.addActionListener(new ActionListener() {
@@ -281,6 +269,15 @@ public class UserWindow {
 				do_set_reg();
 			}
 		});
+		
+		JButton btn_loadfile = new JButton("");
+		btn_loadfile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_load_from_file();
+			}
+		});
+		btn_loadfile.setIcon(new ImageIcon(MyImage.img_load));
+		panel.add(btn_loadfile);
 		btnSetReg.setIcon(new ImageIcon(MyImage.img_reg));
 		btnSetReg.setBorder(BorderFactory.createEmptyBorder());
 		panel.add(btnSetReg);
@@ -295,176 +292,126 @@ public class UserWindow {
 		btnSetMem.setBorder(BorderFactory.createEmptyBorder());
 		panel.add(btnSetMem);
 		
-		JSeparator separator_2 = new JSeparator();
-		panel.add(separator_2);
+		JSeparator separator_1 = new JSeparator();
+		panel.add(separator_1);
+		btnExportReg.setIcon(new ImageIcon(MyImage.img_export_reg));
+		btnExportReg.setBorder(BorderFactory.createEmptyBorder());	
+		panel.add(btnExportReg);
 		
-		JButton btnSetClock = new JButton("");
-		btnSetClock.addActionListener(new ActionListener() {
+		JButton btnExportMem = new JButton("");
+		btnExportMem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				do_clock();
+				do_export_mem();
 			}
 		});
-		btnSetClock.setIcon(new ImageIcon(MyImage.img_clock));
-		btnSetClock.setBorder(BorderFactory.createEmptyBorder());
-		panel.add(btnSetClock);
-		
-		JButton btnNext = new JButton("");
-		btnNext.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				do_next();
-			}
-		});
-		btnNext.setIcon(new ImageIcon(MyImage.img_next));
-		btnNext.setBorder(BorderFactory.createEmptyBorder());
-		panel.add(btnNext);
+		btnExportMem.setIcon(new ImageIcon(MyImage.img_export_mem));
+		btnExportMem.setBorder(BorderFactory.createEmptyBorder());	
+		panel.add(btnExportMem);
 		
 		JButton btnAddInstr = new JButton("");
-		btnAddInstr.setBounds(280, 267, 28, 28);
+		btnAddInstr.setBounds(286, 272, 25, 25);
 		btnAddInstr.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				isClickedDel = false;
-				DefaultTableModel model = ((DefaultTableModel) table_instrqueue.getModel());
-				model.addRow(new Object[4]);
+				do_add_instr();
 			}
 		});
 		btnAddInstr.setIcon(new ImageIcon(MyImage.img_add));
 		btnAddInstr.setBorder(BorderFactory.createEmptyBorder());
 		frmSimulator.getContentPane().add(btnAddInstr);
 		
-		
-		JButton btnDelInstr = new JButton("");
-		btnDelInstr.setBorder(BorderFactory.createEmptyBorder());
-		btnDelInstr.setBounds(250, 105, 28, 28);
-		btnDelInstr.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				isClickedDel = true;
-				DefaultTableModel model = ((DefaultTableModel) table_instrqueue.getModel());
-				model.removeRow(model.getRowCount() - 1);
-				
-			}
-		});
-		btnDelInstr.setIcon(new ImageIcon(MyImage.img_sub));
-		frmSimulator.getContentPane().add(btnDelInstr);
-		
 		JLabel lbClock = new JLabel("Clock");
-		lbClock.setBounds(74, 425, 40, 40);
+		lbClock.setBounds(73, 478, 40, 40);
 		lbClock.setIcon(new ImageIcon(MyImage.img_pc));
 		lbClock.setBorder(BorderFactory.createEmptyBorder());	
 		frmSimulator.getContentPane().add(lbClock);
 		
 		label_clock = new JLabel("0");
-		label_clock.setBounds(180, 440, 54, 15);
+		label_clock.setBounds(178, 491, 54, 15);
 		frmSimulator.getContentPane().add(label_clock);
 		
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 884, 21);
-		frmSimulator.getContentPane().add(menuBar);
-		
-		JMenu mnNewMenu = new JMenu("File[E]");
-		menuBar.add(mnNewMenu);
-		
-		JMenuItem mntmNewMenuItem = new JMenuItem("从文件导入");
-		mntmNewMenuItem.addActionListener(new ActionListener(){
-		    public void actionPerformed(ActionEvent event)
-		    {
-		    	do_load_from_file();
-		    }});
-		mnNewMenu.add(mntmNewMenuItem);
-
-		JMenu mnInput = new JMenu("Input[I]");
-		menuBar.add(mnInput);
-		
-		JMenu mnAssigns = new JMenu("Assign[S]");
-		menuBar.add(mnAssigns);
-		
-		JMenu mnRun = new JMenu("Run[R]");
-		menuBar.add(mnRun);
-		
-		JMenuItem mnItem_run = new JMenuItem("运行");
-		mnItem_run.addActionListener(new ActionListener(){
-		    public void actionPerformed(ActionEvent event)
-		    {
-		    	do_run();
-		    }});
-		mnRun.add(mnItem_run);
-		
-		JMenuItem mnItem_RunOne = new JMenuItem("单步运行");
-		mnItem_RunOne.addActionListener(new ActionListener(){
-		    public void actionPerformed(ActionEvent event)
-		    {
-		    	do_next();
-		    }});
-		mnRun.add(mnItem_RunOne);
-		
-		
-		JMenu mnMode = new JMenu("Mode[C]");
-		menuBar.add(mnMode);
-		
-		JMenu mnHelp = new JMenu("Help[H]");
-		menuBar.add(mnHelp);
-		
-		JLabel lbLoad1 = new JLabel("Load1");
-		lbLoad1.setBounds(607, 77, 88, 15);
-		frmSimulator.getContentPane().add(lbLoad1);
-		
-		JLabel lbLoad2 = new JLabel("Load2");
-		lbLoad2.setBounds(607, 90, 88, 15);
-		frmSimulator.getContentPane().add(lbLoad2);
-		
-		JLabel lbLoad3 = new JLabel("Load3");
-		lbLoad3.setBounds(607, 108, 88, 15);
-		frmSimulator.getContentPane().add(lbLoad3);
-		
-		JLabel lbStore1 = new JLabel("Store1");
-		lbStore1.setBounds(607, 185, 88, 15);
-		frmSimulator.getContentPane().add(lbStore1);
-		
-		JLabel lbStore2 = new JLabel("Store2");
-		lbStore2.setBounds(607, 203, 88, 15);
-		frmSimulator.getContentPane().add(lbStore2);
-		
-		JLabel lbStore3 = new JLabel("Store3");
-		lbStore3.setBounds(607, 218, 88, 15);
-		frmSimulator.getContentPane().add(lbStore3);
-		
-		JComboBox<Integer> comboBox = new JComboBox<Integer>();
-		comboBox.setEditable(true);
-		comboBox.setBounds(220, 345, 54, 21);
+		cb_addr = new JComboBox<Integer>();
+		cb_addr.setEditable(true);
+		cb_addr.setBounds(220, 345, 54, 21);
 		for (int i = 0; i < 4096; i++)
-			comboBox.addItem(i);
-		comboBox.setSelectedIndex(0);
-		comboBox.addActionListener (new ActionListener () {
+			cb_addr.addItem(i);
+		cb_addr.setSelectedIndex(0);
+		cb_addr.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
-		        update_mem_origin_addr((int)comboBox.getSelectedItem());
+		        update_mem_origin_addr((int)cb_addr.getSelectedItem());
 		    }
 		});
-		frmSimulator.getContentPane().add(comboBox);
+		frmSimulator.getContentPane().add(cb_addr);
 		
 		JPanel panel_addIns = new JPanel();
 		panel_addIns.setBounds(42, 275, 234, 20);
 		frmSimulator.getContentPane().add(panel_addIns);
 		panel_addIns.setLayout(new GridLayout(1, 4, 0, 0));
 		
-		JComboBox comboBox_1 = new JComboBox();
-		panel_addIns.add(comboBox_1);
+		cb_ins0 = new JComboBox<String>();
+		panel_addIns.add(cb_ins0);
 		
-		textField = new JTextField();
-		panel_addIns.add(textField);
-		textField.setColumns(10);
+		cb_ins0.addItem("");
+		for (String s: Config.cmds) {
+			cb_ins0.addItem(s);
+		}
 		
-		textField_1 = new JTextField();
-		panel_addIns.add(textField_1);
-		textField_1.setColumns(10);
+		cb_ins1 = new JComboBox<String>();
+		cb_ins1.setEditable(true);
+		panel_addIns.add(cb_ins1);
 		
-		textField_2 = new JTextField();
-		panel_addIns.add(textField_2);
-		textField_2.setColumns(10);
 		
+		cb_ins2 = new JComboBox<String>();
+		cb_ins2.setEditable(true);
+		panel_addIns.add(cb_ins2);
+		
+		cb_ins3 = new JComboBox<String>();
+		cb_ins3.setEditable(true);
+		panel_addIns.add(cb_ins3);
+		
+		JScrollPane panel_console = new JScrollPane();
+		panel_console.setBounds(598, 60, 276, 200);
+		frmSimulator.getContentPane().add(panel_console);
+		
+		ta_console = new JTextArea();
+		ta_console.setBackground(new Color(255, 255, 255));
+		ta_console.setForeground(Color.WHITE);
+		ta_console.setFont(new Font("Courier New", Font.PLAIN, 13));
+		ta_console.setEnabled(false);
+		ta_console.setTabSize(4);
+		panel_console.setViewportView(ta_console);
+		
+		JLabel lblConsole = new JLabel("Console:");
+		lblConsole.setBounds(598, 35, 88, 15);
+		frmSimulator.getContentPane().add(lblConsole);
+		
+		JLabel lblData_1 = new JLabel("data");
+		lblData_1.setBounds(16, 610, 65, 15);
+		frmSimulator.getContentPane().add(lblData_1);
+		
+		cb_ins1.addItem("");
+		cb_ins2.addItem("");
+		cb_ins3.addItem("");
+		for (int i = 0; i <= 10; i++){
+			cb_ins1.addItem("F"+i);
+			cb_ins2.addItem("F"+i);
+			cb_ins3.addItem("F"+i);
+		}
+		for (int i = 0; i < 4096; i++){
+			cb_ins1.addItem(""+i);
+			cb_ins2.addItem(""+i);
+			cb_ins3.addItem(""+i);
+		}
 
 		
 
 		
 		update_name();
+		frmSimulator.addComponentListener(new ComponentAdapter() {
+	        @Override
+	        public void componentResized(ComponentEvent e) {
+	            resizeColumns(table_state);
+	        }
+	    });
 		add_table_listener();
 	}
 	
@@ -473,33 +420,19 @@ public class UserWindow {
 			DefaultTableModel model = null;
 		    model = (DefaultTableModel) table_instrqueue.getModel();
 		    model.setColumnIdentifiers(Config.instr_queue_name);
-		    model.fireTableDataChanged();
 		    
 		    model = (DefaultTableModel) table_state.getModel();
 		    model.setColumnIdentifiers(Config.run_state_name);
-		    model.fireTableDataChanged();
-		    
-		    model = (DefaultTableModel) table_loadqueue.getModel();
-		    model.setColumnIdentifiers(Config.load_queue_name);
-		    model.fireTableDataChanged();	
-		    
-		    model = (DefaultTableModel) table_storequeue.getModel();
-		    model.setColumnIdentifiers(Config.store_queue_name);
-		    model.fireTableDataChanged();	
+	
 		    
 		    model = (DefaultTableModel) table_station.getModel();
 		    model.setColumnIdentifiers(Config.reserv_sta_name);
-		    model.fireTableDataChanged();	
+
 		    
 		    model = (DefaultTableModel) table_fu.getModel();
 		    model.setColumnIdentifiers(Config.fu_name);
 		    model.fireTableDataChanged();	
-		    
-//		    model = (DefaultTableModel) table_ru.getModel();
-//		    model.setColumnIdentifiers(Config.ru_name);
-//		    model.fireTableDataChanged();	
-		    
-		    
+		    		    
 		} catch (Exception e) {
 			
 		}
@@ -511,15 +444,10 @@ public class UserWindow {
 		         int row = e.getFirstRow();
 		         int row2 = e.getLastRow();
 		         
-		         System.out.println("instr t change " + e.getColumn() + " "+ row + row2);
 		         int col = e.getColumn();
-		         System.out.println(row + " " + col);
 		         if (col >= 0) { // user change data in table
 		        	 update_table_data(DataLoader.DataType.INSTR_QUEUE, e.getFirstRow(), e.getColumn(), get_table_data(table_instrqueue, row, col), false);
-		         } else if (isClickedDel){ // user clicked del a row
-		        	 update_table_data(DataLoader.DataType.INSTR_QUEUE, -1, -1, "", true);
-		         }
-		         
+		         } 
 		         else { // add row 
 		        	 
 		         }
@@ -531,7 +459,6 @@ public class UserWindow {
 		      public void tableChanged(TableModelEvent e) {
 		         int row = 0;
 		         int col = e.getColumn();
-		         System.out.println(row + " " + col);
 		         if (col >= 0) { // user change data in table
 		        	 update_table_data(DataLoader.DataType.MEM, e.getFirstRow(), e.getColumn(), get_table_data(table_mem, row, col), false);
 		         } 		   
@@ -556,6 +483,17 @@ public class UserWindow {
 	    });
 	}
 	
+	private void resizeColumns(JTable jTable1) {
+	    int tW = jTable1.getWidth();
+	    TableColumn column;
+	    TableColumnModel jTableColumnModel = jTable1.getColumnModel();
+	    int cantCols = jTableColumnModel.getColumnCount();
+	    for (int i = 0; i < cantCols; i++) {
+	        column = jTableColumnModel.getColumn(i);
+	        int pWidth = Math.round(Config.columnWidthPercentage[i] * tW);
+	        column.setPreferredWidth(pWidth);
+	    }
+	}
 	
 	private String get_table_data(JTable table, int row, int col) {
 		DefaultTableModel model = ((DefaultTableModel) table.getModel());
@@ -578,51 +516,208 @@ public class UserWindow {
 		}
 	}
 	
-	public void do_run() {
-		System.out.println("run");
-//		Clock.run();
-	}
 	
 	/**
 	 * 单步执行下一条指令
 	 */
 	public void do_next() {
 		Clock.run_one_step();
-		DataLoader.update_all(addr_mem);
 	}
 	
 	/**
 	 * 导出内存中的数据
 	 */
 	public void do_export_mem() {
-		System.out.println("export mem");
+		String path = "";
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int result = fileChooser.showOpenDialog(frmSimulator);
+		if (result == JFileChooser.APPROVE_OPTION) {
+		    File selectedFile = fileChooser.getSelectedFile();
+		    path = selectedFile.getAbsolutePath();
+		    System.out.println("Export memory file: " + path);
+		    try {
+			    File file =new File(path+"\\"+ConstDefinition.MEM_FILENAME);
+				//if file doesnt exists, then create it
+				if(!file.exists()) {
+					file.createNewFile();
+				}
+				//true = append file, false = write directly
+				PrintStream out = new PrintStream(file);
+				for (int i=0; i<ConstDefinition.MEM_NUM; i++) {
+					System.out.println(String.valueOf(Clock.mem.get(i)));
+					out.println(String.valueOf(Clock.mem.get(i)));
+				}
+				out.close();
+	
+			}
+			catch(IOException e){
+				System.out.println("导出内存数据出错！");
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
 	 * 导出寄存器中的数据
 	 */
 	public void do_export_reg() {
-		System.out.println("export reg");
+		String path = "";
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int result = fileChooser.showOpenDialog(frmSimulator);
+		if (result == JFileChooser.APPROVE_OPTION) {
+		    File selectedFile = fileChooser.getSelectedFile();
+		    path = selectedFile.getAbsolutePath();
+		    System.out.println("Export register file: " + path);
+		    try {
+			    File file =new File(path+"\\"+ConstDefinition.REG_FILENAME);
+				//if file doesnt exists, then create it
+				if(!file.exists()) {
+					file.createNewFile();
+				}
+				//true = append file, false = write directly
+				PrintStream out = new PrintStream(file);
+				for (int i=0; i<ConstDefinition.FP_NUM; i++) {
+					System.out.println(String.valueOf(Clock.fp.get(i)));
+					out.println(String.valueOf(Clock.fp.get(i)));
+				}
+				out.close();
+	
+			}
+			catch(IOException e){
+				System.out.println("导出寄存器数据出错！");
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void do_clock() {
 		System.out.println("clock");
+		timeSetter.setVisible(true);
 	}
 	
 	public void do_set_mem() {
-		System.out.println("mem set");
+		String path = "";
+		JFileChooser fileChooser = new JFileChooser();
+		int result = fileChooser.showOpenDialog(frmSimulator);
+		if (result == JFileChooser.APPROVE_OPTION) {
+		    File selectedFile = fileChooser.getSelectedFile();
+		    path = selectedFile.getAbsolutePath();
+		    System.out.println("Load memory file: " + path);
+		    // n行double->n个地址
+		    File file=new File(path);
+		    String encoding = "utf-8";
+		    try {
+			    if(file.isFile() && file.exists()){ //判断文件是否存在
+	                InputStreamReader read = new InputStreamReader(new FileInputStream(file),encoding);//考虑到编码格式
+	                BufferedReader bufferedReader = new BufferedReader(read);
+	                String lineTxt = null;
+	                int k = 0;
+	                while((lineTxt = bufferedReader.readLine()) != null && k<ConstDefinition.MEM_NUM){
+	                	Clock.mem.set(k, Double.valueOf(lineTxt));
+	                	k++;
+	                }
+	                for (int i=0; i<k; i++)
+	                	System.out.println(Clock.mem.get(i));
+	                read.close();
+			    }
+		    }
+		    catch (Exception e) {
+	            System.out.println("读取内存文件内容出错");
+	            e.printStackTrace();
+			}
+		}
 	}
 	
-	public void do_set_reg(){
-		System.out.println("reg set");
+	public void do_set_reg() {
+		String path = "";
+		JFileChooser fileChooser = new JFileChooser();
+		int result = fileChooser.showOpenDialog(frmSimulator);
+		if (result == JFileChooser.APPROVE_OPTION) {
+		    File selectedFile = fileChooser.getSelectedFile();
+		    path = selectedFile.getAbsolutePath();
+		    System.out.println("Load register file: " + path);
+		    // 11行double->11个寄存器
+		    File file=new File(path);
+		    String encoding = "utf-8";
+		    try {
+			    if(file.isFile() && file.exists()){ //判断文件是否存在
+	                InputStreamReader read = new InputStreamReader(new FileInputStream(file),encoding);//考虑到编码格式
+	                BufferedReader bufferedReader = new BufferedReader(read);
+	                String lineTxt = null;
+	                int k = 0;
+	                while((lineTxt = bufferedReader.readLine()) != null && k<ConstDefinition.FP_NUM){
+	                	Clock.fp.set(k, Double.valueOf(lineTxt));
+	                	k++;
+	                }
+//	                for (int i=0; i<ConstDefinition.FP_NUM; i++)
+//	                	System.out.println(Clock.fp.get(i));
+	                read.close();
+			    }
+		    }
+		    catch (Exception e) {
+	            System.out.println("读取寄存器文件内容出错");
+	            e.printStackTrace();
+			}
+		}
+		DataLoader.update_all(-1);
 	}
 	
-	public void do_stop() {
+	public void do_clear() {
 		System.out.println("stop");
+		Clock.clear();
+		cb_addr.setSelectedIndex(0);
+		DataLoader.update_all(0);
 	}
 	
-	public void do_A() {
-		System.out.println("A");
+	public void do_Run() {
+		System.out.println("run");
+		
+//		Clock.run();
+//		DataLoader.update_all(0);
+		
+		if (thread != null) {
+			thread.stop();
+			thread = null;
+		}
+		else {
+			thread = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					Clock.run();
+				}
+			});
+			thread.start();
+		}
+//		try {
+//			thread.join();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+//		if (thread != null) {
+//			runnable.terminate();
+//			try {
+//				thread.join();
+//				System.out.println("Thread end.");
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			thread = null;
+//		}
+//		else {
+////			System.out.println("lslls");
+//			runnable = new ClockRun() ;
+//			thread = new Thread(runnable);
+////	        System.out.println("Starting thread: " + thread);
+//			thread.start();
+//		}
+		
 	}
 	
 	
@@ -644,10 +739,12 @@ public class UserWindow {
 		
 			break;
 		case MEM:
-			System.out.printf("mem updata data %d %d: %s\n", row, col, newdata);
-			if (isdel) {
-				System.out.println("del row");
+			try {
+				Clock.mem.set(addr_mem + col,Double.parseDouble(newdata));
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+			
 			break;
 		case RESERV_STARION:
 	
@@ -674,5 +771,51 @@ public class UserWindow {
 		addr_mem = addr;
 		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		DataLoader.update_all(addr);
+	}
+	
+	public void do_add_instr() {
+		String ret = "";
+		ret = (String) cb_ins0.getSelectedItem();
+		if (ret.equals(""))
+			return;
+		
+		String op1 = (String) cb_ins1.getSelectedItem();
+		String op2 = (String) cb_ins2.getSelectedItem();
+		String op3 = (String) cb_ins3.getSelectedItem();
+		
+		ret += op1.equals("") ? "" : " " + op1;
+		ret += op2.equals("") ? "" : "," + op2;
+		ret += op3.equals("") ? "" : "," + op3;
+		
+		
+		ArrayList<String> instrs = new ArrayList<String>();
+		instrs.add(ret);
+		
+		Clock.queue.load(instrs);
+		
+		DataLoader.update_all(addr_mem);
+	}
+	
+	public class ClockRun implements Runnable {
+			
+	    private volatile boolean running = true;
+
+	    public void terminate() {
+	        running = false;
+	    }
+		
+		@Override
+		public void run() {
+//			System.out.println("" + running + " : " + Clock.get_clock());
+			while(running && Clock.get_clock() < get_circles()) {
+				Clock.run_one_step();
+				try {
+					Thread.sleep(get_space());
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

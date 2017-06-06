@@ -16,13 +16,12 @@ public class MainDriver {
 		window = new UserWindow();
 		window.frmSimulator.setVisible(true);
 		dataLoader = new DataLoader(window);
+		
 		init_data();
 	}
 	
-	private static void init_data() {
-//		DataLoader.update_table_mem(0);
-//		DataLoader.update_table_fu();
-//		DataLoader.update_table_reserv();
+	public static void init_data() {
 		DataLoader.update_all(0);
+		DataLoader.clear_console();
 	}
 }

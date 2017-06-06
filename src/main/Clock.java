@@ -1,7 +1,11 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
+import gui.DataLoader;
+import gui.UserWindow;
 import kernel.Adder;
 import kernel.Loader;
 import kernel.FP;
@@ -11,7 +15,9 @@ import kernel.Multiplier;
 import kernel.ReserveStackEntry;
 import kernel.Storer;
 import kernel.FP.REG;
+import sun.security.action.GetBooleanAction;
 import util.ConstDefinition;
+import util.Instr;
 
 public class Clock {
 	public static Adder adder;
@@ -24,6 +30,7 @@ public class Clock {
 	// 保留站组
 	public static ReserveStackEntry[] addGroup, mulGroup, loadGroup, storeGroup;
 	public static Double CDB_DATA;
+	public static ArrayList<Instr> running_state = new ArrayList<Instr>();
 	public static void sim_init() {
 		adder = new Adder();
 		multiplier = new Multiplier();
@@ -53,18 +60,34 @@ public class Clock {
 	}
 	
 	public static void print_reserver_state() {
-//		ReserveStackEntry.print(addGroup);
-//		ReserveStackEntry.print(mulGroup);
+		ReserveStackEntry.print(addGroup);
+		ReserveStackEntry.print(mulGroup);
 		ReserveStackEntry.print(loadGroup);
 		ReserveStackEntry.print(storeGroup);
 	}
-	
 	public static void print_fp_state() {
 		FP.print(fp);
 	}
 	
+	public static ArrayList<ArrayList<String>> get_running_state() {
+		ArrayList<ArrayList<String>> states = new ArrayList<ArrayList<String>>();
+		Iterator<Instr> it = running_state.iterator();
+		while (it.hasNext()) {
+			Instr itr = it.next();
+			if (itr == null) continue;
+			
+			ArrayList<String> info = new ArrayList<String>();
+			info.add(itr.toString());
+			info.add("" + itr.state.flow);
+			info.add("" + itr.state.running);
+			info.add("" + itr.state.write_back);
+			states.add(info);
+			
+			if (itr.state.mark) it.remove();
+		}
+		return states;
+	}
 	public static ArrayList<ArrayList<String>> get_instr_queue() {
-		System.out.println(queue.get_instr_queue().size());
 		return queue.get_instr_queue();
 	}
 	public static ArrayList<ArrayList<String>> get_fake_memory(int begin) {
@@ -82,28 +105,70 @@ public class Clock {
 		return reserve_station;
 	}
 	
-	private static boolean flag = false;
+	private static boolean flag = true;
 	private static int clock = 0;
-	private static int clock_max = 100;
+	private static int clock_max = 1000;
+	private static long timeout = 0;
 	
+	public static int get_clock_max() {
+		return clock_max;
+	}
+	
+	
+	public static long get_timeout() {
+		return timeout;
+	}
 	public static void run() {
-		flag = true;
 		while (flag && clock < clock_max) {
+			
 			run_one_step();
+			try {
+				TimeUnit.MILLISECONDS.sleep(timeout);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		clock = 0;
+	}
+	public static void setTimeOut(long _timeout) {
+		if (_timeout <= 0) return ;
+		timeout = _timeout;
+	}
+	public static void setMaxCycle(int max) {
+		if (max <= 0) return ;
+		clock_max = max;
 	}
 	public static void run_one_step() {
+		clock ++;
 		queue.activate();
 		adder.activate();
 		multiplier.activate();
 		loader.activate();
 		storer.activate();
-		clock ++;
+		DataLoader.update_all(MainDriver.window.addr_mem);
 	}
 	public static void stop() {
-		flag = false;
+		flag = !flag;
 	}
-	
+	public static void clear() {
+		ReserveStackEntry.clear(addGroup);
+		ReserveStackEntry.clear(mulGroup);
+		ReserveStackEntry.clear(loadGroup);
+		ReserveStackEntry.clear(storeGroup);
+		queue.clear();
+		adder.clear();
+		multiplier.clear();
+		loader.clear();
+		storer.clear();
+		FP.clear(fp);
+		mem.clear();
+		running_state.clear();
+		clock = 0;
+		clock_max = 1000;
+		timeout = 0;
+		flag = true;
+	}
 	public static int get_clock() {
 		return clock;
 	}

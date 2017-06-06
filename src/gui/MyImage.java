@@ -18,6 +18,7 @@ public class MyImage {
 	public static Image img_add;
 	public static Image img_sub;
 	public static Image img_pc;
+	public static Image img_load;
 	
 	
 	public static int NEW_WIDTH = 36;
@@ -34,10 +35,11 @@ public class MyImage {
 			img_export_mem = ImageIO.read(new File("static/images/export_mem.png")).getScaledInstance( NEW_WIDTH, NEW_HEIGHT,  java.awt.Image.SCALE_SMOOTH );; 
 			img_export_reg = ImageIO.read(new File("static/images/export_reg.png")).getScaledInstance( NEW_WIDTH, NEW_HEIGHT,  java.awt.Image.SCALE_SMOOTH );;
 			img_a = ImageIO.read(new File("static/images/a.png")).getScaledInstance( NEW_WIDTH, NEW_HEIGHT,  java.awt.Image.SCALE_SMOOTH );;
-			img_add = ImageIO.read(new File("static/images/add.png")).getScaledInstance( NEW_WIDTH, NEW_HEIGHT,  java.awt.Image.SCALE_SMOOTH );;
+			img_add = ImageIO.read(new File("static/images/add.png")).getScaledInstance( 25, 25,  java.awt.Image.SCALE_SMOOTH );;
 			img_sub = ImageIO.read(new File("static/images/sub.png")).getScaledInstance( NEW_WIDTH, NEW_HEIGHT,  java.awt.Image.SCALE_SMOOTH );;
 			img_pc = ImageIO.read(new File("static/images/pc.png")).getScaledInstance( 40, 40,  java.awt.Image.SCALE_SMOOTH );;
-
+			img_load = ImageIO.read(new File("static/images/load.png")).getScaledInstance( 40, 40,  java.awt.Image.SCALE_SMOOTH );;
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

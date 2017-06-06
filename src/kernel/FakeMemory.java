@@ -35,6 +35,11 @@ public class FakeMemory {
 			m[i] = 0.0;
 		}
 	}
+	public void clear() {
+		for (int i = 0; i < ConstDefinition.MEM_NUM; ++i) {
+			m[i] = 0.0;
+		}
+	}
 	/*void run(Instr instr) {
 		this.instr = instr;
 		if (instr.op == OP.LOAD) {

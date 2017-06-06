@@ -1,7 +1,6 @@
 package kernel;
 
 import main.Clock;
-import main.MainDriver;
 import util.ConstDefinition;
 import util.Instr;
 import util.Instr.OP;
@@ -13,6 +12,11 @@ public class Adder {
 	
 	public int getTime() {
 		return time;
+	}
+	
+	public void clear() {
+		time = 0;
+		crRse = null;
 	}
 	
 	public void activate() {
