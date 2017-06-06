@@ -105,6 +105,7 @@ public class Clock {
 	private static int clock = 0;
 	private static int clock_max = 1000;
 	private static long timeout = 0;
+	private static int step = 1;
 	
 	public static int get_clock_max() {
 		return clock_max;
@@ -115,21 +116,34 @@ public class Clock {
 		return timeout;
 	}
 	public static void run() {
-		while (flag && clock < clock_max) {
-			
+//		while (flag && clock < clock_max) {
+//			
+//			run_one_step();
+//			try {
+//				TimeUnit.MILLISECONDS.sleep(timeout);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		clock = 0;
+		
+		for (int i = 0; i < step; ++i)
 			run_one_step();
-			try {
-				TimeUnit.MILLISECONDS.sleep(timeout);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		clock = 0;
 	}
 	public static void setTimeOut(long _timeout) {
 		if (_timeout <= 0) return ;
 		timeout = _timeout;
 	}
+	
+	public static void setStep(int _step) {
+		if (_step <= 0) return;
+		step = _step;
+	}
+	
+	public static int getStep() {
+		return step;
+	}
+	
 	public static void setMaxCycle(int max) {
 		if (max <= 0) return ;
 		clock_max = max;

@@ -93,8 +93,8 @@ public class UserWindow {
 	JComboBox<Integer> cb_addr;
 	public static JTextArea ta_console;
 	public TimeSetter timeSetter;
-	public Thread thread = null;
-	public ClockRun runnable = null;
+//	public Thread thread = null;
+//	public ClockRun runnable = null;
 	/**
 	 * Create the application.
 	 */
@@ -102,9 +102,6 @@ public class UserWindow {
 		initialize();
 	}
 	
-	public int get_circles() {
-		return timeSetter.circles;
-	}
 	
 	public long get_space() {
 		return timeSetter.space;
@@ -672,52 +669,7 @@ public class UserWindow {
 	}
 	
 	public void do_Run() {
-		System.out.println("run");
-		
-//		Clock.run();
-//		DataLoader.update_all(0);
-		
-		if (thread != null) {
-			thread.stop();
-			thread = null;
-		}
-		else {
-			thread = new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					Clock.run();
-				}
-			});
-			thread.start();
-		}
-//		try {
-//			thread.join();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-//		if (thread != null) {
-//			runnable.terminate();
-//			try {
-//				thread.join();
-//				System.out.println("Thread end.");
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			thread = null;
-//		}
-//		else {
-////			System.out.println("lslls");
-//			runnable = new ClockRun() ;
-//			thread = new Thread(runnable);
-////	        System.out.println("Starting thread: " + thread);
-//			thread.start();
-//		}
-		
+		Clock.run();
 	}
 	
 	
@@ -796,26 +748,26 @@ public class UserWindow {
 		DataLoader.update_all(addr_mem);
 	}
 	
-	public class ClockRun implements Runnable {
-			
-	    private volatile boolean running = true;
-
-	    public void terminate() {
-	        running = false;
-	    }
-		
-		@Override
-		public void run() {
-//			System.out.println("" + running + " : " + Clock.get_clock());
-			while(running && Clock.get_clock() < get_circles()) {
-				Clock.run_one_step();
-				try {
-					Thread.sleep(get_space());
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+//	public class ClockRun implements Runnable {
+//			
+//	    private volatile boolean running = true;
+//
+//	    public void terminate() {
+//	        running = false;
+//	    }
+//		
+//		@Override
+//		public void run() {
+////			System.out.println("" + running + " : " + Clock.get_clock());
+//			while(running && Clock.get_clock() < get_circles()) {
+//				Clock.run_one_step();
+//				try {
+//					Thread.sleep(get_space());
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//	}
 }
