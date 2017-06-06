@@ -211,6 +211,7 @@ public class UserWindow {
 		panel.setLayout(new GridLayout(0, 11, 0, 0));
 		
 		JButton btnInputInstr = new JButton("");
+		btnInputInstr.setToolTipText("连续执行");
 		btnInputInstr.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				do_Run();
@@ -221,6 +222,7 @@ public class UserWindow {
 		panel.add(btnInputInstr);
 		
 		JButton btnStop = new JButton("");
+		btnStop.setToolTipText("重置");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				do_clear();
@@ -228,6 +230,7 @@ public class UserWindow {
 		});
 		
 		JButton btnSetClock = new JButton("");
+		btnSetClock.setToolTipText("设置一次执行的周期数");
 		btnSetClock.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				do_clock();
@@ -241,6 +244,7 @@ public class UserWindow {
 		panel.add(btnStop);
 		
 		JButton btnNext = new JButton("");
+		btnNext.setToolTipText("单步运行");
 		btnNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				do_next();
@@ -254,6 +258,7 @@ public class UserWindow {
 		panel.add(separator);
 		
 		JButton btnExportReg = new JButton("");
+		btnExportReg.setToolTipText("导出寄存器的值");
 		btnExportReg.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				do_export_reg();
@@ -261,6 +266,7 @@ public class UserWindow {
 		});
 		
 		JButton btnSetReg = new JButton("");
+		btnSetReg.setToolTipText("导入寄存器的值");
 		btnSetReg.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				do_set_reg();
@@ -268,6 +274,7 @@ public class UserWindow {
 		});
 		
 		JButton btn_loadfile = new JButton("");
+		btn_loadfile.setToolTipText("从文件中导入指令");
 		btn_loadfile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				do_load_from_file();
@@ -280,6 +287,7 @@ public class UserWindow {
 		panel.add(btnSetReg);
 		
 		JButton btnSetMem = new JButton("");
+		btnSetMem.setToolTipText("导入内存的值");
 		btnSetMem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				do_set_mem();
@@ -296,6 +304,7 @@ public class UserWindow {
 		panel.add(btnExportReg);
 		
 		JButton btnExportMem = new JButton("");
+		btnExportMem.setToolTipText("导出内存的值");
 		btnExportMem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				do_export_mem();
