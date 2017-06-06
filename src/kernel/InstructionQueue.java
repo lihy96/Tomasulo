@@ -66,10 +66,14 @@ public class InstructionQueue {
 		case MUL:
 		case DIV: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.mulGroup);
 			break;
-		case LOAD: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.loadGroup);
+		case LOAD:
+		case STOR:
+			reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.memGroup);
 			break;
-		case STOR: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.storeGroup);
-			break;
+//		case LOAD: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.loadGroup);
+//			break;
+//		case STOR: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.storeGroup);
+//			break;
 		}
 		if (reserveStackEntry == null) return ;
 		

@@ -2,13 +2,11 @@ package kernel;
 
 import main.Clock;
 import util.ConstDefinition;
-import util.Instr;
-import util.Instr.OP;
 
-public class Adder {
+public class MemAccesser {
 	private int time;
 	private ReserveStackEntry crRse = null;
-	public Adder(){}
+	public MemAccesser() {}
 	
 	public int getTime() {
 		return time;
@@ -20,29 +18,27 @@ public class Adder {
 	}
 	
 	public void activate() {
-		assert(time < 0);
+		if (time < 0) {
+			System.out.println("> Error at time is negetive.");
+			System.exit(2);
+		}
 		
 		/* 如果time为0, 表示当前运算部件没有执行操作，需要寻找一个可执行的保留站。 */
 		if (time == 0) {
-			crRse = ReserveStackEntry.getRunnableEntry(Clock.addGroup);
+			crRse = ReserveStackEntry.getRunnableEntry(Clock.memGroup);
 			/* 如果没有可执行保留站，直接返回 */
 			if (crRse == null) return ;
 			System.out.println("Run instr : " + crRse.toString());
 			setTime();
 		}
-
+		
 		/* 默认时间减一 */
 		time --;
 		
 		/* 如果time为0,表示当前运算部件将要执行完操作。 */
 		if (time == 0) {
 			double ans;
-			if (crRse.OP == OP.ADD) {
-				ans = crRse.Vj + crRse.Vk;
-			}
-			else {
-				ans = crRse.Vj - crRse.Vk;
-			}
+			ans = Clock.mem.get(crRse.A);
 			System.out.println("End instr : " + crRse.toString());
 			
 			/** 
@@ -52,22 +48,21 @@ public class Adder {
 			Clock.wake_up(crRse, ans);
 			
 			/* 保留站计算完需要释放 */
-			ReserveStackEntry.freeReserveEntry(Clock.addGroup, crRse);
+			ReserveStackEntry.freeReserveEntry(Clock.memGroup, crRse);
 			crRse = null;
 		}
 	}
 	
 	private void setTime() {
 		switch(crRse.OP) {
-		case ADD:
-			time = ConstDefinition.OP_TIME[0]; break;
-		case SUB:
-			time = ConstDefinition.OP_TIME[1]; break;
+		case LOAD:
+			time = ConstDefinition.OP_TIME[4]; break;
+		case STOR:
+			time = ConstDefinition.OP_TIME[5]; break;
 		default:
-			System.out.println("Adder 操作符错误: " + crRse.toString());
+			System.out.println("MemAccesser 操作符错误: " + crRse.toString());
 			System.exit(2);
 			break;
 		}
 	}
-	
 }

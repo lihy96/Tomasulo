@@ -53,7 +53,7 @@ public class ReserveStackEntry {
 		this.Vj = null; this.Vk = null;
 	}
 	public String toString() {
-		return "" + __id + "\t" + OP + " : " + 
+		return "" + __name + "\t" + OP + " : " + 
 				"<" + (Qj == null ? "null" : Qj.getID()) + 
 					", " + (Qk == null ? "null" : Qk.getID()) + ">---" +
 				"<" + Vj + ", " + Vk + ", " + A + "> : " + 
@@ -167,14 +167,14 @@ public class ReserveStackEntry {
 		}
 	}
 	
-	public static ReserveStackEntry getRunnableEntry(ReserveStackEntry[] group, Instr.OP op) {
+	public static ReserveStackEntry getRunnableEntry(ReserveStackEntry[] group) {
 		ReserveStackEntry reserveStackEntry = null;
 		for (ReserveStackEntry rse : group) {
 			/* 如果保留站为空闲状态，跳过 */
 			if (!rse.Busy) continue;
 			
 			boolean is_ok = false;
-			switch(op) {
+			switch(rse.OP) {
 			case ADD:
 			case SUB:
 			case MUL:
@@ -182,7 +182,6 @@ public class ReserveStackEntry {
 				is_ok = (rse.Vj != null && rse.Vk != null); break;
 			case LOAD:
 				is_ok = true;
-				
 				break;
 			case STOR:
 				is_ok = (rse.Vj != null && rse.A != null); break;

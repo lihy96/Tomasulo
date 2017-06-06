@@ -24,7 +24,7 @@ public class Multiplier {
 		
 		/* 如果time为0, 表示当前运算部件没有执行操作，需要寻找一个可执行的保留站。 */
 		if (time == 0) {
-			crRse = ReserveStackEntry.getRunnableEntry(Clock.mulGroup, Instr.OP.MUL);
+			crRse = ReserveStackEntry.getRunnableEntry(Clock.mulGroup);
 			/* 如果没有可执行保留站，直接返回 */
 			if (crRse == null) return ;
 			System.out.println("Run instr : " + crRse.toString());
