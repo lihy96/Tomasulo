@@ -55,11 +55,14 @@ import javax.swing.JMenuItem;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.awt.Insets;
@@ -532,9 +535,26 @@ public class UserWindow {
 		if (result == JFileChooser.APPROVE_OPTION) {
 		    File selectedFile = fileChooser.getSelectedFile();
 		    path = selectedFile.getAbsolutePath();
-		    System.out.println("Load file: " + path);
-		    
-		    // add wanglt code here for export mem data
+		    System.out.println("Export memory file: " + path);
+		    try {
+			    File file =new File(path+"\\"+ConstDefinition.MEM_FILENAME);
+				//if file doesnt exists, then create it
+				if(!file.exists()) {
+					file.createNewFile();
+				}
+				//true = append file, false = write directly
+				PrintStream out = new PrintStream(file);
+				for (int i=0; i<ConstDefinition.MEM_NUM; i++) {
+					System.out.println(String.valueOf(Clock.mem.get(i)));
+					out.println(String.valueOf(Clock.mem.get(i)));
+				}
+				out.close();
+	
+			}
+			catch(IOException e){
+				System.out.println("导出内存数据出错！");
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -549,9 +569,26 @@ public class UserWindow {
 		if (result == JFileChooser.APPROVE_OPTION) {
 		    File selectedFile = fileChooser.getSelectedFile();
 		    path = selectedFile.getAbsolutePath();
-		    System.out.println("Load file: " + path);
-		    
-		    // add wanglt code here for export reg data
+		    System.out.println("Export register file: " + path);
+		    try {
+			    File file =new File(path+"\\"+ConstDefinition.REG_FILENAME);
+				//if file doesnt exists, then create it
+				if(!file.exists()) {
+					file.createNewFile();
+				}
+				//true = append file, false = write directly
+				PrintStream out = new PrintStream(file);
+				for (int i=0; i<ConstDefinition.FP_NUM; i++) {
+					System.out.println(String.valueOf(Clock.fp.get(i)));
+					out.println(String.valueOf(Clock.fp.get(i)));
+				}
+				out.close();
+	
+			}
+			catch(IOException e){
+				System.out.println("导出寄存器数据出错！");
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -610,11 +647,11 @@ public class UserWindow {
 	                BufferedReader bufferedReader = new BufferedReader(read);
 	                String lineTxt = null;
 	                int k = 0;
-	                while((lineTxt = bufferedReader.readLine()) != null && k<11){
+	                while((lineTxt = bufferedReader.readLine()) != null && k<ConstDefinition.FP_NUM){
 	                	Clock.fp.set(k, Double.valueOf(lineTxt));
 	                	k++;
 	                }
-//	                for (int i=0; i<11; i++)
+//	                for (int i=0; i<ConstDefinition.FP_NUM; i++)
 //	                	System.out.println(Clock.fp.get(i));
 	                read.close();
 			    }
@@ -624,6 +661,7 @@ public class UserWindow {
 	            e.printStackTrace();
 			}
 		}
+		DataLoader.update_all(-1);
 	}
 	
 	public void do_clear() {

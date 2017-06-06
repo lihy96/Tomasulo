@@ -192,7 +192,9 @@ public class DataLoader {
 	}
 	
 	public static void update_all(int begin) {
-//		System.out.println("update !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		if (begin < 0) {
+			begin = MainDriver.window.addr_mem;
+		}
 		update_table_instr();
 		
 		update_table_reserv();
