@@ -23,6 +23,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import com.sun.org.apache.bcel.internal.generic.SWITCH;
+import com.sun.org.apache.xpath.internal.operations.And;
 
 import gui.DataLoader.DataType;
 import jdk.nashorn.internal.ir.Flags;
@@ -30,6 +31,7 @@ import kernel.FP;
 import kernel.FakeMemory;
 import main.Clock;
 import main.MainDriver;
+import util.ConstDefinition;
 
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -52,7 +54,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.awt.Insets;
 import java.awt.Dimension;
@@ -559,22 +567,62 @@ public class UserWindow {
 		if (result == JFileChooser.APPROVE_OPTION) {
 		    File selectedFile = fileChooser.getSelectedFile();
 		    path = selectedFile.getAbsolutePath();
-		    System.out.println("Load file: " + path);
-		    
-		    // add wanglt code here for load mem data
+		    System.out.println("Load memory file: " + path);
+		    // n行double->n个地址
+		    File file=new File(path);
+		    String encoding = "utf-8";
+		    try {
+			    if(file.isFile() && file.exists()){ //判断文件是否存在
+	                InputStreamReader read = new InputStreamReader(new FileInputStream(file),encoding);//考虑到编码格式
+	                BufferedReader bufferedReader = new BufferedReader(read);
+	                String lineTxt = null;
+	                int k = 0;
+	                while((lineTxt = bufferedReader.readLine()) != null && k<ConstDefinition.MEM_NUM){
+	                	Clock.mem.set(k, Double.valueOf(lineTxt));
+	                	k++;
+	                }
+	                for (int i=0; i<k; i++)
+	                	System.out.println(Clock.mem.get(i));
+	                read.close();
+			    }
+		    }
+		    catch (Exception e) {
+	            System.out.println("读取内存文件内容出错");
+	            e.printStackTrace();
+			}
 		}
 	}
 	
-	public void do_set_reg(){
+	public void do_set_reg() {
 		String path = "";
 		JFileChooser fileChooser = new JFileChooser();
 		int result = fileChooser.showOpenDialog(frmSimulator);
 		if (result == JFileChooser.APPROVE_OPTION) {
 		    File selectedFile = fileChooser.getSelectedFile();
 		    path = selectedFile.getAbsolutePath();
-		    System.out.println("Load file: " + path);
-		    
-		    // add wanglt code here for load reg data
+		    System.out.println("Load register file: " + path);
+		    // 11行double->11个寄存器
+		    File file=new File(path);
+		    String encoding = "utf-8";
+		    try {
+			    if(file.isFile() && file.exists()){ //判断文件是否存在
+	                InputStreamReader read = new InputStreamReader(new FileInputStream(file),encoding);//考虑到编码格式
+	                BufferedReader bufferedReader = new BufferedReader(read);
+	                String lineTxt = null;
+	                int k = 0;
+	                while((lineTxt = bufferedReader.readLine()) != null && k<11){
+	                	Clock.fp.set(k, Double.valueOf(lineTxt));
+	                	k++;
+	                }
+//	                for (int i=0; i<11; i++)
+//	                	System.out.println(Clock.fp.get(i));
+	                read.close();
+			    }
+		    }
+		    catch (Exception e) {
+	            System.out.println("读取寄存器文件内容出错");
+	            e.printStackTrace();
+			}
 		}
 	}
 	
