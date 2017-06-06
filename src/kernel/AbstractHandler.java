@@ -7,7 +7,7 @@ import util.ConstDefinition;
 import util.Instr.OP;
 
 public abstract class AbstractHandler {
-	// 4 or 5
+	// 无用流水段，会被继承类重新设置
 	protected PipeLineSegment[] pipeline = new PipeLineSegment[0];
 	protected ReserveStackEntry[] group;
 	public AbstractHandler(ReserveStackEntry[] _group){
@@ -16,6 +16,10 @@ public abstract class AbstractHandler {
 			pipeline[i] = new PipeLineSegment();
 		}
 		this.group = _group;
+	}
+	
+	protected void setPipeline(PipeLineSegment[] plss) {
+		this.pipeline = plss;
 	}
 
 	public ArrayList<Integer> getTime() {
@@ -53,7 +57,6 @@ public abstract class AbstractHandler {
 			PipeLineSegment pls = pipeline[i - 1];
 			if (!pls.Busy) continue;
 
-			System.out.println("Find pipeline to execute : " + (i-1));
 			boolean need_schedule = pls.activate();
 			System.out.println("Run instr : " + pls.toString());
 			// 指令是否需要调度进入下一段流水线
