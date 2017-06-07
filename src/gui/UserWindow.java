@@ -6,25 +6,13 @@ import javax.swing.JFrame;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.JTextField;
-import java.awt.Window.Type;
 import javax.swing.JLabel;
-import java.awt.Scrollbar;
-import java.awt.FlowLayout;
-import java.awt.TextArea;
-import java.awt.BorderLayout;
-import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-
-import com.sun.org.apache.bcel.internal.generic.SWITCH;
-import com.sun.org.apache.xpath.internal.operations.And;
-import com.sun.xml.internal.fastinfoset.algorithm.FloatEncodingAlgorithm;
 
 import gui.DataLoader.DataType;
 import jdk.nashorn.internal.ir.Flags;
