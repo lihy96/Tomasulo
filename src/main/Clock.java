@@ -105,7 +105,7 @@ public class Clock {
 	private static int clock = 0;
 	private static int clock_max = 1000;
 	private static long timeout = 0;
-	private static int step = 1;
+	private static int step = 100;
 	
 	public static int get_clock_max() {
 		return clock_max;
@@ -115,18 +115,7 @@ public class Clock {
 	public static long get_timeout() {
 		return timeout;
 	}
-	public static void run() {
-//		while (flag && clock < clock_max) {
-//			
-//			run_one_step();
-//			try {
-//				TimeUnit.MILLISECONDS.sleep(timeout);
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		clock = 0;
-		
+	public static void run() {		
 		for (int i = 0; i < step; ++i)
 			run_one_step();
 	}

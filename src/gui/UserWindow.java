@@ -394,6 +394,89 @@ public class UserWindow {
 		lblData_1.setBounds(16, 610, 65, 15);
 		frmSimulator.getContentPane().add(lblData_1);
 		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(-2, 0, 642, 21);
+		frmSimulator.getContentPane().add(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("文件");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem menuItem = new JMenuItem("导入指令");
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_load_from_file();
+			}
+		});
+		mnNewMenu.add(menuItem);
+		
+		JMenu mnNewMenu_1 = new JMenu("设置");
+		menuBar.add(mnNewMenu_1);
+		
+		JMenuItem menuItem_1 = new JMenuItem("设置执行参数");
+		menuItem_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_clock();
+			}
+		});
+		mnNewMenu_1.add(menuItem_1);
+		
+		JMenu mnNewMenu_2 = new JMenu("执行");
+		menuBar.add(mnNewMenu_2);
+		
+		JMenuItem mntmn = new JMenuItem("执行n个周期");
+		mntmn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_Run();
+			}
+		});
+		mnNewMenu_2.add(mntmn);
+		
+		JMenuItem menuItem_2 = new JMenuItem("单步执行");
+		menuItem_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_next();
+			}
+		});
+		mnNewMenu_2.add(menuItem_2);
+		
+		JMenu mnNewMenu_3 = new JMenu("导入");
+		menuBar.add(mnNewMenu_3);
+		
+		JMenuItem menuItem_3 = new JMenuItem("导入寄存器");
+		menuItem_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_set_reg();
+			}
+		});
+		mnNewMenu_3.add(menuItem_3);
+		
+		JMenuItem menuItem_4 = new JMenuItem("导入内存");
+		menuItem_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_set_mem();
+			}
+		});
+		mnNewMenu_3.add(menuItem_4);
+		
+		JMenu mnNewMenu_4 = new JMenu("导出");
+		menuBar.add(mnNewMenu_4);
+		
+		JMenuItem menuItem_5 = new JMenuItem("导出寄存器");
+		menuItem_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_export_reg();
+			}
+		});
+		mnNewMenu_4.add(menuItem_5);
+		
+		JMenuItem menuItem_6 = new JMenuItem("导出内存");
+		menuItem_6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_export_mem();
+			}
+		});
+		mnNewMenu_4.add(menuItem_6);
+		
 		cb_ins1.addItem("");
 		cb_ins2.addItem("");
 		cb_ins3.addItem("");
@@ -756,27 +839,4 @@ public class UserWindow {
 		
 		DataLoader.update_all(addr_mem);
 	}
-	
-//	public class ClockRun implements Runnable {
-//			
-//	    private volatile boolean running = true;
-//
-//	    public void terminate() {
-//	        running = false;
-//	    }
-//		
-//		@Override
-//		public void run() {
-////			System.out.println("" + running + " : " + Clock.get_clock());
-//			while(running && Clock.get_clock() < get_circles()) {
-//				Clock.run_one_step();
-//				try {
-//					Thread.sleep(get_space());
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//	}
 }
