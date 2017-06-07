@@ -7,6 +7,7 @@ import java.util.Queue;
 
 import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
+import gui.DataLoader;
 import main.Clock;
 import sun.net.ftp.FtpReplyCode;
 import util.FileReaderUtil;
@@ -128,6 +129,7 @@ public class InstructionQueue {
 		}
 		catch (Exception e) {
 			System.out.println(">>> Error at decode instruction : \n\t" + instr);
+			DataLoader.update_console(">>> Error at decode instruction : \n\t" + instr);
 			return null;
 		}
 
@@ -159,16 +161,19 @@ public class InstructionQueue {
 				}
 			} catch (IllegalArgumentException e) {
 				System.out.println(">>> Error at decode reg or imm : \n\t" + instr);
+				DataLoader.update_console(">>> Error at decode reg or imm : \n\t" + instr);
 				return null;
 			}
 		}
 		catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			System.out.println(">>> Error at decode operator : \n\t" + instr);
+			DataLoader.update_console(">>> Error at decode operator : \n\t" + instr);
 			return null;
 		}
 		catch (Exception e) {
 			System.out.println(">>> Unrecognized error : \n\t" + instr);
+			DataLoader.update_console(">>> Unrecognized error : \n\t" + instr);
 			return null;
 		}
 		

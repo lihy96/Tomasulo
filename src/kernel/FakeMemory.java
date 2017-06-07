@@ -2,6 +2,7 @@ package kernel;
 
 import java.util.ArrayList;
 
+import gui.DataLoader;
 import main.Clock;
 import util.ConstDefinition;
 import util.Instr;

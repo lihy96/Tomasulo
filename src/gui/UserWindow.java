@@ -24,6 +24,7 @@ import javax.swing.table.TableColumnModel;
 
 import com.sun.org.apache.bcel.internal.generic.SWITCH;
 import com.sun.org.apache.xpath.internal.operations.And;
+import com.sun.xml.internal.fastinfoset.algorithm.FloatEncodingAlgorithm;
 
 import gui.DataLoader.DataType;
 import jdk.nashorn.internal.ir.Flags;
@@ -137,6 +138,7 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(scrollPane_state);
 		
 		table_state = new JTable();
+		table_state.setEnabled(false);
 		table_state.setCellSelectionEnabled(true);
 		table_state.getTableHeader().setReorderingAllowed(false);
 		scrollPane_state.setViewportView(table_state);
@@ -155,6 +157,7 @@ public class UserWindow {
 		frmSimulator.getContentPane().add(scrollPane_station);
 		
 		table_station = new JTable();
+		table_station.setEnabled(false);
 		table_station.setCellSelectionEnabled(true);
 		table_station.getTableHeader().setReorderingAllowed(false);
 		scrollPane_station.setViewportView(table_station);
@@ -338,7 +341,7 @@ public class UserWindow {
 		cb_addr = new JComboBox<Integer>();
 		cb_addr.setEditable(true);
 		cb_addr.setBounds(220, 345, 54, 21);
-		for (int i = 0; i < 4096; i++)
+		for (int i = 0; i < 4091; i++)
 			cb_addr.addItem(i);
 		cb_addr.setSelectedIndex(0);
 		cb_addr.addActionListener (new ActionListener () {
@@ -603,6 +606,7 @@ public class UserWindow {
 		    DataLoader.update_table_instr();
 		    DataLoader.update_clock();
 		}
+		DataLoader.update_console("Load instructions successfully!");
 	}
 	
 	
@@ -638,10 +642,12 @@ public class UserWindow {
 					out.println(String.valueOf(Clock.mem.get(i)));
 				}
 				out.close();
+				DataLoader.update_console("Export successfully!");
 	
 			}
 			catch(IOException e){
 				System.out.println("导出内存数据出错！");
+				DataLoader.update_console("Export error!");
 				e.printStackTrace();
 			}
 		}
@@ -673,9 +679,11 @@ public class UserWindow {
 				}
 				out.close();
 	
+				DataLoader.update_console("Export successfully!");
 			}
 			catch(IOException e){
 				System.out.println("导出寄存器数据出错！");
+				DataLoader.update_console("Export Error!");
 				e.printStackTrace();
 			}
 		}
@@ -684,6 +692,7 @@ public class UserWindow {
 	public void do_clock() {
 		System.out.println("clock");
 		timeSetter.setVisible(true);
+		DataLoader.update_console("Set clocks of one step: " + timeSetter.space);
 	}
 	
 	public void do_set_mem() {
@@ -711,9 +720,11 @@ public class UserWindow {
 	                	System.out.println(Clock.mem.get(i));
 	                read.close();
 			    }
+			    DataLoader.update_console("Import Memory successfully!");
 		    }
 		    catch (Exception e) {
 	            System.out.println("读取内存文件内容出错");
+	            DataLoader.update_console("read file error!!");
 	            e.printStackTrace();
 			}
 		}
@@ -744,9 +755,11 @@ public class UserWindow {
 //	                	System.out.println(Clock.fp.get(i));
 	                read.close();
 			    }
+			    DataLoader.update_console("Import Regs successfully!");
 		    }
 		    catch (Exception e) {
 	            System.out.println("读取寄存器文件内容出错");
+	            DataLoader.update_console("Import Regs error!");
 	            e.printStackTrace();
 			}
 		}
@@ -758,10 +771,13 @@ public class UserWindow {
 		Clock.clear();
 		cb_addr.setSelectedIndex(0);
 		DataLoader.update_all(0);
+//		DataLoader.update_console("Clear all");
+		DataLoader.clear_console();
 	}
 	
 	public void do_Run() {
 		Clock.run();
+		DataLoader.update_console("Run successfully!");
 	}
 	
 	
@@ -785,8 +801,10 @@ public class UserWindow {
 		case MEM:
 			try {
 				Clock.mem.set(addr_mem + col,Double.parseDouble(newdata));
+				DataLoader.update_console("Memory update successfully!");
 			} catch (Exception e) {
 				e.printStackTrace();
+				DataLoader.update_console("Memory update error!");
 			}
 			
 			break;
@@ -796,8 +814,10 @@ public class UserWindow {
 		case FU:
 			try {
 				FP.getInstance().set(col, Double.parseDouble(newdata));
+				DataLoader.update_console("Register update successfully!");
 			} catch (Exception e) {
 				e.printStackTrace();
+				DataLoader.update_console("Register update error!");
 			}
 			break;
 		case RU:
@@ -833,8 +853,11 @@ public class UserWindow {
 		
 		
 		ArrayList<String> instrs = new ArrayList<String>();
-		instrs.add(ret);
-		
+		boolean flag = instrs.add(ret);
+//		if (flag)
+//			DataLoader.update_console("Add Instructions successfully!");
+//		else
+//			DataLoader.update_console("Add Instructions error!");
 		Clock.queue.load(instrs);
 		
 		DataLoader.update_all(addr_mem);
