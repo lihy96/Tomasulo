@@ -18,7 +18,7 @@ public class MemAccesser extends AbstractHandler {
 	}
 	
 	protected void calFunc(PipeLineSegment pls) {
-		if (pls.OP == OP.LOAD) {
+		if (pls.OP == OP.LD) {
 			double ans = Clock.mem.get(pls.A);
 			/** 
 			 * 将计算结果放入总线，并唤醒其他等待该保留站计算结果的保留站

@@ -153,7 +153,7 @@ public class ReserveStackEntry {
 		rse.Busy = false;
 		rse.Run = false;
 		/* load和store缓冲区需要模仿队列操作 */
-		if (rse.OP == Instr.OP.LOAD || rse.OP == Instr.OP.STOR) {
+		if (rse.OP == Instr.OP.LD || rse.OP == Instr.OP.ST) {
 			adjustFakeQueue(group);
 		}
 	}
@@ -191,15 +191,15 @@ public class ReserveStackEntry {
 			
 			boolean is_ok = false;
 			switch(rse.OP) {
-			case ADD:
-			case SUB:
-			case MUL:
-			case DIV:
+			case ADDD:
+			case SUBD:
+			case MULD:
+			case DIVD:
 				is_ok = (rse.Vj != null && rse.Vk != null); break;
-			case LOAD:
+			case LD:
 				is_ok = true;
 				break;
-			case STOR:
+			case ST:
 				is_ok = (rse.Vj != null && rse.A != null); break;
 			}
 			if (is_ok) {

@@ -13,12 +13,12 @@ import kernel.FP;
 public class Instr {
 
 	public enum OP {
-		ADD,
-		SUB,
-		MUL,
-		DIV,
-		LOAD,
-		STOR
+		ADDD,
+		SUBD,
+		MULD,
+		DIVD,
+		LD,
+		ST
 	};
 	
 	public State state = new State();

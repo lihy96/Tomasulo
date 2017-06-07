@@ -19,7 +19,7 @@ public class Adder extends AbstractHandler {
 	
 	// 不同运算部件需要重载的函数
 	protected void calFunc(PipeLineSegment pls) {
-		double ans = (pls.OP == OP.ADD) ? pls.Vj + pls.Vk : pls.Vj - pls.Vk;
+		double ans = (pls.OP == OP.ADDD) ? pls.Vj + pls.Vk : pls.Vj - pls.Vk;
 		
 		/** 
 		 * 将计算结果放入总线，并唤醒其他等待该保留站计算结果的保留站

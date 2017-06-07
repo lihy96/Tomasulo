@@ -61,14 +61,14 @@ public class InstructionQueue {
 		
 		ReserveStackEntry reserveStackEntry = null;
 		switch (crItr.op) {
-		case ADD:
-		case SUB: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.addGroup);
+		case ADDD:
+		case SUBD: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.addGroup);
 			break;
-		case MUL:
-		case DIV: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.mulGroup);
+		case MULD:
+		case DIVD: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.mulGroup);
 			break;
-		case LOAD:
-		case STOR:
+		case LD:
+		case ST:
 			reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.memGroup);
 			break;
 //		case LOAD: reserveStackEntry = ReserveStackEntry.getFreeEntry(Clock.loadGroup);
@@ -139,19 +139,19 @@ public class InstructionQueue {
 			istr.op = Instr.OP.valueOf(op);
 			try {
 				switch (istr.op) {
-				case ADD : 
-				case SUB : 
-				case MUL : 
-				case DIV : 
+				case ADDD : 
+				case SUBD : 
+				case MULD : 
+				case DIVD : 
 					istr.des = FP.REG.valueOf(left);
 					istr.src1 = FP.REG.valueOf(mid);
 					istr.src2 = FP.REG.valueOf(right);
 					break;
-				case LOAD :
+				case LD :
 					istr.des = FP.REG.valueOf(left);
 					istr.imm = Integer.parseInt(mid);
 					break;
-				case STOR : 
+				case ST : 
 					istr.src1 = FP.REG.valueOf(left);
 					istr.imm = Integer.parseInt(mid);
 					break;

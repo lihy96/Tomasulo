@@ -17,5 +17,5 @@ public class Config {
 	public final static Object[] ru_name = {"R0","R1","R2","R3","R4","R5","R6","R7","R8","R9","R10"};
 	
 	public static float[] columnWidthPercentage = {55.0f,15.0f,15.0f,15.0f};
-	public final static String[] cmds = {"ADD", "SUB", "MUL", "DIV", "LOAD", "STOR"};
+	public final static String[] cmds = {"ADDD", "SUBD", "MULD", "DIVD", "LD", "ST"};
 }
