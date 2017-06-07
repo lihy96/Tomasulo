@@ -6,6 +6,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import gui.DataLoader.DataType;
+import gui.Data;
 import kernel.FakeMemory;
 import main.Clock;
 import main.MainDriver;
