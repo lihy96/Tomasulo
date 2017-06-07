@@ -88,23 +88,23 @@ public class InstructionQueue {
 		InstructionQueue iq = new InstructionQueue();
 		Instr is;
 		
-		is = iq.decodeInstr("LOAD F6, 34  ");
+		is = iq.decodeInstr("LD F6, 34  ");
 		if (is != null)
 			System.out.println(is.toString());
 		
-		is = iq.decodeInstr("  SUB F6, F5,  F4, GET");
+		is = iq.decodeInstr("  SUBD F6, F5,  F4, GET");
 		if (is != null)
 			System.out.println(is.toString());
 		
-		is = iq.decodeInstr("DIV F6, F7,F4");
+		is = iq.decodeInstr("DIVD F6, F7,F4");
 		if (is != null)
 			System.out.println(is.toString());
 		
-		is = iq.decodeInstr("STOR	 F6, 34  ");
+		is = iq.decodeInstr("ST	 F6, 34  ");
 		if (is != null)
 			System.out.println(is.toString());
 		
-		is = iq.decodeInstr("LOAD F6, 34  ");
+		is = iq.decodeInstr("LD F6, 34  ");
 		if (is != null)
 			System.out.println(is.toString());
 	}
