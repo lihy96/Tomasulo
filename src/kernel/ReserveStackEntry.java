@@ -112,6 +112,7 @@ public class ReserveStackEntry {
 		rse.instr = itr;
 		rse.instr.state.flow = true;
 		
+		rse.clear();
 		rse.OP = itr.op;
 		rse.A = itr.imm;
 		
@@ -120,7 +121,7 @@ public class ReserveStackEntry {
 			rse.Qj = fp.getQ(itr.src1);
 			if (rse.Qj == null) {
 				rse.Vj = fp.get(itr.src1);
-			}
+			} 
 		}
 		if (itr.src2 != null) {
 			rse.Qk = fp.getQ(itr.src2);
