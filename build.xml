@@ -5,7 +5,7 @@
 	<property name="main-class" value="main.MainDriver"/>
 	
 	<property name="bin.dir" value="build/classes"/>
-	<property name="img.dir" value="static/images"/>
+	<property name="res.dir" value="static"/>
 	<property name="jar.dir" value="build/jar"/>
 	
 	<path id="classpath">
@@ -26,7 +26,7 @@
 			<manifest>
 				<attribute name="Main-Class" value="${main-class}"/>
 			</manifest>
-			<zipfileset dir="." includes="${img.dir}/*"/>
+			<zipfileset dir="${res.dir}" includes="images/*"/>
 		</jar>
 	</target>
 
