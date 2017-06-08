@@ -107,12 +107,13 @@ public class ReserveStackEntry {
 	}
 	
 	public static void setReserveEntry(ReserveStackEntry rse, Instr itr) {
+		rse.clear();
+		
 		// 添加进监控状态表
 		Clock.running_state.add(itr);
 		rse.instr = itr;
 		rse.instr.state.flow = true;
 		
-		rse.clear();
 		rse.OP = itr.op;
 		rse.A = itr.imm;
 		
