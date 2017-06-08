@@ -2,3 +2,5 @@ build/*
 *.pdf
 .settings/*
 /build/
+*.docx
+*.doc

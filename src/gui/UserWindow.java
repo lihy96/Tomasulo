@@ -329,7 +329,7 @@ public class UserWindow {
 		cb_addr = new JComboBox<Integer>();
 		cb_addr.setEditable(true);
 		cb_addr.setBounds(220, 345, 54, 21);
-		for (int i = 0; i < 4091; i++)
+		for (int i = 0; i < 4092; i++)
 			cb_addr.addItem(i);
 		cb_addr.setSelectedIndex(0);
 		cb_addr.addActionListener (new ActionListener () {
@@ -821,7 +821,7 @@ public class UserWindow {
 		if (addr >= 4096) addr = 4096;
 		if (addr < 0) addr = 0;
 		addr_mem = addr;
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		DataLoader.update_all(addr);
 	}
 	
